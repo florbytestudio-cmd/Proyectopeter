@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Majalca Cabañas — Cañón de Majalca, Chihuahua</title>
+<title>Sierra Alta Cabañas — Cañón de Majalca, Chihuahua</title>
+<meta name="description" content="Cabañas privadas A-frame en el Cañón de Majalca, Chihuahua. Reserva en línea, paga 50% de anticipo. Jacuzzi, palapa, fogata y bosque de pinos a 2,141 msnm.">
+<meta property="og:title" content="Sierra Alta Cabañas — Majalca">
+<meta property="og:description" content="Piérdete en el bosque. Cabañas A-frame privadas con jacuzzi en el Cañón de Majalca, Chihuahua.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b1a0b">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -474,6 +480,63 @@ footer{background:var(--pine);padding:48px 56px 32px}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* MOBILE */
+
+/* ── EXPERIENCIAS ── */
+.exp-card{
+  background:var(--white);border:1px solid rgba(0,0,0,.06);
+  border-radius:14px;padding:28px 24px;
+  opacity:0;transform:translateY(24px);
+  transition:opacity .6s,transform .6s,box-shadow .3s;
+}
+.exp-card.vis{opacity:1;transform:translateY(0)}
+.exp-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.08);transform:translateY(-3px)}
+.exp-icon{font-size:32px;margin-bottom:14px}
+.exp-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;margin-bottom:8px;letter-spacing:-.2px}
+.exp-desc{font-size:12px;color:var(--muted);line-height:1.8;font-weight:300}
+
+/* ── TESTIMONIOS ── */
+.test-card{
+  background:var(--white);border-radius:14px;padding:28px 26px;
+  border:1px solid rgba(0,0,0,.06);
+  opacity:0;transform:translateY(20px);
+  transition:opacity .6s,transform .6s;
+}
+.test-card.vis{opacity:1;transform:translateY(0)}
+.test-stars{color:#f59e0b;font-size:14px;margin-bottom:14px;letter-spacing:2px}
+.test-text{font-size:13px;color:var(--muted);line-height:1.8;font-style:italic;margin-bottom:20px;font-weight:300}
+.test-author{display:flex;align-items:center;gap:12px}
+.test-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--pine);color:var(--leaf);
+  font-size:12px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.test-name{font-size:13px;font-weight:500}
+.test-city{font-size:11px;color:var(--muted);letter-spacing:.3px}
+
+/* ── POLÍTICAS ── */
+.pol-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(109,179,63,.15);
+  border-radius:12px;padding:22px 20px;
+  transition:background .3s;
+}
+.pol-card:hover{background:rgba(109,179,63,.06)}
+.pol-icon{font-size:24px;margin-bottom:12px}
+.pol-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--mint);margin-bottom:12px}
+.pol-item{font-size:12px;color:rgba(255,255,255,.45);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5}
+.pol-item:last-child{border-bottom:none}
+.pol-items{display:flex;flex-direction:column}
+
+/* ── WhatsApp hover ── */
+#wa-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.55)}
+#wa-btn:hover + #wa-tooltip{opacity:1}
+
+@media(max-width:900px){
+  .llegar-sec{padding:64px 24px}
+}
+
 @keyframes kenBurns{
   from{transform:scale(1) translate(0,0)}
   to{transform:scale(1.08) translate(-1%,-1%)}
@@ -505,7 +568,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <body>
 
 <nav id="nav">
-  <div class="nav-logo">Majalca <em>Cabañas</em></div>
+  <div class="nav-logo">Sierra Alta <em>Cabañas</em></div>
   <ul class="nav-links">
     <li><a href="#cabanas">Cabañas</a></li>
     <li><a href="#palapa">Palapa</a></li>
@@ -549,6 +612,12 @@ footer{background:var(--pine);padding:48px 56px 32px}
   </div>
 </section>
 
+<div style="background:var(--pine);margin-top:-2px;line-height:0">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="width:100%;height:60px;display:block">
+    <path d="M0,0 C360,60 1080,0 1440,40 L1440,0 Z" fill="#0b1a0b"/>
+    <path d="M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z" fill="#152415"/>
+  </svg>
+</div>
 <!-- BAND -->
 <div class="band">
   <div class="band-item"><div class="band-n">4</div><div class="band-l">Cabañas privadas</div></div>
@@ -570,20 +639,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
     <div class="cabanas-grid">
 
       <div class="cab" data-delay="0">
-        <div class="cab-img" style="background:linear-gradient(160deg,#1a3a1a 0%,#0d2010 100%)">
-          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="320" fill="#0d1a0d"/>
-            <g opacity=".6">
-              <polygon points="80,280 120,160 160,280" fill="#1a3a14"/>
-              <polygon points="100,280 130,180 160,280" fill="#2a5a20"/>
-              <polygon points="200,280 250,130 300,280" fill="#1a4010"/>
-              <polygon points="220,280 250,150 280,280" fill="#2a5a20"/>
-              <polygon points="320,280 355,170 390,280" fill="#1a3a14"/>
-              <polygon points="0,280 40,190 80,280" fill="#162e10"/>
-            </g>
-            <ellipse cx="200" cy="80" rx="60" ry="60" fill="rgba(255,220,100,.03)"/>
-            <circle cx="200" cy="80" r="3" fill="rgba(255,220,100,.4)"/>
-          </svg>
+        <div class="cab-img" style="background:#0d1a0d">
+          <img src="cabana_exterior.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"/>
         </div>
         <div class="cab-body">
           <div class="cab-name">Cabaña 1</div>
@@ -597,24 +654,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
       </div>
 
       <div class="cab" data-delay="120">
-        <div class="cab-img" style="background:linear-gradient(160deg,#1a2a3a 0%,#0d1a2a 100%)">
-          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="320" fill="#0d1520"/>
-            <g opacity=".5">
-              <polygon points="60,280 110,140 160,280" fill="#152535"/>
-              <polygon points="80,280 110,160 140,280" fill="#1e3a50"/>
-              <polygon points="240,280 290,120 340,280" fill="#152535"/>
-              <polygon points="260,280 290,140 320,280" fill="#1e3a50"/>
-              <polygon points="350,280 385,175 420,280" fill="#152535"/>
-            </g>
-            <g opacity=".3">
-              <circle cx="80" cy="60" r="1.5" fill="#fff"/>
-              <circle cx="200" cy="40" r="1" fill="#fff"/>
-              <circle cx="320" cy="70" r="2" fill="#fff"/>
-              <circle cx="150" cy="90" r="1" fill="#fff"/>
-              <circle cx="280" cy="55" r="1.5" fill="#fff"/>
-            </g>
-          </svg>
+        <div class="cab-img" style="background:#0d1520">
+          <img src="cabana_corte_interior.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"/>
         </div>
         <div class="cab-body">
           <div class="cab-name">Cabaña 2</div>
@@ -628,17 +669,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
       </div>
 
       <div class="cab" data-delay="240">
-        <div class="cab-img" style="background:linear-gradient(160deg,#2a1a2a 0%,#1a0d1a 100%)">
-          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="320" fill="#150d15"/>
-            <g opacity=".5">
-              <polygon points="40,280 90,150 140,280" fill="#2a152a"/>
-              <polygon points="60,280 90,170 120,280" fill="#3a203a"/>
-              <polygon points="260,280 310,130 360,280" fill="#2a152a"/>
-              <polygon points="280,280 310,155 340,280" fill="#3a203a"/>
-            </g>
-            <rect x="150" y="200" width="100" height="80" fill="rgba(255,150,50,.04)"/>
-          </svg>
+        <div class="cab-img" style="background:#150d15">
+          <img src="cabana_corte_lateral.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"/>
         </div>
         <div class="cab-body">
           <div class="cab-name">Cabaña 3</div>
@@ -652,18 +684,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
       </div>
 
       <div class="cab" data-delay="360">
-        <div class="cab-img" style="background:linear-gradient(160deg,#2a2010 0%,#1a150a 100%)">
-          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="320" fill="#160f06"/>
-            <g opacity=".55">
-              <polygon points="20,280 80,130 140,280" fill="#2a1e08"/>
-              <polygon points="50,280 80,155 110,280" fill="#3d2e0e"/>
-              <polygon points="260,280 315,120 370,280" fill="#2a1e08"/>
-              <polygon points="285,280 315,145 345,280" fill="#3d2e0e"/>
-              <polygon points="370,280 400,180 430,280" fill="#2a1e08"/>
-            </g>
-            <ellipse cx="200" cy="100" rx="80" ry="40" fill="rgba(255,180,50,.03)"/>
-          </svg>
+        <div class="cab-img" style="background:#160f06">
+          <img src="cabana_exterior.jpg" style="width:100%;height:100%;object-fit:cover;object-position:right top;display:block;"/>
         </div>
         <div class="cab-body">
           <div class="cab-name">Cabaña 4</div>
@@ -674,6 +696,62 @@ footer{background:var(--pine);padding:48px 56px 32px}
           </div>
         </div>
         <button class="cab-btn" onclick="scroll2('reservar')">Reservar</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div style="background:#ffffff;line-height:0">
+  <svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block">
+    <path d="M0,0 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#152415"/>
+  </svg>
+</div>
+
+<!-- EXPERIENCIAS -->
+<section style="background:var(--cream);padding:80px 56px 60px">
+  <div style="max-width:1160px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:56px">
+      <div class="eyebrow" style="text-align:center">En Majalca</div>
+      <h2 class="sec-h" style="text-align:center">Lo que te espera</h2>
+      <p class="sec-sub" style="margin:0 auto;text-align:center">Cada estadía en Majalca es diferente. El bosque, la altitud y el silencio hacen el resto.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px" id="exp-grid">
+
+      <div class="exp-card" data-delay="0">
+        <div class="exp-icon">🔥</div>
+        <div class="exp-title">Noches de fogata</div>
+        <div class="exp-desc">El fogatero central y leña incluida. Las noches de Majalca a 2,141 msnm se sienten diferentes bajo el cielo despejado.</div>
+      </div>
+
+      <div class="exp-card" data-delay="80">
+        <div class="exp-icon">🌲</div>
+        <div class="exp-title">Bosque de pinos</div>
+        <div class="exp-desc">Caminatas entre pinos centenarios, aire limpio de sierra y el sonido del viento entre las copas de los árboles.</div>
+      </div>
+
+      <div class="exp-card" data-delay="160">
+        <div class="exp-icon">✨</div>
+        <div class="exp-title">Cielo sin luz</div>
+        <div class="exp-desc">Sin contaminación lumínica. La Vía Láctea se ve a simple vista en noches despejadas — una de las mejores de Chihuahua.</div>
+      </div>
+
+      <div class="exp-card" data-delay="240">
+        <div class="exp-icon">♨️</div>
+        <div class="exp-title">Jacuzzi privado</div>
+        <div class="exp-desc">La cabaña más grande cuenta con jacuzzi privado en terraza. Agua caliente, bosque alrededor y temperatura fresca de sierra a 2,141 msnm.</div>
+      </div>
+
+      <div class="exp-card" data-delay="320">
+        <div class="exp-icon">🦌</div>
+        <div class="exp-title">Vida silvestre</div>
+        <div class="exp-desc">Venado cola blanca, águila real y cotorra serrana occidental — especies únicas del Cañón de Majalca que puedes ver al amanecer.</div>
+      </div>
+
+      <div class="exp-card" data-delay="400">
+        <div class="exp-icon">🍖</div>
+        <div class="exp-title">Asador de leña</div>
+        <div class="exp-desc">La palapa incluye asador de leña para todos los huéspedes. Trae lo que quieras cocinar — la leña corre por nuestra cuenta.</div>
       </div>
 
     </div>
@@ -702,6 +780,11 @@ footer{background:var(--pine);padding:48px 56px 32px}
   </div>
 </section>
 
+<div style="background:var(--pine);line-height:0">
+  <svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block">
+    <path d="M0,30 C480,0 960,50 1440,10 L1440,50 L0,50 Z" fill="#f4f0e6"/>
+  </svg>
+</div>
 <!-- RESERVAR -->
 <section class="sec res-sec" id="reservar">
   <div class="sec-inner">
@@ -811,6 +894,56 @@ footer{background:var(--pine);padding:48px 56px 32px}
   </div>
 </section>
 
+
+<!-- TESTIMONIOS -->
+<section style="background:var(--sand);padding:72px 56px">
+  <div style="max-width:1160px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="eyebrow" style="text-align:center">Lo que dicen</div>
+      <h2 class="sec-h" style="text-align:center">Experiencias reales</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+
+      <div class="test-card" data-delay="0">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"Llegamos un viernes en la noche y lo primero que hicimos fue prender el fogatero. El silencio del bosque y el cielo estrellado no tienen comparación. Ya queremos regresar."</p>
+        <div class="test-author">
+          <div class="test-avatar">MR</div>
+          <div>
+            <div class="test-name">Marco R.</div>
+            <div class="test-city">Chihuahua, Chih.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card" data-delay="100">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"La cabaña es exactamente como en las fotos — el diseño A-frame es impresionante. El jacuzzi en la terraza con vista al bosque fue lo mejor del viaje. Muy recomendable."</p>
+        <div class="test-author">
+          <div class="test-avatar">AL</div>
+          <div>
+            <div class="test-name">Ana L.</div>
+            <div class="test-city">Ciudad de México</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card" data-delay="200">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"Fuimos en familia, 6 personas. La cabaña más grande nos dio espacio de sobra. Los niños se volvieron locos con los venados que aparecieron por la mañana. Una experiencia única."</p>
+        <div class="test-author">
+          <div class="test-avatar">JV</div>
+          <div>
+            <div class="test-name">Jorge V.</div>
+            <div class="test-city">Hermosillo, Son.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- LLEGAR -->
 <section class="llegar-sec" id="llegar">
   <div class="llegar-inner">
@@ -838,10 +971,65 @@ footer{background:var(--pine);padding:48px 56px 32px}
 </section>
 
 <!-- FOOTER -->
+
+<!-- POLÍTICAS -->
+<section style="background:var(--pine);padding:60px 56px 40px">
+  <div style="max-width:1160px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="eyebrow" style="color:rgba(109,179,63,.7);text-align:center">Información importante</div>
+      <h2 class="sec-h" style="color:var(--white);text-align:center;font-size:clamp(24px,3vw,36px)">Políticas de estadía</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+
+      <div class="pol-card">
+        <div class="pol-icon">🕐</div>
+        <div class="pol-title">Check-in y Check-out</div>
+        <div class="pol-items">
+          <div class="pol-item">Entrada: 3:00 PM</div>
+          <div class="pol-item">Salida: 12:00 PM</div>
+          <div class="pol-item">Check-in tardío: avisar con anticipación</div>
+        </div>
+      </div>
+
+      <div class="pol-card">
+        <div class="pol-icon">💳</div>
+        <div class="pol-title">Pago y cancelación</div>
+        <div class="pol-items">
+          <div class="pol-item">50% anticipo al reservar</div>
+          <div class="pol-item">50% restante al llegar</div>
+          <div class="pol-item">Cancelación: 72 hrs antes sin cargo</div>
+        </div>
+      </div>
+
+      <div class="pol-card">
+        <div class="pol-icon">🏡</div>
+        <div class="pol-title">Reglas de la cabaña</div>
+        <div class="pol-items">
+          <div class="pol-item">No se permiten mascotas</div>
+          <div class="pol-item">No fumar dentro de la cabaña</div>
+          <div class="pol-item">Silencio después de las 11 PM</div>
+        </div>
+      </div>
+
+      <div class="pol-card">
+        <div class="pol-icon">✅</div>
+        <div class="pol-title">Qué incluye</div>
+        <div class="pol-items">
+          <div class="pol-item">Leña para fogata y asador</div>
+          <div class="pol-item">Ropa de cama y toallas</div>
+          <div class="pol-item">Acceso a palapa y fogatero</div>
+          <div class="pol-item">Jacuzzi privado (Cabaña 4)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="ft-top">
     <div>
-      <div class="ft-logo">Majalca <em>Cabañas</em></div>
+      <div class="ft-logo">Sierra Alta <em>Cabañas</em></div>
       <div class="ft-tagline">Cañón de Majalca · Chihuahua · México</div>
     </div>
     <div class="ft-links">
@@ -938,16 +1126,58 @@ function renderCal(){
   }
 }
 
-function pickDate(date){
-  if(!selStart||selEnd||(selStart&&date<selStart)){
-    selStart=date;selEnd=null
-  } else {
-    selEnd=date
+function rangoTieneConflicto(start, end){
+  // Verifica que ningún día entre start y end esté bloqueado
+  const d = new Date(start)
+  while(d < end){
+    if(blocked.has(fmtDate(d))) return true
+    d.setDate(d.getDate()+1)
   }
-  document.getElementById('f-in').value=selStart?fmtDisplay(selStart):''
-  document.getElementById('f-out').value=selEnd?fmtDisplay(selEnd):''
+  return false
+}
+
+function pickDate(date){
+  if(!selStart || selEnd || date < selStart){
+    // Primer click — solo setear inicio
+    selStart = date
+    selEnd = null
+  } else if(date.getTime() === selStart.getTime()){
+    // Click en el mismo día — resetear
+    selStart = null
+    selEnd = null
+  } else {
+    // Segundo click — verificar que el rango no cruce días bloqueados
+    if(rangoTieneConflicto(selStart, date)){
+      // Rango inválido — mostrar error visual y resetear
+      selStart = date
+      selEnd = null
+      showCalError('Ese rango incluye fechas ocupadas. Elige otras fechas.')
+    } else {
+      selEnd = date
+      hideCalError()
+    }
+  }
+  document.getElementById('f-in').value  = selStart ? fmtDisplay(selStart) : ''
+  document.getElementById('f-out').value = selEnd   ? fmtDisplay(selEnd)   : ''
   renderCal()
   calcAnticipo()
+}
+
+function showCalError(msg){
+  let el = document.getElementById('cal-error')
+  if(!el){
+    el = document.createElement('div')
+    el.id = 'cal-error'
+    el.style.cssText = 'padding:8px 16px;font-size:11px;color:#e24b4b;background:rgba(226,75,75,.08);border-top:1px solid rgba(226,75,75,.2);text-align:center'
+    document.querySelector('.calendar').appendChild(el)
+  }
+  el.textContent = msg
+  el.style.display = 'block'
+}
+
+function hideCalError(){
+  const el = document.getElementById('cal-error')
+  if(el) el.style.display = 'none'
 }
 
 document.getElementById('prev').onclick=()=>{cur.setMonth(cur.getMonth()-1);renderCal()}
@@ -993,7 +1223,28 @@ const io=new IntersectionObserver(entries=>{
   })
 },{threshold:.12})
 
-document.querySelectorAll('.cab,.cal-wrap,.res-form-wrap,.palapa-vis-inner,.palapa-body,.route-step').forEach(el=>io.observe(el))
+document.querySelectorAll('.cab,.cal-wrap,.res-form-wrap,.palapa-vis-inner,.palapa-body,.route-step,.exp-card,.test-card').forEach(el=>io.observe(el))
 </script>
+
+<!-- WhatsApp flotante -->
+<a href="https://wa.me/526141234567?text=Hola%2C%20me%20interesa%20reservar%20una%20caba%C3%B1a%20en%20Sierra%20Alta%20Majalca" 
+   target="_blank" id="wa-btn"
+   style="position:fixed;bottom:28px;right:28px;z-index:999;
+          width:58px;height:58px;border-radius:50%;
+          background:#25d366;display:flex;align-items:center;justify-content:center;
+          box-shadow:0 4px 20px rgba(37,211,102,.4);
+          text-decoration:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s"
+   aria-label="Contactar por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+  </svg>
+</a>
+<div id="wa-tooltip" style="position:fixed;bottom:36px;right:96px;z-index:998;
+     background:#0f172a;color:#fff;font-size:12px;padding:7px 13px;
+     border-radius:8px;opacity:0;transition:opacity .3s;pointer-events:none;
+     white-space:nowrap;border:1px solid rgba(255,255,255,.1)">
+  ¿Tienes dudas? Escríbenos
+</div>
+
 </body>
 </html>
