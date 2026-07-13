@@ -80,7 +80,14 @@ nav.scrolled{
   background:var(--pine);
 }
 .hero-canvas{position:absolute;inset:0}
-#heroVideo{width:100%;height:100%;object-fit:cover;display:block}
+#heroBg{
+  position:absolute;inset:-20%;
+  background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80');
+  background-size:cover;background-position:center;
+  filter:brightness(.7) saturate(1.1);
+  will-change:transform;
+  transition:transform .1s linear;
+}
 .hero-overlay{
   position:absolute;inset:0;
   background:linear-gradient(to bottom,
@@ -467,6 +474,14 @@ footer{background:var(--pine);padding:48px 56px 32px}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* MOBILE */
+@keyframes kenBurns{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.08) translate(-1%,-1%)}
+}
+@keyframes kenBurns2{
+  from{transform:scale(1.08) translate(0,0)}
+  to{transform:scale(1) translate(1%,1%)}
+}
 @media(max-width:900px){
   nav{padding:16px 24px}
   nav.scrolled{padding:12px 24px}
@@ -503,11 +518,12 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-canvas">
-    <video id="heroVideo" autoplay muted loop playsinline
-      poster="https://images.pexels.com/videos/3116952/pictures/preview-0.jpg">
-      <source src="https://videos.pexels.com/video-files/3116952/3116952-uhd_2560_1440_25fps.mp4" type="video/mp4">
-      <source src="https://videos.pexels.com/video-files/856478/856478-hd_1920_1080_25fps.mp4" type="video/mp4">
+    <!-- Cuando tengas el video del dron, descomenta esto y comenta el div de imagen:
+    <video id="heroVideo" autoplay muted loop playsinline>
+      <source src="video-dron-majalca.mp4" type="video/mp4">
     </video>
+    -->
+    <div id="heroBg"></div>
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
@@ -849,12 +865,23 @@ window.addEventListener('scroll',()=>{
   document.getElementById('nav').classList.toggle('scrolled',scrollY>80)
 })
 
-// Video hero — fallback si no carga
-const vid=document.getElementById('heroVideo')
-if(vid){
-  vid.addEventListener('error',()=>{
-    vid.parentElement.style.background='linear-gradient(160deg,#0b1a0b,#1f361f)'
-  })
+// Parallax hero
+const heroBg = document.getElementById('heroBg')
+let ticking = false
+window.addEventListener('scroll', () => {
+  if(!ticking){
+    requestAnimationFrame(()=>{
+      const y = window.scrollY * 0.3
+      if(heroBg) heroBg.style.transform = `translateY(${y}px)`
+      ticking = false
+    })
+    ticking = true
+  }
+})
+
+// Ken Burns effect — zoom lento en la imagen
+if(heroBg){
+  heroBg.style.animation = 'kenBurns 20s ease-in-out infinite alternate'
 }
 
 // CALENDAR
