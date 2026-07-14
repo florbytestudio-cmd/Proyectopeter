@@ -537,6 +537,41 @@ footer{background:var(--pine);padding:48px 56px 32px}
   .llegar-sec{padding:64px 24px}
 }
 
+
+/* ── Mini calendario por cabaña ── */
+.cab{position:relative}
+.cab-cal-tooltip{
+  position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-8px);
+  z-index:300;
+  background:#0f1a0f;border:1px solid rgba(109,179,63,.25);
+  border-radius:12px;padding:14px;width:260px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.cab:hover .cab-cal-tooltip{
+  opacity:1;pointer-events:auto;
+  transform:translateX(-50%) translateY(-100%) translateY(-12px);
+}
+.cct-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cct-title{font-family:'Cormorant Garamond',serif;font-size:14px;color:#f0f0f0;font-weight:300}
+.cct-nav{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:14px;padding:0 4px;transition:color .2s}
+.cct-nav:hover{color:#a8d98a}
+.cct-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cct-dn{font-size:8px;text-align:center;color:rgba(255,255,255,.3);padding:2px 0;letter-spacing:.5px}
+.cct-d{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:rgba(255,255,255,.6);border-radius:3px;cursor:default;
+}
+.cct-d.occupied{background:rgba(226,75,75,.2);color:rgba(226,75,75,.7);position:relative}
+.cct-d.occupied::after{content:'';position:absolute;top:50%;left:15%;right:15%;height:1px;background:rgba(226,75,75,.4)}
+.cct-d.today{color:#a8d98a;font-weight:600}
+.cct-d.past{color:rgba(255,255,255,.15)}
+.cct-d.empty{cursor:default}
+.cct-legend{display:flex;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.07)}
+.cct-leg{display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,.35)}
+.cct-leg-dot{width:8px;height:8px;border-radius:2px}
+.cct-cabana{font-size:9px;text-align:center;color:rgba(109,179,63,.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
 @keyframes kenBurns{
   from{transform:scale(1) translate(0,0)}
   to{transform:scale(1.08) translate(-1%,-1%)}
@@ -639,6 +674,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
     <div class="cabanas-grid">
 
       <div class="cab" data-delay="0">
+        <div class="cab-cal-tooltip" id="tooltip-c1"></div>
         <div class="cab-img" style="background:#0d1a0d">
           <img src="cabana1.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a3a1a,#0d2010)'"/>
         </div>
@@ -647,13 +683,14 @@ footer{background:var(--pine);padding:48px 56px 32px}
           <div class="cab-meta">2 personas · Vista al bosque · Cama king</div>
           <div class="cab-footer">
             <div class="cab-price">$1,200 <small>/ noche</small></div>
-            <div class="cab-avail avail-ok"><div class="avail-dot"></div>Disponible</div>
+            <div class="cab-avail avail-ok" id="avail-c1"><div class="avail-dot"></div>Disponible</div>
           </div>
         </div>
         <button class="cab-btn" onclick="scroll2('reservar')">Reservar</button>
       </div>
 
       <div class="cab" data-delay="120">
+        <div class="cab-cal-tooltip" id="tooltip-c2"></div>
         <div class="cab-img" style="background:#0d1520">
           <img src="cabana2.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a2a3a,#0d1a2a)'"/>
         </div>
@@ -662,13 +699,14 @@ footer{background:var(--pine);padding:48px 56px 32px}
           <div class="cab-meta">4 personas · Chimenea interior · 2 recámaras</div>
           <div class="cab-footer">
             <div class="cab-price">$1,800 <small>/ noche</small></div>
-            <div class="cab-avail avail-ok"><div class="avail-dot"></div>Disponible</div>
+            <div class="cab-avail avail-ok" id="avail-c2"><div class="avail-dot"></div>Disponible</div>
           </div>
         </div>
         <button class="cab-btn" onclick="scroll2('reservar')">Reservar</button>
       </div>
 
       <div class="cab" data-delay="240">
+        <div class="cab-cal-tooltip" id="tooltip-c3"></div>
         <div class="cab-img" style="background:#150d15">
           <img src="cabana3.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a1a2a,#1a0d1a)'"/>
         </div>
@@ -677,13 +715,14 @@ footer{background:var(--pine);padding:48px 56px 32px}
           <div class="cab-meta">4 personas · 9×6 m² · Terraza privada</div>
           <div class="cab-footer">
             <div class="cab-price">$2,000 <small>/ noche</small></div>
-            <div class="cab-avail avail-no"><div class="avail-dot"></div>Ocupada</div>
+            <div class="cab-avail avail-no" id="avail-c3"><div class="avail-dot"></div>Ocupada</div>
           </div>
         </div>
         <button class="cab-btn" style="opacity:1;background:rgba(0,0,0,.4);cursor:default">Ocupada</button>
       </div>
 
       <div class="cab" data-delay="360">
+        <div class="cab-cal-tooltip" id="tooltip-c4"></div>
         <div class="cab-img" style="background:#160f06">
           <img src="cabana4.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a2010,#1a150a)'"/>
         </div>
@@ -692,7 +731,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
           <div class="cab-meta">6 personas · Sala completa · La más grande</div>
           <div class="cab-footer">
             <div class="cab-price">$2,400 <small>/ noche</small></div>
-            <div class="cab-avail avail-ok"><div class="avail-dot"></div>Disponible</div>
+            <div class="cab-avail avail-ok" id="avail-c4"><div class="avail-dot"></div>Disponible</div>
           </div>
         </div>
         <button class="cab-btn" onclick="scroll2('reservar')">Reservar</button>
@@ -1111,8 +1150,129 @@ async function cargarFechasOcupadas(){
   } catch(e){ console.error('Error fechas:', e) }
 }
 
-cargarFechasOcupadas()
-setInterval(cargarFechasOcupadas, 30000)
+
+// ── Mini calendarios por cabaña ──────────────────────────
+const CABANAS_CONFIG = [
+  { id: 'c1', nombre: 'Cabaña 1', key: 'Cabaña 1' },
+  { id: 'c2', nombre: 'Cabaña 2', key: 'Cabaña 2' },
+  { id: 'c3', nombre: 'Cabaña 3', key: 'Cabaña 3' },
+  { id: 'c4', nombre: 'Cabaña 4', key: 'Cabaña 4' },
+]
+
+// Fechas ocupadas por cabaña
+let blockedPorCabana = { 'Cabaña 1': new Set(), 'Cabaña 2': new Set(), 'Cabaña 3': new Set(), 'Cabaña 4': new Set() }
+
+async function cargarFechasPorCabana(){
+  try {
+    const hoy = new Date().toISOString().split('T')[0]
+    const res = await fetch(
+      `${SB_URL}/rest/v1/reservaciones?select=fecha_entrada,fecha_salida,cabana&estado=neq.cancelada&fecha_salida=gte.${hoy}`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
+    )
+    const data = await res.json()
+
+    // Reset
+    Object.keys(blockedPorCabana).forEach(k => blockedPorCabana[k] = new Set())
+    // Global blocked también
+    const globalBlocked = new Set()
+
+    data.forEach(r => {
+      const d = new Date(r.fecha_entrada)
+      const fin = new Date(r.fecha_salida)
+      while(d < fin){
+        const key = d.toISOString().split('T')[0]
+        if(blockedPorCabana[r.cabana]) blockedPorCabana[r.cabana].add(key)
+        globalBlocked.add(key)
+        d.setDate(d.getDate()+1)
+      }
+    })
+    blocked = globalBlocked
+
+    // Renderizar mini calendarios y actualizar disponibilidad
+    CABANAS_CONFIG.forEach(c => {
+      renderMiniCal(c.id, c.key)
+      actualizarDisponibilidadCard(c.id, c.key)
+    })
+    renderCal()
+  } catch(e){ console.error('Error:', e) }
+}
+
+function actualizarDisponibilidadCard(id, cabana){
+  const avail = document.getElementById('avail-' + id)
+  if(!avail) return
+  const hoy = new Date()
+  const manana = new Date(hoy); manana.setDate(manana.getDate()+1)
+  const mañanaKey = manana.toISOString().split('T')[0]
+  const ocupadaHoy = blockedPorCabana[cabana]?.has(hoy.toISOString().split('T')[0])
+  if(ocupadaHoy){
+    avail.className = 'cab-avail avail-no'
+    avail.innerHTML = '<div class="avail-dot"></div>Ocupada'
+  } else {
+    avail.className = 'cab-avail avail-ok'
+    avail.innerHTML = '<div class="avail-dot"></div>Disponible'
+  }
+}
+
+const MESES_CORTO = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+const miniCalMes = {}
+
+function renderMiniCal(id, cabana){
+  const el = document.getElementById('tooltip-' + id)
+  if(!el) return
+
+  if(!miniCalMes[id]) miniCalMes[id] = new Date()
+  const cur = miniCalMes[id]
+  const first = new Date(cur.getFullYear(), cur.getMonth(), 1)
+  const last  = new Date(cur.getFullYear(), cur.getMonth()+1, 0)
+  const today = new Date(); today.setHours(0,0,0,0)
+  const occ = blockedPorCabana[cabana] || new Set()
+
+  let html = `
+    <div class="cct-cabana">${cabana}</div>
+    <div class="cct-head">
+      <button class="cct-nav" onclick="event.stopPropagation();miniCalPrev('${id}','${cabana}')">‹</button>
+      <span class="cct-title">${MESES_CORTO[cur.getMonth()]} ${cur.getFullYear()}</span>
+      <button class="cct-nav" onclick="event.stopPropagation();miniCalNext('${id}','${cabana}')">›</button>
+    </div>
+    <div class="cct-grid">
+      <div class="cct-dn">D</div><div class="cct-dn">L</div><div class="cct-dn">M</div>
+      <div class="cct-dn">M</div><div class="cct-dn">J</div><div class="cct-dn">V</div>
+      <div class="cct-dn">S</div>
+  `
+  for(let i=0; i<first.getDay(); i++) html += '<div class="cct-d empty"></div>'
+  for(let d=1; d<=last.getDate(); d++){
+    const date = new Date(cur.getFullYear(), cur.getMonth(), d)
+    const key  = date.toISOString().split('T')[0]
+    let cls = 'cct-d'
+    if(date < today)       cls += ' past'
+    else if(occ.has(key))  cls += ' occupied'
+    else if(date.getTime()===today.getTime()) cls += ' today'
+    html += `<div class="${cls}">${d}</div>`
+  }
+  html += `</div>
+    <div class="cct-legend">
+      <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(226,75,75,.3)"></div>Ocupado</div>
+      <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(168,217,138,.25)"></div>Disponible</div>
+    </div>`
+
+  el.innerHTML = html
+}
+
+function miniCalPrev(id, cabana){
+  if(!miniCalMes[id]) miniCalMes[id] = new Date()
+  miniCalMes[id].setMonth(miniCalMes[id].getMonth()-1)
+  renderMiniCal(id, cabana)
+}
+function miniCalNext(id, cabana){
+  if(!miniCalMes[id]) miniCalMes[id] = new Date()
+  miniCalMes[id].setMonth(miniCalMes[id].getMonth()+1)
+  renderMiniCal(id, cabana)
+}
+
+// Inicializar
+cargarFechasPorCabana()
+setInterval(cargarFechasPorCabana, 30000)
+
 
 function fmtDate(d){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
