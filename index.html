@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pico del Encino — Cabañas de Montaña · Chihuahua</title>
-<meta name="description" content="Pico del Encino — Cabañas de montaña A-frame en el Cañón de Majalca, Chihuahua. Reserva en línea, paga 50% de anticipo. Jacuzzi, palapa, fogata y bosque a 2,141 msnm.">
+<meta name="description" content="Pico del Encino — Cabañas de montaña A-frame en el Cañón de Majalca, Chihuahua. Reserva en línea, paga 50% de anticipo. Jacuzzi, área común, fogata y bosque a 2,141 msnm.">
 <meta property="og:title" content="Pico del Encino — Cabañas de Montaña · Majalca">
 <meta property="og:description" content="Piérdete en el bosque. Cabañas A-frame privadas con jacuzzi en el Cañón de Majalca, Chihuahua.">
 <meta property="og:type" content="website">
@@ -571,7 +571,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
   <div class="nav-logo"><img src="logo_dorado.png" style="height:44px;width:auto;" alt="Pico del Encino"></div>
   <ul class="nav-links">
     <li><a href="#cabanas">Cabañas</a></li>
-    <li><a href="#palapa">Palapa</a></li>
+    <li><a href="#palapa">Área común</a></li>
     <li><a href="#reservar">Disponibilidad</a></li>
     <li><a href="#llegar">Cómo llegar</a></li>
   </ul>
@@ -765,9 +765,9 @@ footer{background:var(--pine);padding:48px 56px 32px}
       <img src="palapa.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;display:block;" loading="lazy"/>
     </div>
     <div class="palapa-body">
-      <div class="eyebrow">Área común</div>
-      <h2 class="sec-h">La palapa<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic">y el fogatero</em></h2>
-      <p class="sec-sub" style="color:rgba(255,255,255,.4);max-width:100%">El corazón del proyecto. Un espacio abierto bajo techo de palma donde las noches suenan diferente — con fogatero y el susurro del bosque de pinos.</p>
+      <div class="eyebrow">Espacio de reunión</div>
+      <h2 class="sec-h">El árbol<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic">de bienvenida</em></h2>
+      <p class="sec-sub" style="color:rgba(255,255,255,.4);max-width:100%">El punto de encuentro del proyecto. Un espacio abierto entre los pinos donde las noches de Majalca cobran vida — con fogatero, leña incluida y el sonido del bosque de encinos a 2,141 msnm.</p>
       <div class="palapa-feats">
         <div class="palapa-feat"><div class="feat-icon">🔥</div>Fogatero central con leña incluida</div>
         <div class="palapa-feat"><div class="feat-icon">🌿</div>Espacio al aire libre entre el bosque</div>
@@ -1016,7 +1016,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
         <div class="pol-items">
           <div class="pol-item">Leña para fogata incluida</div>
           <div class="pol-item">Ropa de cama y toallas</div>
-          <div class="pol-item">Acceso a palapa y fogatero</div>
+          <div class="pol-item">Acceso al área común y fogatero</div>
           <div class="pol-item">Jacuzzi privado (Cabaña 4)</div>
         </div>
       </div>
@@ -1046,6 +1046,16 @@ footer{background:var(--pine);padding:48px 56px 32px}
 
 <script>
 function scroll2(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+
+// Strip flotante — aparece al pasar el hero
+const strip = document.getElementById('res-strip')
+window.addEventListener('scroll', ()=>{
+  if(window.scrollY > window.innerHeight * 0.6){
+    strip.style.transform = 'translateY(0)'
+  } else {
+    strip.style.transform = 'translateY(100%)'
+  }
+})
 
 // NAV scroll
 window.addEventListener('scroll',()=>{
@@ -1337,6 +1347,29 @@ const io=new IntersectionObserver(entries=>{
 
 document.querySelectorAll('.cab,.cal-wrap,.res-form-wrap,.palapa-vis-inner,.palapa-body,.route-step,.exp-card,.test-card').forEach(el=>io.observe(el))
 </script>
+
+<!-- Strip flotante de reservación -->
+<div id="res-strip" style="position:fixed;bottom:0;left:0;right:0;z-index:198;background:rgba(11,26,11,.97);backdrop-filter:blur(16px);border-top:1px solid rgba(109,179,63,.2);padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transform:translateY(100%);transition:transform .5s cubic-bezier(.4,0,.2,1)">
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 1.5s infinite"></div>
+      <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45)">Disponibilidad en tiempo real</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="strip-cabanas">
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 1 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 2 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 3 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 4 · disponible</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="text-align:right">
+      <div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase">Desde</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#a8d98a;font-weight:300;line-height:1">$1,200 <span style="font-size:10px;font-family:'Inter',sans-serif;color:rgba(255,255,255,.3)">/ noche</span></div>
+    </div>
+    <button onclick="scroll2('reservar')" style="padding:10px 22px;background:#6db33f;color:#0b1a0b;border:none;border-radius:3px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s">Ver fechas →</button>
+  </div>
+</div>
 
 <!-- WhatsApp flotante -->
 <a href="https://wa.me/526141234567?text=Hola%2C%20me%20interesa%20reservar%20una%20caba%C3%B1a%20en%20Sierra%20Alta%20Majalca" 
