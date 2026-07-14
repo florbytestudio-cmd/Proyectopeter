@@ -9,7 +9,7 @@
 <meta property="og:description" content="Piérdete en el bosque. Cabañas A-frame privadas con jacuzzi en el Cañón de Majalca, Chihuahua.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0b1a0b">
-<link rel="icon" href="logo.png">
+<link rel="icon" href="logo_dorado.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -39,26 +39,24 @@ body{background:var(--cream);color:var(--text);font-family:'Inter',sans-serif;ov
 nav{
   position:fixed;top:0;left:0;right:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;
-  padding:16px 56px;
-  background:rgba(244,240,230,.97);
-  backdrop-filter:blur(16px);
-  box-shadow:0 1px 0 rgba(0,0,0,.08);
-  transition:all .4s cubic-bezier(.4,0,.2,1);
+  padding:20px 56px;
+  transition:all .5s cubic-bezier(.4,0,.2,1);
 }
 nav.scrolled{
-  background:rgba(244,240,230,.99);
-  padding:12px 56px;
-  box-shadow:0 2px 12px rgba(0,0,0,.1);
+  background:rgba(11,26,11,.95);
+  backdrop-filter:blur(20px);
+  padding:14px 56px;
+  box-shadow:0 1px 0 rgba(109,179,63,.12);
 }
 .nav-logo{
   font-family:'Cormorant Garamond',serif;
   font-size:22px;font-weight:300;letter-spacing:2px;
-  color:var(--pine);text-transform:uppercase;
+  color:var(--white);text-transform:uppercase;
 }
 .nav-logo em{font-style:italic;color:var(--mint);font-weight:300}
 .nav-links{display:flex;gap:32px;list-style:none}
 .nav-links a{
-  color:rgba(30,45,20,.6);text-decoration:none;
+  color:rgba(255,255,255,.55);text-decoration:none;
   font-size:11px;letter-spacing:2px;text-transform:uppercase;
   font-weight:400;transition:color .3s;position:relative;
 }
@@ -67,17 +65,17 @@ nav.scrolled{
   height:1px;background:var(--leaf);
   transform:scaleX(0);transition:transform .3s;transform-origin:left;
 }
-.nav-links a:hover{color:var(--pine)}
+.nav-links a:hover{color:var(--white)}
 .nav-links a:hover::after{transform:scaleX(1)}
 .nav-cta{
-  padding:10px 22px;background:var(--pine);
-  border:1px solid var(--pine);
-  color:var(--cream);border-radius:2px;
+  padding:10px 22px;background:transparent;
+  border:1px solid rgba(109,179,63,.5);
+  color:var(--mint);border-radius:2px;
   font-size:10px;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;font-family:'Inter',sans-serif;
   transition:all .3s;
 }
-.nav-cta:hover{background:var(--moss);border-color:var(--moss);color:var(--white)}
+.nav-cta:hover{background:var(--leaf);border-color:var(--leaf);color:var(--pine)}
 
 /* HERO */
 .hero{
@@ -570,7 +568,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <body>
 
 <nav id="nav">
-  <div class="nav-logo"><img src="logo.png" style="height:64px;width:auto;" alt="Pico del Encino"></div>
+  <div class="nav-logo"><img src="logo_dorado.png" style="height:68px;width:auto;" alt="Pico del Encino"></div>
   <ul class="nav-links">
     <li><a href="#cabanas">Cabañas</a></li>
     <li><a href="#palapa">Palapa</a></li>
@@ -1030,7 +1028,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <footer>
   <div class="ft-top">
     <div>
-      <div class="ft-logo"><img src="logo.png" style="height:80px;width:auto;filter:drop-shadow(0 0 6px rgba(255,255,255,.2));" alt="Pico del Encino"></div>
+      <div class="ft-logo"><img src="logo_dorado.png" style="height:90px;width:auto;" alt="Pico del Encino"></div>
       <div class="ft-tagline">Cabañas de Montaña · Cañón de Majalca · Chihuahua</div>
     </div>
     <div class="ft-links">
