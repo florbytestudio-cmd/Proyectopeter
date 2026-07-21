@@ -1104,13 +1104,13 @@ footer{background:var(--pine);padding:48px 56px 32px}
           <div class="form-row full">
             <div class="field">
               <label>Nombre completo</label>
-              <input type="text" id="f-name" placeholder="Tu nombre">
+              <input type="text" id="f-name" placeholder="Tu nombre" maxlength="100" autocomplete="name">
             </div>
           </div>
           <div class="form-row full">
             <div class="field">
               <label>WhatsApp</label>
-              <input type="tel" id="f-tel" placeholder="+52 614 000 0000">
+              <input type="tel" id="f-tel" placeholder="+52 614 000 0000" maxlength="20" autocomplete="tel">
             </div>
           </div>
 
@@ -1333,6 +1333,17 @@ let cur=new Date()
 let selStart=null,selEnd=null
 
 // Supabase — reservaciones en tiempo real
+// Sanitizar inputs contra XSS
+function sanitize(str){
+  if(!str) return ''
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;')
+}
+
 const SB_URL = 'https://niwdmzgkgrmyivzlrcps.supabase.co'
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pd2RtemdrZ3JteWl2emxyY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTU3OTgsImV4cCI6MjA5OTYzMTc5OH0.deBUKX5uad7WOzF-uq-eV5LivESt6IFJ5LR-YqhidgA'
 
@@ -1607,6 +1618,12 @@ async function handlePagar(){
   const anticipo = Math.round(total/2)
 
   if(!nombre||!telefono||!precio||!selStart||!selEnd) return
+  // Validar formato
+  if(nombre.length < 3){ showCalError('Ingresa tu nombre completo'); return }
+  if(!/^[0-9+\s\-]{7,20}$/.test(telefono)){ showCalError('Número de WhatsApp inválido'); return }
+  // Sanitizar
+  const nombreClean   = sanitize(nombre.replace(/[<>"']/g,'').trim().slice(0,100))
+  const telefonoClean = telefono.replace(/[^0-9+\s\-]/g,'').trim().slice(0,20)
 
   btn.textContent = 'Procesando reservación...'
   btn.disabled    = true
@@ -1636,7 +1653,7 @@ async function handlePagar(){
     btn.style.background = '#16a34a'
 
     // Modal de confirmación
-    mostrarConfirmacion({ nombre, cabana, telefono,
+    mostrarConfirmacion({ nombre: nombreClean, cabana, telefono: telefonoClean,
       entrada: fmtDisplay(selStart), salida: fmtDisplay(selEnd),
       noches, total, anticipo, id: r?.id })
 
@@ -1671,8 +1688,8 @@ function mostrarConfirmacion(d){
       </div>
       <div style="background:#f4f0e6;border-radius:10px;padding:20px;margin-bottom:20px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
-          <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Huésped</div><strong style="color:#0b1a0b">${d.nombre}</strong></div>
-          <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">WhatsApp</div><strong style="color:#0b1a0b">${d.telefono}</strong></div>
+          <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Huésped</div><strong style="color:#0b1a0b">${sanitize(d.nombre)}</strong></div>
+          <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">WhatsApp</div><strong style="color:#0b1a0b">${sanitize(d.telefono)}</strong></div>
           <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Cabaña</div><strong style="color:#0b1a0b">${d.cabana}</strong></div>
           <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Noches</div><strong style="color:#0b1a0b">${d.noches} noche${d.noches>1?'s':''}</strong></div>
           <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Llegada</div><strong style="color:#0b1a0b">${d.entrada}</strong></div>
@@ -1690,7 +1707,7 @@ function mostrarConfirmacion(d){
         </div>
       </div>
       <p style="font-size:12px;color:#8a7a5a;text-align:center;margin-bottom:20px;line-height:1.7">
-        Te contactaremos al <strong>${d.telefono}</strong> para confirmar los detalles.<br>
+        Te contactaremos al <strong>${sanitize(d.telefono)}</strong> para confirmar los detalles.<br>
         Las fechas ya están bloqueadas en el calendario en tiempo real.
       </p>
       <button onclick="document.getElementById('modal-reserva').remove()" style="width:100%;padding:14px;background:#0b1a0b;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px">

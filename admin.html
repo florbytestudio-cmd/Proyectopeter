@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Pico del Encino</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0f0a;--surface:#111811;--surface2:#182018;--border:#252e25;
+  --text:#f0f4f0;--muted:#6b7a6b;--accent:#6db33f;--accent2:#4a7c2a;
+  --danger:#e24b4b;--warning:#f59e0b;--info:#38bdf8;
+  --cream:#f4f0e6;--r:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
+.login-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:40px;width:100%;max-width:380px;
+  text-align:center;
+}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;margin-bottom:4px}
+.login-title em{font-style:italic;color:var(--accent)}
+.login-sub{font-size:11px;color:var(--muted);margin-bottom:28px;letter-spacing:.5px}
+.login-field{margin-bottom:12px;text-align:left}
+.login-field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.login-field input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);padding:11px 13px;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:14px;
+  transition:border-color .2s;
+}
+.login-field input:focus{outline:none;border-color:var(--accent)}
+.login-btn{
+  width:100%;padding:13px;background:var(--accent);color:#0b1a0b;
+  border:none;border-radius:8px;font-size:12px;letter-spacing:2px;
+  text-transform:uppercase;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;margin-top:8px;
+  transition:background .2s,transform .2s;
+}
+.login-btn:hover{background:#8acc55;transform:translateY(-1px)}
+.login-error{color:var(--danger);font-size:12px;margin-top:8px;display:none}
+
+/* APP */
+#appScreen{display:none;min-height:100vh}
+
+/* SIDEBAR */
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar-logo{
+  padding:24px 20px;border-bottom:1px solid var(--border);
+}
+.sidebar-brand{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;letter-spacing:1px}
+.sidebar-brand em{font-style:italic;color:var(--accent)}
+.sidebar-role{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+.sidebar-nav{padding:16px 12px;flex:1}
+.nav-section{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:0 8px;margin:16px 0 6px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);
+  transition:all .2s;margin-bottom:2px;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(109,179,63,.12);color:var(--accent);border:1px solid rgba(109,179,63,.2)}
+.nav-icon{font-size:15px;width:20px;text-align:center}
+.sidebar-footer{padding:16px 12px;border-top:1px solid var(--border)}
+.logout-btn{
+  width:100%;padding:9px;background:rgba(226,75,75,.08);
+  border:1px solid rgba(226,75,75,.15);color:#f09595;
+  border-radius:8px;font-size:11px;cursor:pointer;
+  font-family:'Inter',sans-serif;letter-spacing:.5px;
+  transition:all .2s;
+}
+.logout-btn:hover{background:rgba(226,75,75,.15)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto}
+.topbar{
+  padding:18px 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);position:sticky;top:0;z-index:10;
+}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.live-dot-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.refresh-btn{
+  padding:7px 14px;background:var(--surface2);border:1px solid var(--border);
+  color:var(--muted);border-radius:7px;font-size:11px;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all .2s;
+}
+.refresh-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.content{padding:24px 28px}
+
+/* MÉTRICAS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.metric{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;
+  transition:border-color .2s;
+}
+.metric:hover{border-color:rgba(109,179,63,.3)}
+.metric-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.metric-value{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;line-height:1;margin-bottom:4px}
+.metric-sub{font-size:11px;color:var(--muted)}
+.metric-value.green{color:var(--accent)}
+.metric-value.red{color:var(--danger)}
+.metric-value.yellow{color:var(--warning)}
+.metric-value.blue{color:var(--info)}
+
+/* GRID 2 */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.panel-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:500}
+
+/* TABLA */
+.tabla-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.tabla-head{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.tabla-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.tabla-filters{display:flex;gap:8px}
+.filter-btn{
+  padding:5px 12px;background:var(--surface2);border:1px solid var(--border);
+  color:var(--muted);border-radius:6px;font-size:11px;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all .2s;
+}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(109,179,63,.08)}
+.overflow-x{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th{
+  text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);padding:10px 20px;border-bottom:1px solid var(--border);
+  font-weight:500;
+}
+td{padding:13px 20px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .15s}
+tbody tr:hover td{background:var(--surface2)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:500}
+.badge-ok{background:rgba(109,179,63,.12);color:var(--accent);border:1px solid rgba(109,179,63,.2)}
+.badge-pend{background:rgba(245,158,11,.12);color:var(--warning);border:1px solid rgba(245,158,11,.2)}
+.badge-cancel{background:rgba(226,75,75,.12);color:var(--danger);border:1px solid rgba(226,75,75,.2)}
+
+/* CABAÑAS STATUS */
+.cabanas-status{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.cab-status-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:16px;text-align:center;
+  transition:border-color .2s;
+}
+.cab-status-card.occupied{border-color:rgba(226,75,75,.3);background:rgba(226,75,75,.04)}
+.cab-status-card.available{border-color:rgba(109,179,63,.3);background:rgba(109,179,63,.04)}
+.cab-status-icon{font-size:24px;margin-bottom:8px}
+.cab-status-name{font-size:12px;font-weight:500;margin-bottom:4px}
+.cab-status-info{font-size:11px;color:var(--muted);margin-bottom:8px}
+.cab-status-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:600;letter-spacing:.5px}
+
+/* ACCIONES */
+.btn{padding:8px 16px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.5px}
+.btn-primary{background:var(--accent);color:#0b1a0b}
+.btn-primary:hover{background:#8acc55}
+.btn-danger{background:rgba(226,75,75,.1);color:var(--danger);border:1px solid rgba(226,75,75,.2)}
+.btn-danger:hover{background:rgba(226,75,75,.2)}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:5px 10px;font-size:10px}
+
+/* MODAL */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  z-index:400;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:28px;width:100%;max-width:500px;
+  max-height:90vh;overflow-y:auto;
+}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:20px}
+.form-field{margin-bottom:14px}
+.form-field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.form-field input,.form-field select,.form-field textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);padding:10px 12px;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;
+  transition:border-color .2s;
+}
+.form-field input:focus,.form-field select:focus{outline:none;border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:600;
+  background:var(--surface2);border:1px solid var(--border);
+  padding:12px 18px;border-radius:10px;font-size:13px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .3s,transform .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface2);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content}
+.tab{padding:8px 18px;border-radius:8px;font-size:12px;cursor:pointer;color:var(--muted);transition:all .2s;font-weight:500}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+/* OCUPACIÓN VISUAL */
+.occ-bar{height:6px;border-radius:99px;background:var(--border);overflow:hidden;margin-top:6px}
+.occ-fill{height:100%;border-radius:99px;background:var(--accent);transition:width .8s ease}
+
+/* EMPTY STATE */
+.empty{padding:48px;text-align:center;color:var(--muted);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:10px}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .metrics{grid-template-columns:1fr 1fr}
+  .cabanas-status{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Panel de administración</div>
+    <div class="login-title">Pico del <em>Encino</em></div>
+    <div class="login-sub">Acceso privado · Solo personal autorizado</div>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="loginUser" placeholder="usuario" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <div class="login-error" id="loginError">Usuario o contraseña incorrectos</div>
+    <button class="login-btn" onclick="login()">Entrar al panel</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-brand">Pico del <em>Encino</em></div>
+        <div class="sidebar-role" id="sidebar-role">Administrador</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Principal</div>
+        <div class="nav-item active" onclick="showSection('dashboard',this)">
+          <span class="nav-icon">📊</span>Dashboard
+        </div>
+        <div class="nav-item" onclick="showSection('reservaciones',this)">
+          <span class="nav-icon">📅</span>Reservaciones
+        </div>
+        <div class="nav-item" onclick="showSection('cabanas',this)">
+          <span class="nav-icon">🏠</span>Cabañas
+        </div>
+        <div class="nav-section">Finanzas</div>
+        <div class="nav-item" onclick="showSection('ingresos',this)">
+          <span class="nav-icon">💰</span>Ingresos
+        </div>
+        <div class="nav-section">Configuración</div>
+        <div class="nav-item" onclick="showSection('config',this)">
+          <span class="nav-icon">⚙️</span>Configuración
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-right">
+          <div class="live-dot-wrap"><div class="live-dot"></div>Tiempo real</div>
+          <button class="refresh-btn" onclick="cargarTodo()">↻ Actualizar</button>
+          <button class="btn btn-primary btn-sm" onclick="abrirModalNuevaReservacion()">+ Reservación</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ══ DASHBOARD ══ -->
+        <div id="sec-dashboard">
+
+          <div class="metrics" id="metrics-grid">
+            <div class="metric"><div class="metric-label">Ingresos del mes</div><div class="metric-value green" id="m-ingresos">$0</div><div class="metric-sub">Anticipos + pagos</div></div>
+            <div class="metric"><div class="metric-label">Reservaciones activas</div><div class="metric-value blue" id="m-activas">0</div><div class="metric-sub">Confirmadas</div></div>
+            <div class="metric"><div class="metric-label">Cancelaciones</div><div class="metric-value red" id="m-canceladas">0</div><div class="metric-sub">Este mes</div></div>
+            <div class="metric"><div class="metric-label">Ocupación promedio</div><div class="metric-value yellow" id="m-ocupacion">0%</div><div class="metric-sub">4 cabañas · mes actual</div></div>
+          </div>
+
+          <div class="cabanas-status" id="cabanas-status-grid">
+            <div class="cab-status-card available" id="status-c1">
+              <div class="cab-status-icon">🏠</div>
+              <div class="cab-status-name">Cabaña 1</div>
+              <div class="cab-status-info">2 personas · $1,200</div>
+              <div class="cab-status-badge" style="background:rgba(109,179,63,.15);color:var(--accent)">Disponible</div>
+            </div>
+            <div class="cab-status-card available" id="status-c2">
+              <div class="cab-status-icon">🏠</div>
+              <div class="cab-status-name">Cabaña 2</div>
+              <div class="cab-status-info">4 personas · $1,800</div>
+              <div class="cab-status-badge" style="background:rgba(109,179,63,.15);color:var(--accent)">Disponible</div>
+            </div>
+            <div class="cab-status-card available" id="status-c3">
+              <div class="cab-status-icon">🏠</div>
+              <div class="cab-status-name">Cabaña 3</div>
+              <div class="cab-status-info">4 personas · $2,000</div>
+              <div class="cab-status-badge" style="background:rgba(109,179,63,.15);color:var(--accent)">Disponible</div>
+            </div>
+            <div class="cab-status-card available" id="status-c4">
+              <div class="cab-status-icon">🏠</div>
+              <div class="cab-status-name">Cabaña 4</div>
+              <div class="cab-status-info">6 personas · $2,400</div>
+              <div class="cab-status-badge" style="background:rgba(109,179,63,.15);color:var(--accent)">Disponible</div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Ingresos por mes</div>
+              </div>
+              <canvas id="chartIngresos" height="180"></canvas>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Ocupación por cabaña</div>
+              </div>
+              <canvas id="chartOcupacion" height="180"></canvas>
+            </div>
+          </div>
+
+          <!-- Próximas llegadas -->
+          <div class="tabla-wrap">
+            <div class="tabla-head">
+              <div class="tabla-title">Próximas llegadas</div>
+            </div>
+            <div class="overflow-x">
+              <table>
+                <thead><tr>
+                  <th>Huésped</th><th>Cabaña</th><th>Llegada</th><th>Salida</th><th>Personas</th><th>Anticipo</th><th>Estado</th>
+                </tr></thead>
+                <tbody id="tabla-proximas"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══ RESERVACIONES ══ -->
+        <div id="sec-reservaciones" style="display:none">
+          <div class="tabs">
+            <div class="tab active" onclick="filtrarRes('todas',this)">Todas</div>
+            <div class="tab" onclick="filtrarRes('confirmada',this)">Confirmadas</div>
+            <div class="tab" onclick="filtrarRes('pendiente',this)">Pendientes</div>
+            <div class="tab" onclick="filtrarRes('cancelada',this)">Canceladas</div>
+          </div>
+          <div class="tabla-wrap">
+            <div class="tabla-head">
+              <div class="tabla-title">Reservaciones</div>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="search-res" placeholder="Buscar..." oninput="renderTablaRes()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;width:180px">
+                <button class="btn btn-primary btn-sm" onclick="abrirModalNuevaReservacion()">+ Nueva</button>
+              </div>
+            </div>
+            <div class="overflow-x">
+              <table>
+                <thead><tr>
+                  <th>#</th><th>Huésped</th><th>WhatsApp</th><th>Cabaña</th><th>Llegada</th><th>Salida</th><th>Noches</th><th>Total</th><th>Anticipo</th><th>Estado</th><th>Acciones</th>
+                </tr></thead>
+                <tbody id="tabla-reservaciones"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ CABAÑAS ══ -->
+        <div id="sec-cabanas" style="display:none">
+          <div class="grid2">
+            <div class="panel" id="cab-detail-c1">
+              <div class="panel-head"><div class="panel-title">Cabaña 1</div><span style="font-size:11px;color:var(--muted)">$1,200/noche · 2 personas</span></div>
+              <div id="cab-occ-c1"></div>
+            </div>
+            <div class="panel" id="cab-detail-c2">
+              <div class="panel-head"><div class="panel-title">Cabaña 2</div><span style="font-size:11px;color:var(--muted)">$1,800/noche · 4 personas</span></div>
+              <div id="cab-occ-c2"></div>
+            </div>
+            <div class="panel" id="cab-detail-c3">
+              <div class="panel-head"><div class="panel-title">Cabaña 3</div><span style="font-size:11px;color:var(--muted)">$2,000/noche · 4 personas</span></div>
+              <div id="cab-occ-c3"></div>
+            </div>
+            <div class="panel" id="cab-detail-c4">
+              <div class="panel-head"><div class="panel-title">Cabaña 4</div><span style="font-size:11px;color:var(--muted)">$2,400/noche · 6 personas</span></div>
+              <div id="cab-occ-c4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ INGRESOS ══ -->
+        <div id="sec-ingresos" style="display:none">
+          <div class="metrics">
+            <div class="metric"><div class="metric-label">Total anticipos</div><div class="metric-value green" id="fi-anticipos">$0</div><div class="metric-sub">Cobrados al reservar</div></div>
+            <div class="metric"><div class="metric-label">Por cobrar al llegar</div><div class="metric-value yellow" id="fi-porcobrar">$0</div><div class="metric-sub">Resto de reservaciones activas</div></div>
+            <div class="metric"><div class="metric-label">Total proyectado</div><div class="metric-value blue" id="fi-total">$0</div><div class="metric-sub">Anticipos + por cobrar</div></div>
+            <div class="metric"><div class="metric-label">Cancelaciones perdidas</div><div class="metric-value red" id="fi-perdido">$0</div><div class="metric-sub">Monto de reservas canceladas</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Ingresos por cabaña</div></div>
+            <canvas id="chartIngresosCabana" height="200"></canvas>
+          </div>
+        </div>
+
+        <!-- ══ CONFIG ══ -->
+        <div id="sec-config" style="display:none">
+          <div class="panel" style="max-width:500px">
+            <div class="panel-head"><div class="panel-title">Precios por noche</div></div>
+            <div class="form-field"><label>Cabaña 1</label><input type="number" value="1200" id="cfg-p1"></div>
+            <div class="form-field"><label>Cabaña 2</label><input type="number" value="1800" id="cfg-p2"></div>
+            <div class="form-field"><label>Cabaña 3</label><input type="number" value="2000" id="cfg-p3"></div>
+            <div class="form-field"><label>Cabaña 4</label><input type="number" value="2400" id="cfg-p4"></div>
+            <div class="panel-head" style="margin-top:20px"><div class="panel-title">WhatsApp de contacto</div></div>
+            <div class="form-field"><label>Número (con código de país)</label><input type="text" value="526141234567" id="cfg-wa"></div>
+            <button class="btn btn-primary" onclick="toast('✅ Configuración guardada')">Guardar cambios</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA RESERVACIÓN -->
+<div class="modal-overlay" id="modalRes" onclick="if(event.target===this)cerrarModal()">
+  <div class="modal">
+    <div class="modal-title" id="modal-res-title">Nueva reservación</div>
+    <input type="hidden" id="modal-res-id">
+    <div class="form-row">
+      <div class="form-field"><label>Nombre</label><input type="text" id="r-nombre" placeholder="Nombre completo"></div>
+      <div class="form-field"><label>WhatsApp</label><input type="tel" id="r-tel" placeholder="+52 614..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Cabaña</label>
+        <select id="r-cabana" onchange="calcModalAnticipo()">
+          <option value="Cabaña 1">Cabaña 1 — $1,200</option>
+          <option value="Cabaña 2">Cabaña 2 — $1,800</option>
+          <option value="Cabaña 3">Cabaña 3 — $2,000</option>
+          <option value="Cabaña 4">Cabaña 4 — $2,400</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Personas</label>
+        <select id="r-personas">
+          <option>1</option><option selected>2</option><option>3</option>
+          <option>4</option><option>5</option><option>6</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Llegada</label><input type="date" id="r-entrada" onchange="calcModalAnticipo()"></div>
+      <div class="form-field"><label>Salida</label><input type="date" id="r-salida" onchange="calcModalAnticipo()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Estado</label>
+        <select id="r-estado">
+          <option value="confirmada">Confirmada</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Anticipo</label><input type="number" id="r-anticipo" placeholder="0"></div>
+    </div>
+    <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:4px" id="modal-resumen">
+      Selecciona fechas y cabaña para calcular
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarReservacion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM CANCELAR -->
+<div class="modal-overlay" id="modalConfirm" onclick="if(event.target===this)cerrarConfirm()">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <div style="font-size:32px;margin-bottom:12px" id="confirm-icon">⚠️</div>
+    <div class="modal-title" id="confirm-title" style="text-align:center">¿Cancelar reservación?</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px" id="confirm-msg"></p>
+    <div class="modal-actions" style="justify-content:center">
+      <button class="btn btn-ghost" onclick="cerrarConfirm()">No, volver</button>
+      <button class="btn btn-danger" id="confirm-btn">Sí, cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-admin"></div>
+
+<script>
+const SB_URL = 'https://niwdmzgkgrmyivzlrcps.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pd2RtemdrZ3JteWl2emxyY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTU3OTgsImV4cCI6MjA5OTYzMTc5OH0.deBUKX5uad7WOzF-uq-eV5LivESt6IFJ5LR-YqhidgA'
+
+const USUARIOS = { 'peter': 'P1C0D3L3NC1N0', 'admin': 'encino2024' }
+const PRECIOS  = { 'Cabaña 1': 1200, 'Cabaña 2': 1800, 'Cabaña 3': 2000, 'Cabaña 4': 2400 }
+const MESES    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+
+let reservaciones = []
+let filtroEstado  = 'todas'
+let chartI, chartO, chartIC
+let currentUser   = null
+
+// ── AUTH ──────────────────────────────────────────────────
+function login(){
+  const u = document.getElementById('loginUser').value.trim().toLowerCase()
+  const p = document.getElementById('loginPass').value
+  if(USUARIOS[u] && USUARIOS[u] === p){
+    currentUser = u
+    sessionStorage.setItem('admin_user', u)
+    sessionStorage.setItem('admin_token', btoa(u + ':pico2026'))
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('appScreen').style.display   = 'block'
+    document.getElementById('sidebar-role').textContent  = u === 'peter' ? 'Propietario' : 'Administrador'
+    cargarTodo()
+  } else {
+    document.getElementById('loginError').style.display = 'block'
+    document.getElementById('loginPass').value = ''
+  }
+}
+function logout(){
+  sessionStorage.removeItem('admin_user')
+  sessionStorage.removeItem('admin_token')
+  location.reload()
+}
+window.addEventListener('load', ()=>{
+  const u = sessionStorage.getItem('admin_user')
+  const t = sessionStorage.getItem('admin_token')
+  // Verificar que el token coincida con lo esperado (ofuscación básica)
+  const tokenEsperado = btoa(u + ':pico2026')
+  if(u && USUARIOS[u] && t === tokenEsperado){
+    currentUser = u
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('appScreen').style.display   = 'block'
+    document.getElementById('sidebar-role').textContent  = u === 'peter' ? 'Propietario' : 'Administrador'
+    cargarTodo()
+  } else {
+    sessionStorage.removeItem('admin_user')
+    sessionStorage.removeItem('admin_token')
+  }
+})
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') login() })
+
+// ── API ───────────────────────────────────────────────────
+async function api(method, path, body){
+  const h = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' }
+  if(method==='POST') h['Prefer'] = 'return=representation'
+  const r = await fetch(`${SB_URL}/rest/v1/${path}`, { method, headers: h, body: body ? JSON.stringify(body) : undefined })
+  if(!r.ok){ const e = await r.json(); throw new Error(e.message || r.statusText) }
+  return method==='DELETE' ? null : r.json()
+}
+
+// ── DATOS ─────────────────────────────────────────────────
+async function cargarTodo(){
+  try {
+    reservaciones = await api('GET', 'reservaciones?select=*&order=fecha_entrada.asc')
+    renderDashboard()
+    renderTablaRes()
+    renderCabanas()
+    renderFinanzas()
+  } catch(e){ toast('❌ Error cargando datos') }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────
+function renderDashboard(){
+  const hoy   = new Date()
+  const mesI  = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+  const mesF  = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0)
+  const delMes = reservaciones.filter(r => {
+    const fe = new Date(r.fecha_entrada)
+    return fe >= mesI && fe <= mesF
+  })
+  const confirmadas  = delMes.filter(r => r.estado === 'confirmada')
+  const canceladas   = delMes.filter(r => r.estado === 'cancelada')
+  const ingresos     = confirmadas.reduce((s,r) => s + parseFloat(r.anticipo||0), 0)
+
+  // Ocupación: días ocupados / (4 cabañas * días del mes)
+  const diasMes   = mesF.getDate()
+  let diasOcupados = 0
+  confirmadas.forEach(r => {
+    const ini = new Date(Math.max(new Date(r.fecha_entrada), mesI))
+    const fin = new Date(Math.min(new Date(r.fecha_salida), mesF))
+    if(fin > ini) diasOcupados += Math.round((fin-ini)/(1000*60*60*24))
+  })
+  const ocupacion = Math.round((diasOcupados / (4 * diasMes)) * 100)
+
+  document.getElementById('m-ingresos').textContent  = fmt(ingresos)
+  document.getElementById('m-activas').textContent   = confirmadas.length
+  document.getElementById('m-canceladas').textContent= canceladas.length
+  document.getElementById('m-ocupacion').textContent = ocupacion + '%'
+
+  // Status cabañas hoy
+  const cabanas = ['Cabaña 1','Cabaña 2','Cabaña 3','Cabaña 4']
+  const cids    = ['c1','c2','c3','c4']
+  const hoyStr  = hoy.toISOString().split('T')[0]
+  cabanas.forEach((cab, i) => {
+    const ocupadaHoy = reservaciones.some(r =>
+      r.cabana === cab && r.estado === 'confirmada' &&
+      r.fecha_entrada <= hoyStr && r.fecha_salida > hoyStr
+    )
+    const el     = document.getElementById('status-' + cids[i])
+    const badge  = el.querySelector('.cab-status-badge')
+    if(ocupadaHoy){
+      el.className   = 'cab-status-card occupied'
+      badge.textContent = 'Ocupada hoy'
+      badge.style.cssText = 'background:rgba(226,75,75,.15);color:var(--danger)'
+    } else {
+      el.className   = 'cab-status-card available'
+      badge.textContent = 'Disponible'
+      badge.style.cssText = 'background:rgba(109,179,63,.15);color:var(--accent)'
+    }
+  })
+
+  // Gráfica ingresos últimos 6 meses
+  const labels = [], data = []
+  for(let i=5; i>=0; i--){
+    const d = new Date(hoy.getFullYear(), hoy.getMonth()-i, 1)
+    labels.push(MESES[d.getMonth()])
+    const mI = new Date(d.getFullYear(), d.getMonth(), 1)
+    const mF = new Date(d.getFullYear(), d.getMonth()+1, 0)
+    const ing = reservaciones
+      .filter(r => r.estado==='confirmada' && new Date(r.fecha_entrada) >= mI && new Date(r.fecha_entrada) <= mF)
+      .reduce((s,r) => s + parseFloat(r.anticipo||0), 0)
+    data.push(ing)
+  }
+  if(chartI) chartI.destroy()
+  chartI = new Chart(document.getElementById('chartIngresos').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: 'rgba(109,179,63,.35)', borderColor: '#6db33f', borderWidth: 1.5, borderRadius: 5 }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#252e25' }, ticks: { color: '#6b7a6b', font: { size: 11 } } },
+        y: { grid: { color: '#252e25' }, ticks: { color: '#6b7a6b', font: { size: 11 }, callback: v => '$' + v.toLocaleString('es-MX') } }
+      }
+    }
+  })
+
+  // Gráfica ocupación por cabaña
+  const ocpData = cabanas.map(cab => {
+    const d = reservaciones.filter(r => r.cabana===cab && r.estado==='confirmada')
+      .reduce((s,r) => s + Math.round((new Date(r.fecha_salida)-new Date(r.fecha_entrada))/(1000*60*60*24)), 0)
+    return Math.min(100, Math.round((d/diasMes)*100))
+  })
+  if(chartO) chartO.destroy()
+  chartO = new Chart(document.getElementById('chartOcupacion').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['C1','C2','C3','C4'],
+      datasets: [{ data: ocpData, backgroundColor: ['#6db33f','#38bdf8','#f59e0b','#e879f9'], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { color: '#6b7a6b', font: { size: 11 }, padding: 10 } } },
+      cutout: '65%'
+    }
+  })
+
+  // Próximas llegadas
+  const proximas = reservaciones
+    .filter(r => r.estado==='confirmada' && new Date(r.fecha_entrada) >= hoy)
+    .slice(0, 8)
+  const tbody = document.getElementById('tabla-proximas')
+  if(!proximas.length){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">Sin llegadas próximas</td></tr>'
+  } else {
+    tbody.innerHTML = proximas.map(r => `
+      <tr>
+        <td><strong>${sanitize(r.nombre)}</strong></td>
+        <td><span class="badge badge-ok">${sanitize(r.cabana)}</span></td>
+        <td>${fmtFecha(r.fecha_entrada)}</td>
+        <td>${fmtFecha(r.fecha_salida)}</td>
+        <td style="color:var(--muted)">${sanitize(String(r.personas))} pers.</td>
+        <td style="color:var(--accent);font-weight:500">${fmt(r.anticipo)}</td>
+        <td>${badgeEstado(r.estado)}</td>
+      </tr>`).join('')
+  }
+}
+
+// ── TABLA RESERVACIONES ───────────────────────────────────
+function filtrarRes(estado, el){
+  filtroEstado = estado
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  renderTablaRes()
+}
+
+function renderTablaRes(){
+  const q = (document.getElementById('search-res')?.value || '').toLowerCase()
+  let data = reservaciones
+  if(filtroEstado !== 'todas') data = data.filter(r => r.estado === filtroEstado)
+  if(q) data = data.filter(r => r.nombre?.toLowerCase().includes(q) || r.cabana?.toLowerCase().includes(q) || r.telefono?.includes(q))
+  const tbody = document.getElementById('tabla-reservaciones')
+  if(!data.length){
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:24px">Sin reservaciones</td></tr>'
+    return
+  }
+  tbody.innerHTML = data.map(r => {
+    const noches = Math.round((new Date(r.fecha_salida)-new Date(r.fecha_entrada))/(1000*60*60*24))
+    const nombreSafe = sanitize(r.nombre)
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px">#${r.id}</td>
+      <td><strong>${nombreSafe}</strong></td>
+      <td style="color:var(--muted)">${sanitize(r.telefono)}</td>
+      <td><span class="badge badge-ok">${sanitize(r.cabana)}</span></td>
+      <td>${fmtFecha(r.fecha_entrada)}</td>
+      <td>${fmtFecha(r.fecha_salida)}</td>
+      <td style="color:var(--muted)">${noches}n</td>
+      <td style="font-weight:500">${fmt(r.monto_total)}</td>
+      <td style="color:var(--accent)">${fmt(r.anticipo)}</td>
+      <td>${badgeEstado(r.estado)}</td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-sm" onclick="editarReservacion(${r.id})">✏️</button>
+          ${r.estado !== 'cancelada' ? `<button class="btn btn-danger btn-sm" onclick="confirmarCancelacion(${r.id},'${nombreSafe}')">✕</button>` : ''}
+        </div>
+      </td>
+    </tr>`
+  }).join('')
+}
+
+// ── CABAÑAS ──────────────────────────────────────────────
+function renderCabanas(){
+  const cabanas = ['Cabaña 1','Cabaña 2','Cabaña 3','Cabaña 4']
+  const cids    = ['c1','c2','c3','c4']
+  const hoy     = new Date()
+  const mesI    = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+  const diasMes = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0).getDate()
+
+  cabanas.forEach((cab, i) => {
+    const res = reservaciones.filter(r => r.cabana===cab && r.estado==='confirmada')
+    const dias = res.reduce((s,r) => {
+      const ini = new Date(Math.max(new Date(r.fecha_entrada), mesI))
+      const fin = new Date(r.fecha_salida)
+      return s + Math.max(0, Math.round((fin-ini)/(1000*60*60*24)))
+    }, 0)
+    const pct = Math.min(100, Math.round((dias/diasMes)*100))
+    const el  = document.getElementById('cab-occ-' + cids[i])
+    el.innerHTML = `
+      <div style="font-size:28px;font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--accent);margin-bottom:4px">${pct}%</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${dias} de ${diasMes} días ocupados este mes</div>
+      <div class="occ-bar"><div class="occ-fill" style="width:${pct}%"></div></div>
+      <div style="margin-top:14px;font-size:11px;color:var(--muted)">${res.length} reservaciones activas</div>
+      ${res.slice(0,3).map(r => `
+        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+          <span>${sanitize(r.nombre)}</span>
+          <span style="color:var(--muted)">${fmtFecha(r.fecha_entrada)} → ${fmtFecha(r.fecha_salida)}</span>
+        </div>`).join('')}
+    `
+  })
+}
+
+// ── FINANZAS ─────────────────────────────────────────────
+function renderFinanzas(){
+  const conf   = reservaciones.filter(r => r.estado==='confirmada')
+  const cancel = reservaciones.filter(r => r.estado==='cancelada')
+  const anticipos  = conf.reduce((s,r) => s+parseFloat(r.anticipo||0), 0)
+  const porCobrar  = conf.reduce((s,r) => s+parseFloat(r.monto_total||0)-parseFloat(r.anticipo||0), 0)
+  const perdido    = cancel.reduce((s,r) => s+parseFloat(r.monto_total||0), 0)
+
+  document.getElementById('fi-anticipos')?.setAttribute('data-v', anticipos)
+  ;['fi-anticipos','fi-porcobrar','fi-total','fi-perdido'].forEach((id,i) => {
+    const el = document.getElementById(id); if(!el) return
+    const vals = [anticipos, porCobrar, anticipos+porCobrar, perdido]
+    el.textContent = fmt(vals[i])
+  })
+
+  // Gráfica ingresos por cabaña
+  const cabanas = ['Cabaña 1','Cabaña 2','Cabaña 3','Cabaña 4']
+  const ingPorCab = cabanas.map(cab =>
+    reservaciones.filter(r => r.cabana===cab && r.estado==='confirmada')
+      .reduce((s,r) => s+parseFloat(r.anticipo||0), 0)
+  )
+  const ctx = document.getElementById('chartIngresosCabana')
+  if(!ctx) return
+  if(chartIC) chartIC.destroy()
+  chartIC = new Chart(ctx.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Cabaña 1','Cabaña 2','Cabaña 3','Cabaña 4'],
+      datasets: [{
+        label: 'Anticipos cobrados',
+        data: ingPorCab,
+        backgroundColor: ['rgba(109,179,63,.4)','rgba(56,189,248,.4)','rgba(245,158,11,.4)','rgba(232,121,249,.4)'],
+        borderColor:     ['#6db33f','#38bdf8','#f59e0b','#e879f9'],
+        borderWidth: 1.5, borderRadius: 6
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#252e25' }, ticks: { color: '#6b7a6b' } },
+        y: { grid: { color: '#252e25' }, ticks: { color: '#6b7a6b', callback: v => '$'+v.toLocaleString('es-MX') } }
+      }
+    }
+  })
+}
+
+// ── CRUD RESERVACIONES ────────────────────────────────────
+function abrirModalNuevaReservacion(){
+  document.getElementById('modal-res-title').textContent = 'Nueva reservación'
+  document.getElementById('modal-res-id').value = ''
+  ;['r-nombre','r-tel','r-anticipo'].forEach(id => document.getElementById(id).value = '')
+  document.getElementById('r-cabana').value  = 'Cabaña 1'
+  document.getElementById('r-estado').value  = 'confirmada'
+  document.getElementById('r-personas').value= '2'
+  const hoy = new Date().toISOString().split('T')[0]
+  document.getElementById('r-entrada').value = hoy
+  document.getElementById('r-salida').value  = hoy
+  calcModalAnticipo()
+  document.getElementById('modalRes').classList.add('open')
+}
+
+function editarReservacion(id){
+  const r = reservaciones.find(x => x.id === id)
+  if(!r) return
+  document.getElementById('modal-res-title').textContent = `Editar reservación #${id}`
+  document.getElementById('modal-res-id').value   = id
+  document.getElementById('r-nombre').value       = r.nombre
+  document.getElementById('r-tel').value          = r.telefono
+  document.getElementById('r-cabana').value       = r.cabana
+  document.getElementById('r-personas').value     = r.personas
+  document.getElementById('r-entrada').value      = r.fecha_entrada
+  document.getElementById('r-salida').value       = r.fecha_salida
+  document.getElementById('r-estado').value       = r.estado
+  document.getElementById('r-anticipo').value     = r.anticipo
+  calcModalAnticipo()
+  document.getElementById('modalRes').classList.add('open')
+}
+
+function calcModalAnticipo(){
+  const cab    = document.getElementById('r-cabana').value
+  const precio = PRECIOS[cab] || 0
+  const entrada= document.getElementById('r-entrada').value
+  const salida = document.getElementById('r-salida').value
+  if(!entrada || !salida) return
+  const noches = Math.max(1, Math.round((new Date(salida)-new Date(entrada))/(1000*60*60*24)))
+  const total  = precio * noches
+  const anti   = Math.round(total/2)
+  document.getElementById('r-anticipo').value = anti
+  document.getElementById('modal-resumen').textContent =
+    `${noches} noche${noches>1?'s':''} · Total: ${fmt(total)} · Anticipo 50%: ${fmt(anti)}`
+}
+
+async function guardarReservacion(){
+  const id      = document.getElementById('modal-res-id').value
+  const nombre  = document.getElementById('r-nombre').value.trim()
+  const tel     = document.getElementById('r-tel').value.trim()
+  const cabana  = document.getElementById('r-cabana').value
+  const personas= parseInt(document.getElementById('r-personas').value)
+  const entrada = document.getElementById('r-entrada').value
+  const salida  = document.getElementById('r-salida').value
+  const estado  = document.getElementById('r-estado').value
+  const anticipo= parseFloat(document.getElementById('r-anticipo').value) || 0
+  if(!nombre||!tel||!entrada||!salida){ toast('⚠️ Completa todos los campos'); return }
+  // Validar formato teléfono
+  if(!/^[0-9+\s\-]{7,20}$/.test(tel)){ toast('⚠️ Teléfono inválido'); return }
+  // Validar fechas
+  if(new Date(salida) <= new Date(entrada)){ toast('⚠️ La salida debe ser después de la llegada'); return }
+  // Sanitizar inputs
+  const nombreClean = nombre.replace(/[<>"']/g,'').trim().slice(0,100)
+  const telClean    = tel.replace(/[^0-9+\s\-]/g,'').trim().slice(0,20)
+  const noches    = Math.max(1,Math.round((new Date(salida)-new Date(entrada))/(1000*60*60*24)))
+  const total     = (PRECIOS[cabana]||0) * noches
+  const payload   = { cabana, nombre:nombreClean, telefono:telClean, fecha_entrada:entrada, fecha_salida:salida, personas, monto_total:total, anticipo, estado }
+  try {
+    if(id){
+      await api('PATCH', `reservaciones?id=eq.${id}`, payload)
+      toast('✅ Reservación actualizada')
+    } else {
+      await api('POST', 'reservaciones', payload)
+      toast('✅ Reservación creada')
+    }
+    cerrarModal()
+    await cargarTodo()
+  } catch(e){ toast('❌ Error: '+e.message) }
+}
+
+function confirmarCancelacion(id, nombre){
+  document.getElementById('confirm-msg').textContent = `¿Cancelar la reservación de ${nombre}? Esta acción no se puede deshacer.`
+  document.getElementById('confirm-btn').onclick = () => cancelarReservacion(id)
+  document.getElementById('modalConfirm').classList.add('open')
+}
+async function cancelarReservacion(id){
+  try {
+    await api('PATCH', `reservaciones?id=eq.${id}`, { estado:'cancelada' })
+    toast('🗑️ Reservación cancelada')
+    cerrarConfirm()
+    await cargarTodo()
+  } catch(e){ toast('❌ Error') }
+}
+
+function cerrarModal()  { document.getElementById('modalRes').classList.remove('open') }
+function cerrarConfirm(){ document.getElementById('modalConfirm').classList.remove('open') }
+
+// ── NAV ──────────────────────────────────────────────────
+const secciones = ['dashboard','reservaciones','cabanas','ingresos','config']
+const titulos   = { dashboard:'Dashboard', reservaciones:'Reservaciones', cabanas:'Cabañas', ingresos:'Finanzas', config:'Configuración' }
+
+function showSection(id, el){
+  secciones.forEach(s => document.getElementById('sec-'+s).style.display = s===id ? 'block' : 'none')
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  el.classList.add('active')
+  document.getElementById('topbar-title').textContent = titulos[id] || id
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function sanitize(str){
+  if(!str) return ''
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;')
+}
+function fmt(n){ return parseFloat(n||0).toLocaleString('es-MX',{style:'currency',currency:'MXN'}) }
+function fmtFecha(s){
+  if(!s) return '—'
+  const [y,m,d] = s.split('-')
+  return `${d}/${m}/${y}`
+}
+function badgeEstado(e){
+  const map = { confirmada:'badge-ok', pendiente:'badge-pend', cancelada:'badge-cancel' }
+  const lbl = { confirmada:'Confirmada', pendiente:'Pendiente', cancelada:'Cancelada' }
+  return `<span class="badge ${map[e]||''}">${lbl[e]||e}</span>`
+}
+function toast(msg){
+  const el = document.getElementById('toast-admin')
+  el.textContent = msg
+  el.classList.add('show')
+  setTimeout(()=>el.classList.remove('show'), 3000)
+}
+
+// Auto-refresh cada minuto
+setInterval(()=>{ if(sessionStorage.getItem('admin_user')) cargarTodo() }, 60000)
+</script>
+</body>
+</html>
