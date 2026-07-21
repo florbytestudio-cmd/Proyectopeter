@@ -12,21 +12,12 @@
 <link rel="icon" href="logo_dorado.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{
-  --pine:#0b1a0b;
-  --pine2:#152415;
-  --pine3:#1f361f;
-  --moss:#3d6b2e;
-  --leaf:#6db33f;
-  --mint:#a8d98a;
-  --cream:#f4f0e6;
-  --sand:#e8ddc8;
-  --bark:#7a5c1e;
-  --text:#1a1a12;
-  --muted:#7a7a60;
-  --white:#ffffff;
-  --r:8px;
+  --pine:#0b1a0b;--pine2:#152415;--pine3:#1f361f;--moss:#3d6b2e;--leaf:#6db33f;--mint:#a8d98a;
+  --cream:#f4f0e6;--sand:#e8ddc8;--bark:#7a5c1e;--text:#1a1a12;--muted:#7a7a60;--white:#ffffff;--r:8px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -35,313 +26,126 @@ body{background:var(--cream);color:var(--text);font-family:'Inter',sans-serif;ov
 ::-webkit-scrollbar-track{background:var(--pine)}
 ::-webkit-scrollbar-thumb{background:var(--leaf)}
 
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 56px;
-  transition:all .5s cubic-bezier(.4,0,.2,1);
-}
-nav.scrolled{
-  background:rgba(11,26,11,.95);
-  backdrop-filter:blur(20px);
-  padding:14px 56px;
-  box-shadow:0 1px 0 rgba(109,179,63,.12);
-}
-.nav-logo{
-  font-family:'Cormorant Garamond',serif;
-  font-size:22px;font-weight:300;letter-spacing:2px;
-  color:var(--white);text-transform:uppercase;
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:20px 56px;transition:all .5s cubic-bezier(.4,0,.2,1)}
+nav.scrolled{background:rgba(11,26,11,.95);backdrop-filter:blur(20px);padding:14px 56px;box-shadow:0 1px 0 rgba(109,179,63,.12)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:2px;color:var(--white);text-transform:uppercase}
 .nav-logo em{font-style:italic;color:var(--mint);font-weight:300}
 .nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{
-  color:rgba(255,255,255,.55);text-decoration:none;
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  font-weight:400;transition:color .3s;position:relative;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-4px;left:0;right:0;
-  height:1px;background:var(--leaf);
-  transform:scaleX(0);transition:transform .3s;transform-origin:left;
-}
+.nav-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:400;transition:color .3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--leaf);transform:scaleX(0);transition:transform .3s;transform-origin:left}
 .nav-links a:hover{color:var(--white)}
 .nav-links a:hover::after{transform:scaleX(1)}
-.nav-cta{
-  padding:10px 22px;background:transparent;
-  border:1px solid rgba(109,179,63,.5);
-  color:var(--mint);border-radius:2px;
-  font-size:10px;letter-spacing:2px;text-transform:uppercase;
-  cursor:pointer;font-family:'Inter',sans-serif;
-  transition:all .3s;
-}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-cta{padding:10px 22px;background:transparent;border:1px solid rgba(109,179,63,.5);color:var(--mint);border-radius:2px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s}
 .nav-cta:hover{background:var(--leaf);border-color:var(--leaf);color:var(--pine)}
+.nav-account{padding:9px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);border-radius:2px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;display:flex;align-items:center;gap:6px}
+.nav-account:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.nav-account .dot{width:6px;height:6px;border-radius:50%;background:var(--leaf)}
 
-/* HERO */
-.hero{
-  height:100vh;min-height:700px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;position:relative;overflow:hidden;
-  background:var(--pine);
-}
+.hero{height:100vh;min-height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;background:var(--pine)}
 .hero-canvas{position:absolute;inset:0}
-#heroBg{
-  position:absolute;inset:-20%;
-  background-image:url('cabana4.jpg');
-  background-size:cover;background-position:center;
-  filter:brightness(.7) saturate(1.1);
-  will-change:transform;
-  transition:transform .1s linear;
-}
-.hero-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to bottom,
-    rgba(11,26,11,.2) 0%,
-    rgba(11,26,11,.05) 40%,
-    rgba(11,26,11,.6) 85%,
-    rgba(11,26,11,.95) 100%);
-}
-.hero-content{
-  position:relative;z-index:10;
-  padding:0 24px;max-width:700px;
-}
-.hero-kicker{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:9px;letter-spacing:4px;text-transform:uppercase;
-  color:rgba(255,255,255,.4);margin-bottom:28px;
-  opacity:0;animation:up .9s .2s forwards;
-}
+#heroBg{position:absolute;inset:-20%;background-image:url('cabana4.jpg');background-size:cover;background-position:center;filter:brightness(.7) saturate(1.1);will-change:transform;transition:transform .1s linear}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,26,11,.2) 0%,rgba(11,26,11,.05) 40%,rgba(11,26,11,.6) 85%,rgba(11,26,11,.95) 100%)}
+.hero-content{position:relative;z-index:10;padding:0 24px;max-width:700px}
+.hero-kicker{display:inline-flex;align-items:center;gap:10px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:28px;opacity:0;animation:up .9s .2s forwards}
 .kicker-line{width:32px;height:1px;background:var(--leaf)}
-.hero-h{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(56px,8vw,104px);
-  font-weight:300;line-height:.95;letter-spacing:-1px;
-  color:var(--white);margin-bottom:6px;
-  opacity:0;animation:up .9s .35s forwards;
-}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:clamp(56px,8vw,104px);font-weight:300;line-height:.95;letter-spacing:-1px;color:var(--white);margin-bottom:6px;opacity:0;animation:up .9s .35s forwards}
 .hero-h em{font-style:italic;color:var(--mint)}
-.hero-tagline{
-  font-size:13px;font-weight:300;
-  color:rgba(255,255,255,.45);
-  letter-spacing:.5px;line-height:1.9;
-  margin-bottom:44px;
-  opacity:0;animation:up .9s .5s forwards;
-}
-.hero-actions{
-  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
-  opacity:0;animation:up .9s .65s forwards;
-}
-.btn-hero-p{
-  padding:15px 36px;
-  background:var(--leaf);color:var(--pine);
-  border:none;border-radius:2px;
-  font-family:'Inter',sans-serif;
-  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;
-  cursor:pointer;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);
-  position:relative;overflow:hidden;
-}
-.btn-hero-p::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(255,255,255,0);
-  transition:background .3s;
-}
-.btn-hero-p:hover{
-  transform:translateY(-3px);
-  box-shadow:0 12px 40px rgba(109,179,63,.4);
-  background:#7ecb48;
-}
-.btn-hero-p:hover::before{background:rgba(255,255,255,.1)}
+.hero-tagline{font-size:13px;font-weight:300;color:rgba(255,255,255,.45);letter-spacing:.5px;line-height:1.9;margin-bottom:44px;opacity:0;animation:up .9s .5s forwards}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:up .9s .65s forwards}
+.btn-hero-p{padding:15px 36px;background:var(--leaf);color:var(--pine);border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.btn-hero-p:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(109,179,63,.4);background:#7ecb48}
 .btn-hero-p:active{transform:translateY(0) scale(.97)}
-.btn-hero-s{
-  padding:15px 36px;background:transparent;
-  color:rgba(255,255,255,.7);
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:2px;
-  font-family:'Inter',sans-serif;
-  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:300;
-  cursor:pointer;
-  transition:all .3s;
-}
+.btn-hero-s{padding:15px 36px;background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);border-radius:2px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:300;cursor:pointer;transition:all .3s}
 .btn-hero-s:hover{border-color:rgba(255,255,255,.6);color:#fff;background:rgba(255,255,255,.05)}
 .btn-hero-s:active{transform:scale(.97)}
-
-.hero-scroll-hint{
-  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-  z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;
-  opacity:0;animation:up .9s .9s forwards;
-}
+.hero-scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:up .9s .9s forwards}
 .scroll-bar{width:1px;height:48px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
-.scroll-bar::after{
-  content:'';position:absolute;top:-100%;left:0;right:0;bottom:0;
-  background:linear-gradient(to bottom,transparent,var(--leaf));
-  animation:drip 2.2s ease-in-out infinite;
-}
+.scroll-bar::after{content:'';position:absolute;top:-100%;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent,var(--leaf));animation:drip 2.2s ease-in-out infinite}
 @keyframes drip{0%{top:-100%}100%{top:100%}}
 .scroll-hint-txt{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.25)}
-
-.drone-badge{
-  position:absolute;bottom:40px;right:48px;z-index:10;
-  display:flex;align-items:center;gap:8px;
-  border:1px solid rgba(109,179,63,.25);
-  padding:8px 16px;border-radius:2px;
-  background:rgba(11,26,11,.6);backdrop-filter:blur(10px);
-  opacity:0;animation:fadeIn .9s 1.1s forwards;
-}
+.drone-badge{position:absolute;bottom:40px;right:48px;z-index:10;display:flex;align-items:center;gap:8px;border:1px solid rgba(109,179,63,.25);padding:8px 16px;border-radius:2px;background:rgba(11,26,11,.6);backdrop-filter:blur(10px);opacity:0;animation:fadeIn .9s 1.1s forwards}
 .rec{width:7px;height:7px;background:#e24b4b;border-radius:50%;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .drone-txt{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5)}
 
-/* BAND */
-.band{
-  background:var(--pine2);
-  border-top:1px solid rgba(109,179,63,.1);
-  border-bottom:1px solid rgba(109,179,63,.1);
-  display:flex;
-}
-.band-item{
-  flex:1;padding:28px 0;text-align:center;
-  border-right:1px solid rgba(255,255,255,.05);
-  transition:background .3s;
-}
+.band{background:var(--pine2);border-top:1px solid rgba(109,179,63,.1);border-bottom:1px solid rgba(109,179,63,.1);display:flex}
+.band-item{flex:1;padding:28px 0;text-align:center;border-right:1px solid rgba(255,255,255,.05);transition:background .3s}
 .band-item:last-child{border-right:none}
 .band-item:hover{background:rgba(109,179,63,.05)}
-.band-n{
-  font-family:'Cormorant Garamond',serif;
-  font-size:36px;font-weight:300;color:var(--mint);
-  line-height:1;margin-bottom:6px;
-}
+.band-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--mint);line-height:1;margin-bottom:6px}
 .band-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
 
-/* SECTIONS */
 .sec{padding:96px 56px}
 .sec-inner{max-width:1160px;margin:0 auto}
 .eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--moss);margin-bottom:14px;font-weight:500}
-.sec-h{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(32px,4.5vw,52px);
-  font-weight:300;line-height:1.15;letter-spacing:-.5px;
-  margin-bottom:12px;
-}
+.sec-h{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,52px);font-weight:300;line-height:1.15;letter-spacing:-.5px;margin-bottom:12px}
 .sec-sub{font-size:13px;color:var(--muted);line-height:1.9;max-width:500px;font-weight:300}
 
-/* CABAÑAS */
 .cabanas-bg{background:var(--white)}
 .cabanas-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:56px}
 .cabanas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
-
-.cab{
-  position:relative;overflow:hidden;cursor:pointer;
-  opacity:0;transform:translateY(32px);
-  transition:opacity .7s,transform .7s;
-}
+.cab{position:relative;perspective:1200px;cursor:default;opacity:0;transform:translateY(32px);transition:opacity .7s,transform .7s}
 .cab.vis{opacity:1;transform:translateY(0)}
-.cab-img{
-  height:320px;position:relative;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-.cab-img::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(11,26,11,.8) 0%,rgba(11,26,11,.1) 50%,transparent 100%);
-  transition:opacity .4s;
-}
-.cab:hover .cab-img::after{opacity:.6}
-.cab-img svg{width:100%;height:100%;position:absolute;inset:0}
-.cab-body{
-  position:absolute;bottom:0;left:0;right:0;padding:28px 28px;
-  z-index:2;transform:translateY(8px);transition:transform .4s;
-}
-.cab:hover .cab-body{transform:translateY(0)}
-.cab-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:26px;font-weight:300;color:var(--white);margin-bottom:4px;
-}
+.cab-inner{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.cab.flipped .cab-inner{transform:rotateY(180deg)}
+.cab-front,.cab-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden}
+.cab-front{background:var(--white);border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.cab-back{transform:rotateY(180deg);background:linear-gradient(160deg,#0d1a0d 0%,#152415 100%);border:1px solid rgba(109,179,63,.18);box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;padding:20px;gap:0}
+.cab-img{height:180px;position:relative;overflow:hidden}
+.cab-body{position:absolute;bottom:0;left:0;right:0;padding:28px 28px;z-index:2}
+.cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--white);margin-bottom:4px}
 .cab-meta{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.5px;margin-bottom:16px}
 .cab-footer{display:flex;align-items:center;justify-content:space-between}
-.cab-price{
-  font-family:'Cormorant Garamond',serif;
-  font-size:28px;font-weight:300;color:var(--mint);
-}
+.cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--mint)}
 .cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:rgba(255,255,255,.4)}
-.cab-avail{
-  display:flex;align-items:center;gap:6px;
-  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-}
+.cab-avail{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
 .avail-dot{width:5px;height:5px;border-radius:50%}
-.avail-ok .avail-dot{background:var(--leaf)}
-.avail-ok{color:var(--mint)}
-.avail-no .avail-dot{background:#e24b4b}
-.avail-no{color:#f09595}
-
-.cab-btn{
-  position:absolute;top:20px;right:20px;z-index:3;
-  padding:8px 16px;background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:2px;color:var(--white);
-  font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  cursor:pointer;font-family:'Inter',sans-serif;
-  opacity:0;transition:opacity .3s,background .3s;backdrop-filter:blur(4px);
-}
+.avail-ok .avail-dot{background:var(--leaf)} .avail-ok{color:var(--mint)}
+.avail-no .avail-dot{background:#e24b4b} .avail-no{color:#f09595}
+.cab-btn{position:absolute;top:20px;right:20px;z-index:3;padding:8px 16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:2px;color:var(--white);font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;opacity:0;transition:opacity .3s,background .3s;backdrop-filter:blur(4px)}
 .cab:hover .cab-btn{opacity:1}
 .cab-btn:hover{background:var(--leaf);border-color:var(--leaf);color:var(--pine)}
+.cab-back-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(109,179,63,.12);margin-bottom:14px}
+.cab-back-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0f0f8;letter-spacing:-.3px;margin-bottom:2px}
+.cab-back-sub{font-size:10px;color:rgba(109,179,63,.6);letter-spacing:1.5px;text-transform:uppercase}
+.cab-back-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.5);font-size:16px;transition:all .2s;flex-shrink:0}
+.cab-back-close:hover{background:rgba(226,75,75,.15);border-color:rgba(226,75,75,.3);color:#f09595}
+.cab-gallery{position:relative;flex:1;border-radius:10px;overflow:hidden;min-height:180px;display:flex}
+.gallery-slide{width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
+.gallery-slide.active{display:flex}
+.gallery-slide-icon{font-size:40px;opacity:.85}
+.gallery-slide-label{font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(255,255,255,.85);font-weight:300}
+.gallery-slide-note{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:background .2s;z-index:2}
+.gallery-arrow:hover{background:rgba(109,179,63,.6)}
+.gallery-arrow.left{left:10px}
+.gallery-arrow.right{right:10px}
+.gallery-dots{display:flex;justify-content:center;gap:5px;margin:10px 0 4px}
+.gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .2s}
+.gallery-dot.active{background:#6db33f}
+.cab-back-footer-single{display:flex;justify-content:center;padding-top:4px}
+.cal-cabana-hint{grid-column:1/-1;padding:44px 12px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
 
-/* PALAPA */
 .palapa-sec{background:var(--pine);padding:0}
 .palapa-grid{display:grid;grid-template-columns:1fr 1fr;min-height:560px}
-.palapa-vis{
-  background:var(--pine3);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-}
-.palapa-vis-inner{
-  font-size:100px;z-index:2;position:relative;
-  opacity:0;transform:scale(.85);
-  transition:opacity .8s,transform .8s;
-}
-.palapa-vis-inner.vis{opacity:1;transform:scale(1)}
-.palapa-glow{
-  position:absolute;width:300px;height:300px;border-radius:50%;
-  background:rgba(109,179,63,.06);
-  animation:glowPulse 4s ease-in-out infinite;
-}
-@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:1}}
-.palapa-body{
-  padding:72px 64px;display:flex;flex-direction:column;justify-content:center;
-  opacity:0;transform:translateX(30px);
-  transition:opacity .8s .1s,transform .8s .1s;
-}
+.palapa-vis{background:var(--pine3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.palapa-body{padding:72px 64px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateX(30px);transition:opacity .8s .1s,transform .8s .1s}
 .palapa-body.vis{opacity:1;transform:translateX(0)}
 .palapa-body .eyebrow{color:rgba(109,179,63,.7)}
 .palapa-body .sec-h{color:var(--white);margin-bottom:16px}
 .palapa-body .sec-sub{color:rgba(255,255,255,.4);max-width:100%}
 .palapa-feats{margin-top:32px;display:flex;flex-direction:column;gap:12px}
-.palapa-feat{
-  display:flex;align-items:center;gap:12px;
-  font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.3px;
-}
+.palapa-feat{display:flex;align-items:center;gap:12px;font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.3px}
 .feat-icon{width:20px;height:20px;border-radius:50%;background:rgba(109,179,63,.15);border:1px solid rgba(109,179,63,.25);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
-.palapa-included{
-  margin-top:28px;display:inline-flex;align-items:center;gap:8px;
-  font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--leaf);border:1px solid rgba(109,179,63,.25);
-  padding:8px 16px;border-radius:2px;
-}
+.palapa-included{margin-top:28px;display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--leaf);border:1px solid rgba(109,179,63,.25);padding:8px 16px;border-radius:2px}
 
-/* RESERVAR */
 .res-sec{background:var(--cream)}
 .res-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:56px}
-.cal-wrap{
-  opacity:0;transform:translateY(24px);
-  transition:opacity .6s,transform .6s;
-}
+.cal-wrap{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
 .cal-wrap.vis{opacity:1;transform:translateY(0)}
 .calendar{border:1px solid rgba(0,0,0,.08);border-radius:4px;overflow:hidden;background:var(--white)}
-.cal-head{
-  background:var(--pine);color:var(--white);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 20px;
-}
+.cal-head{background:var(--pine);color:var(--white);display:flex;align-items:center;justify-content:space-between;padding:18px 20px}
 .cal-head h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;letter-spacing:.5px}
 .cal-nav{background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;padding:0 4px;transition:color .2s}
 .cal-nav:hover{color:var(--mint)}
@@ -349,11 +153,7 @@ nav.scrolled{
 .cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
 .cal-day-name{text-align:center;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:6px 0}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-day{
-  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  font-size:12px;border-radius:3px;cursor:pointer;
-  transition:all .2s;position:relative;
-}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:3px;cursor:pointer;transition:all .2s;position:relative}
 .cal-day:hover:not(.empty):not(.past):not(.blocked){background:var(--sand)}
 .cal-day.today{font-weight:500;color:var(--moss)}
 .cal-day.selected{background:var(--pine);color:var(--white);border-radius:3px}
@@ -365,105 +165,40 @@ nav.scrolled{
 .cal-legend{display:flex;gap:16px;padding:12px 16px;border-top:1px solid rgba(0,0,0,.06);background:var(--cream)}
 .leg-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
 .leg-dot{width:8px;height:8px;border-radius:2px}
-
-/* Formulario reserva */
-.res-form-wrap{
-  opacity:0;transform:translateY(24px);
-  transition:opacity .6s .15s,transform .6s .15s;
-}
+.res-form-wrap{opacity:0;transform:translateY(24px);transition:opacity .6s .15s,transform .6s .15s}
 .res-form-wrap.vis{opacity:1;transform:translateY(0)}
 .res-card{background:var(--white);border:1px solid rgba(0,0,0,.07);border-radius:4px;padding:32px}
 .res-card h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:24px;letter-spacing:-.3px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-row.full{grid-template-columns:1fr}
 .field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
-.field input,.field select{
-  width:100%;padding:13px 14px;
-  border:1px solid rgba(0,0,0,.1);border-radius:3px;
-  font-family:'Inter',sans-serif;font-size:13px;
-  color:var(--text);background:var(--cream);
-  transition:border-color .2s,box-shadow .2s;
-  appearance:none;
-}
-.field input:focus,.field select:focus{
-  outline:none;border-color:var(--moss);
-  box-shadow:0 0 0 3px rgba(61,107,46,.08);
-}
-.anticipo-info{
-  background:rgba(61,107,46,.07);border:1px solid rgba(61,107,46,.15);
-  border-radius:3px;padding:14px 16px;margin:16px 0;
-  display:flex;justify-content:space-between;align-items:center;
-}
+.field input,.field select{width:100%;padding:13px 14px;border:1px solid rgba(0,0,0,.1);border-radius:3px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--cream);transition:border-color .2s,box-shadow .2s;appearance:none}
+.field input:focus,.field select:focus{outline:none;border-color:var(--moss);box-shadow:0 0 0 3px rgba(61,107,46,.08)}
+.anticipo-info{background:rgba(61,107,46,.07);border:1px solid rgba(61,107,46,.15);border-radius:3px;padding:14px 16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
 .anticipo-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--moss)}
 .anticipo-amt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--pine)}
 .anticipo-note{font-size:10px;color:var(--muted);margin-top:2px}
 .pagos-icons{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-.pago-pill{
-  padding:5px 12px;background:var(--cream);
-  border:1px solid rgba(0,0,0,.1);
-  border-radius:99px;font-size:10px;color:var(--muted);
-  display:flex;align-items:center;gap:5px;
-}
-.btn-pagar{
-  width:100%;padding:16px;
-  background:var(--pine);color:var(--white);
-  border:none;border-radius:3px;
-  font-family:'Inter',sans-serif;
-  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;
-  cursor:pointer;margin-top:8px;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);
-  position:relative;overflow:hidden;
-}
-.btn-pagar::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.08) 50%,transparent 100%);
-  transform:translateX(-100%);transition:transform .6s;
-}
+.pago-pill{padding:5px 12px;background:var(--cream);border:1px solid rgba(0,0,0,.1);border-radius:99px;font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.btn-pagar{width:100%;padding:16px;background:var(--pine);color:var(--white);border:none;border-radius:3px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;cursor:pointer;margin-top:8px;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
 .btn-pagar:hover{transform:translateY(-2px);background:var(--pine2);box-shadow:0 10px 30px rgba(11,26,11,.3)}
-.btn-pagar:hover::after{transform:translateX(100%)}
 .btn-pagar:active{transform:translateY(0) scale(.98)}
 .btn-pagar:disabled{background:var(--sand);color:var(--muted);cursor:default;transform:none;box-shadow:none}
+.login-required-note{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:10px 14px;font-size:11px;color:var(--bark);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-/* LLEGAR */
 .llegar-sec{background:var(--sand);padding:80px 56px}
 .llegar-inner{max-width:1160px;margin:0 auto}
-.route{
-  display:flex;gap:0;margin-top:56px;
-  position:relative;
-}
-.route::before{
-  content:'';position:absolute;
-  top:22px;left:22px;right:22px;height:1px;
-  background:linear-gradient(to right,var(--moss),transparent);
-  z-index:0;
-}
-.route-step{
-  flex:1;text-align:center;position:relative;z-index:1;
-  opacity:0;transform:translateY(20px);
-  transition:opacity .5s,transform .5s;
-}
+.route{display:flex;gap:0;margin-top:56px;position:relative}
+.route::before{content:'';position:absolute;top:22px;left:22px;right:22px;height:1px;background:linear-gradient(to right,var(--moss),transparent);z-index:0}
+.route-step{flex:1;text-align:center;position:relative;z-index:1;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
 .route-step.vis{opacity:1;transform:translateY(0)}
-.step-circle{
-  width:44px;height:44px;border-radius:50%;
-  background:var(--pine);border:2px solid var(--moss);
-  color:var(--mint);font-family:'Cormorant Garamond',serif;
-  font-size:18px;font-weight:300;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 18px;
-  transition:background .3s,transform .3s;
-}
+.step-circle{width:44px;height:44px;border-radius:50%;background:var(--pine);border:2px solid var(--moss);color:var(--mint);font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;transition:background .3s,transform .3s}
 .route-step:hover .step-circle{background:var(--moss);transform:scale(1.1)}
 .step-h{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;margin-bottom:6px}
 .step-p{font-size:12px;color:var(--muted);line-height:1.7;max-width:180px;margin:0 auto}
 
-/* FOOTER */
 footer{background:var(--pine);padding:48px 56px 32px}
-.ft-top{
-  max-width:1160px;margin:0 auto;
-  display:flex;justify-content:space-between;align-items:flex-start;
-  padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.07);
-  flex-wrap:wrap;gap:32px;
-}
+.ft-top{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:32px}
 .ft-logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;letter-spacing:2px;color:var(--white);text-transform:uppercase}
 .ft-logo em{font-style:italic;color:var(--mint)}
 .ft-tagline{font-size:11px;color:rgba(255,255,255,.3);margin-top:4px;letter-spacing:.5px}
@@ -475,214 +210,77 @@ footer{background:var(--pine);padding:48px 56px 32px}
 .ft-credit{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.5px}
 .ft-credit span{color:rgba(109,179,63,.5)}
 
-/* ANIMATIONS */
 @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-/* MOBILE */
-
-/* ── EXPERIENCIAS ── */
-.exp-card{
-  background:var(--white);border:1px solid rgba(0,0,0,.06);
-  border-radius:14px;padding:28px 24px;
-  opacity:0;transform:translateY(24px);
-  transition:opacity .6s,transform .6s,box-shadow .3s;
-}
+.exp-card{background:var(--white);border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:28px 24px;opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s,box-shadow .3s}
 .exp-card.vis{opacity:1;transform:translateY(0)}
 .exp-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.08);transform:translateY(-3px)}
 .exp-icon{font-size:32px;margin-bottom:14px}
 .exp-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;margin-bottom:8px;letter-spacing:-.2px}
 .exp-desc{font-size:12px;color:var(--muted);line-height:1.8;font-weight:300}
-
-/* ── TESTIMONIOS ── */
-.test-card{
-  background:var(--white);border-radius:14px;padding:28px 26px;
-  border:1px solid rgba(0,0,0,.06);
-  opacity:0;transform:translateY(20px);
-  transition:opacity .6s,transform .6s;
-}
+.test-card{background:var(--white);border-radius:14px;padding:28px 26px;border:1px solid rgba(0,0,0,.06);opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
 .test-card.vis{opacity:1;transform:translateY(0)}
 .test-stars{color:#f59e0b;font-size:14px;margin-bottom:14px;letter-spacing:2px}
 .test-text{font-size:13px;color:var(--muted);line-height:1.8;font-style:italic;margin-bottom:20px;font-weight:300}
 .test-author{display:flex;align-items:center;gap:12px}
-.test-avatar{
-  width:38px;height:38px;border-radius:50%;
-  background:var(--pine);color:var(--leaf);
-  font-size:12px;font-weight:500;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
+.test-avatar{width:38px;height:38px;border-radius:50%;background:var(--pine);color:var(--leaf);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .test-name{font-size:13px;font-weight:500}
 .test-city{font-size:11px;color:var(--muted);letter-spacing:.3px}
-
-/* ── POLÍTICAS ── */
-.pol-card{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(109,179,63,.15);
-  border-radius:12px;padding:22px 20px;
-  transition:background .3s;
-}
+.pol-card{background:rgba(255,255,255,.05);border:1px solid rgba(109,179,63,.15);border-radius:12px;padding:22px 20px;transition:background .3s}
 .pol-card:hover{background:rgba(109,179,63,.06)}
 .pol-icon{font-size:24px;margin-bottom:12px}
 .pol-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--mint);margin-bottom:12px}
 .pol-item{font-size:12px;color:rgba(255,255,255,.45);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5}
 .pol-item:last-child{border-bottom:none}
 .pol-items{display:flex;flex-direction:column}
-
-/* ── WhatsApp hover ── */
 #wa-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.55)}
 #wa-btn:hover + #wa-tooltip{opacity:1}
 
+.auth-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(11,26,11,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.auth-overlay.open{display:flex}
+.auth-box{background:var(--white);border-radius:16px;padding:36px;max-width:400px;width:100%;position:relative}
+.auth-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:16px;transition:all .2s}
+.auth-close:hover{background:var(--sand)}
+.auth-tabs{display:flex;gap:2px;background:var(--cream);border-radius:8px;padding:3px;margin-bottom:24px}
+.auth-tab{flex:1;text-align:center;padding:9px;border-radius:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s}
+.auth-tab.active{background:var(--white);color:var(--pine);box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:500}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:6px;text-align:center}
+.auth-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.auth-field input{width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,.12);border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;background:var(--cream)}
+.auth-field input:focus{outline:none;border-color:var(--moss)}
+.auth-btn{width:100%;padding:14px;background:var(--pine);color:#fff;border:none;border-radius:6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;margin-top:6px;transition:background .2s}
+.auth-btn:hover{background:var(--pine2)}
+.auth-msg{font-size:12px;margin-top:10px;text-align:center;display:none}
+.auth-account-panel{display:none;text-align:center}
+.auth-account-panel.show{display:block}
+.auth-account-email{font-size:14px;font-weight:500;margin-bottom:4px}
+.auth-account-sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+.auth-logout-btn{padding:10px 20px;background:rgba(226,75,75,.08);border:1px solid rgba(226,75,75,.2);color:#c0392b;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif}
+
+#faq-btn{position:fixed;bottom:28px;left:28px;z-index:999;width:58px;height:58px;border-radius:50%;background:var(--pine);border:1px solid rgba(109,179,63,.4);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(11,26,11,.4);cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;font-size:24px}
+#faq-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(109,179,63,.4)}
+.faq-panel{position:fixed;bottom:98px;left:28px;z-index:998;width:320px;max-height:440px;background:var(--white);border-radius:16px;box-shadow:0 12px 50px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden}
+.faq-panel.open{display:flex}
+.faq-head{background:var(--pine);color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+.faq-head-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400}
+.faq-head-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.faq-close{cursor:pointer;color:rgba(255,255,255,.5);font-size:18px}
+.faq-body{padding:14px;overflow-y:auto;flex:1}
+.faq-q-btn{display:block;width:100%;text-align:left;padding:11px 14px;background:var(--cream);border:1px solid rgba(0,0,0,.06);border-radius:8px;font-size:12px;color:var(--text);cursor:pointer;margin-bottom:8px;font-family:'Inter',sans-serif;transition:all .2s}
+.faq-q-btn:hover{background:var(--sand);border-color:var(--moss)}
+.faq-answer{background:rgba(61,107,46,.06);border:1px solid rgba(61,107,46,.15);border-radius:8px;padding:14px;font-size:12px;color:var(--text);line-height:1.7;margin-bottom:12px}
+.faq-back{font-size:11px;color:var(--moss);cursor:pointer;letter-spacing:.5px;display:inline-flex;align-items:center;gap:4px;margin-bottom:10px}
+@media(max-width:480px){.faq-panel{width:calc(100vw - 40px);left:20px}}
+
 @media(max-width:900px){
-  .llegar-sec{padding:64px 24px}
-}
-
-
-/* ── Flip card ── */
-.cab{position:relative;perspective:1200px;cursor:default}
-.cab-inner{
-  position:relative;width:100%;height:100%;
-  transition:transform .7s cubic-bezier(.4,0,.2,1);
-  transform-style:preserve-3d;
-}
-.cab.flipped .cab-inner{transform:rotateY(180deg)}
-.cab-front,.cab-back{
-  position:absolute;inset:0;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:16px;overflow:hidden;
-}
-.cab-front{
-  background:var(--white);
-  border:1px solid rgba(0,0,0,.06);
-  box-shadow:0 2px 12px rgba(0,0,0,.06);
-}
-.cab-back{
-  transform:rotateY(180deg);
-  background:linear-gradient(160deg,#0d1a0d 0%,#152415 100%);
-  border:1px solid rgba(109,179,63,.18);
-  box-shadow:0 8px 40px rgba(0,0,0,.35);
-  display:flex;flex-direction:column;
-  padding:20px;gap:0;
-}
-
-/* Header reverso */
-.cab-back-head{
-  display:flex;justify-content:space-between;align-items:center;
-  padding-bottom:14px;
-  border-bottom:1px solid rgba(109,179,63,.12);
-  margin-bottom:14px;
-}
-.cab-back-info{}
-.cab-back-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:20px;font-weight:300;color:#f0f0f8;
-  letter-spacing:-.3px;margin-bottom:2px;
-}
-.cab-back-sub{font-size:10px;color:rgba(109,179,63,.6);letter-spacing:1.5px;text-transform:uppercase}
-.cab-back-close{
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:rgba(255,255,255,.5);font-size:16px;
-  transition:all .2s;flex-shrink:0;
-}
-.cab-back-close:hover{background:rgba(226,75,75,.15);border-color:rgba(226,75,75,.3);color:#f09595}
-
-/* Navegación mes */
-.cct-head{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:10px;
-}
-.cct-month{
-  font-family:'Cormorant Garamond',serif;
-  font-size:16px;color:rgba(255,255,255,.85);font-weight:300;letter-spacing:.3px;
-}
-.cct-nav{
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
-  border-radius:6px;width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:rgba(255,255,255,.5);font-size:14px;
-  transition:all .2s;
-}
-.cct-nav:hover{background:rgba(109,179,63,.15);border-color:rgba(109,179,63,.3);color:#a8d98a}
-
-/* Grid días */
-.cct-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1}
-.cct-dn{
-  font-size:9px;text-align:center;
-  color:rgba(255,255,255,.25);padding:4px 0;
-  font-weight:500;letter-spacing:.5px;
-}
-.cct-d{
-  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  font-size:11px;color:rgba(255,255,255,.6);border-radius:5px;
-  transition:background .15s;
-}
-.cct-d.past{color:rgba(255,255,255,.15)}
-.cct-d.today{
-  background:rgba(109,179,63,.2);
-  color:#a8d98a;font-weight:600;
-  border:1px solid rgba(109,179,63,.3);
-}
-.cct-d.occupied{
-  background:rgba(226,75,75,.15);
-  color:rgba(226,75,75,.5);
-  position:relative;
-}
-.cct-d.occupied::after{
-  content:'';position:absolute;
-  top:50%;left:12%;right:12%;
-  height:1px;background:rgba(226,75,75,.4);
-}
-.cct-d.avail{color:rgba(255,255,255,.7)}
-.cct-d.empty{visibility:hidden}
-
-/* Leyenda y botón */
-.cct-footer{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:12px;padding-top:12px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-.cct-legend{display:flex;gap:12px}
-.cct-leg{display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.3px}
-.cct-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.cab-back-reservar{
-  padding:9px 16px;
-  background:rgba(109,179,63,.15);
-  border:1px solid rgba(109,179,63,.3);
-  color:#a8d98a;
-  border-radius:6px;font-size:10px;letter-spacing:1.5px;
-  text-transform:uppercase;font-weight:500;
-  cursor:pointer;font-family:'Inter',sans-serif;
-  transition:all .25s;white-space:nowrap;
-}
-.cab-back-reservar:hover{background:#6db33f;border-color:#6db33f;color:#0b1a0b}
-
-@keyframes kenBurns{
-  from{transform:scale(1) translate(0,0)}
-  to{transform:scale(1.08) translate(-1%,-1%)}
-}
-@keyframes kenBurns2{
-  from{transform:scale(1.08) translate(0,0)}
-  to{transform:scale(1) translate(1%,1%)}
-}
-@media(max-width:900px){
-  nav{padding:16px 24px}
-  nav.scrolled{padding:12px 24px}
-  .nav-links{display:none}
-  .sec{padding:64px 24px}
-  .palapa-grid{grid-template-columns:1fr}
-  .palapa-vis{height:280px}
-  .palapa-body{padding:40px 28px}
-  .res-layout{grid-template-columns:1fr;gap:32px}
-  .cabanas-grid{grid-template-columns:1fr}
-  .route{flex-direction:column;gap:24px}
-  .route::before{display:none}
-  footer{padding:40px 24px 24px}
-  .ft-top{flex-direction:column;gap:20px}
-  .llegar-sec{padding:64px 24px}
-  .hero-h{font-size:52px}
+  nav{padding:16px 24px} nav.scrolled{padding:12px 24px} .nav-links{display:none}
+  .sec{padding:64px 24px} .palapa-grid{grid-template-columns:1fr} .palapa-vis{height:280px} .palapa-body{padding:40px 28px}
+  .res-layout{grid-template-columns:1fr;gap:32px} .cabanas-grid{grid-template-columns:1fr}
+  .route{flex-direction:column;gap:24px} .route::before{display:none}
+  footer{padding:40px 24px 24px} .ft-top{flex-direction:column;gap:20px} .llegar-sec{padding:64px 24px} .hero-h{font-size:52px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -692,31 +290,110 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <nav id="nav">
   <div class="nav-logo"><img src="logo_dorado.png" style="height:44px;width:auto;" alt="Pico del Encino"></div>
   <ul class="nav-links">
+    <li><a href="#reservar">Disponibilidad</a></li>
     <li><a href="#cabanas">Cabañas</a></li>
     <li><a href="#palapa">Área común</a></li>
-    <li><a href="#reservar">Disponibilidad</a></li>
     <li><a href="#llegar">Cómo llegar</a></li>
   </ul>
-  <button class="nav-cta" onclick="scroll2('reservar')">Reservar</button>
+  <div class="nav-actions">
+    <button class="nav-account" id="btn-account" onclick="abrirAuthModal()"><span class="dot" id="account-dot" style="display:none"></span><span id="account-label">Iniciar sesión</span></button>
+    <button class="nav-cta" onclick="scroll2('reservar')">Reservar</button>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-canvas">
-    <!-- Cuando tengas el video del dron, descomenta esto y comenta el div de imagen:
-    <video id="heroVideo" autoplay muted loop playsinline>
-      <source src="video-dron-majalca.mp4" type="video/mp4">
-    </video>
-    -->
-    <div id="heroBg"></div>
+<section class="sec res-sec" id="reservar" style="padding-top:120px">
+  <div class="sec-inner">
+    <div class="eyebrow">Disponibilidad y reservación</div>
+    <h2 class="sec-h">Elige tus fechas</h2>
+    <p class="sec-sub">Calendario en tiempo real. Paga solo el 50% para confirmar — el resto al llegar.</p>
+    <div class="res-layout">
+      <div class="cal-wrap vis">
+        <div class="calendar">
+          <div class="cal-head">
+            <button class="cal-nav" id="prev">‹</button>
+            <h3 id="cal-title"></h3>
+            <button class="cal-nav" id="next">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-days-header">
+              <div class="cal-day-name">Dom</div><div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div>
+              <div class="cal-day-name">Mié</div><div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div><div class="cal-day-name">Sáb</div>
+            </div>
+            <div class="cal-days" id="cal-days"></div>
+          </div>
+          <div class="cal-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:var(--pine)"></div>Seleccionado</div>
+            <div class="leg-item"><div class="leg-dot" style="background:rgba(61,107,46,.2)"></div>Rango</div>
+            <div class="leg-item"><div class="leg-dot" style="background:rgba(226,75,75,.15);border:1px solid rgba(226,75,75,.3)"></div>Ocupado</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;letter-spacing:.3px">Selecciona fecha de llegada y salida</div>
+      </div>
+
+      <div class="res-form-wrap vis">
+        <div class="res-card">
+          <h3>Tu reservación</h3>
+          <div class="login-required-note" id="login-note">
+            🔒 Inicia sesión para poder identificar tu reservación —
+            <span style="text-decoration:underline;cursor:pointer;margin-left:4px" onclick="abrirAuthModal()">crear cuenta / entrar</span>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Llegada</label><input type="text" id="f-in" placeholder="— / — / ——" readonly></div>
+            <div class="field"><label>Salida</label><input type="text" id="f-out" placeholder="— / — / ——" readonly></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Personas</label>
+              <select id="f-pax"><option>1 persona</option><option selected>2 personas</option><option>3 personas</option><option>4 personas</option><option>5 personas</option><option>6 personas</option></select>
+            </div>
+            <div class="field"><label>Cabaña</label>
+              <select id="f-cab" onchange="calcAnticipo()">
+                <option value="0">Seleccionar</option>
+                <option value="1200">Cabaña 1 — $1,200</option>
+                <option value="1800">Cabaña 2 — $1,800</option>
+                <option value="2000">Cabaña 3 — $2,000</option>
+                <option value="2400">Cabaña 4 — $2,400</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row full"><div class="field"><label>Nombre completo</label><input type="text" id="f-name" placeholder="Tu nombre" maxlength="100" autocomplete="name"></div></div>
+          <div class="form-row full"><div class="field"><label>WhatsApp</label><input type="tel" id="f-tel" placeholder="+52 614 000 0000" maxlength="20" autocomplete="tel"></div></div>
+
+          <div class="anticipo-info">
+            <div><div class="anticipo-label">Anticipo (50%)</div><div class="anticipo-note">Resto se paga al llegar</div></div>
+            <div class="anticipo-amt" id="anticipo-amt">$—</div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Código de descuento (opcional)</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="f-codigo" placeholder="Ej. VERANO25" style="flex:1;padding:11px 13px;border:1px solid rgba(0,0,0,.1);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;background:var(--cream);text-transform:uppercase;letter-spacing:1px" oninput="this.value=this.value.toUpperCase()">
+              <button type="button" onclick="aplicarCodigo()" style="padding:11px 16px;background:var(--pine);color:#fff;border:none;border-radius:var(--r);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='var(--moss)'" onmouseout="this.style.background='var(--pine)'">Aplicar</button>
+            </div>
+            <div id="codigo-msg" style="font-size:11px;margin-top:6px;display:none"></div>
+          </div>
+
+          <div id="precio-desglose" style="display:none;background:var(--sand);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--muted)">Precio base</span><span id="desglose-base">—</span></div>
+            <div id="desglose-temp-row" style="display:none;justify-content:space-between;margin-bottom:4px"><span style="color:var(--muted)" id="desglose-temp-label">Temporada</span><span id="desglose-temp" style="color:var(--bark)">—</span></div>
+            <div id="desglose-desc-row" style="display:none;justify-content:space-between;margin-bottom:4px"><span style="color:var(--moss)">🏷️ Descuento</span><span id="desglose-desc" style="color:var(--moss)">—</span></div>
+            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);font-weight:500"><span>Total</span><span id="desglose-total" style="color:var(--pine)">—</span></div>
+          </div>
+
+          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Métodos de pago</div>
+          <div class="pagos-icons"><div class="pago-pill">💳 Tarjeta</div><div class="pago-pill">🏪 OXXO</div><div class="pago-pill">🏦 SPEI</div></div>
+
+          <button class="btn-pagar" id="btn-pagar" onclick="handlePagar()" disabled>Pagar anticipo y confirmar</button>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
+
+<section class="hero">
+  <div class="hero-canvas"><div id="heroBg"></div></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-kicker">
-      <span class="kicker-line"></span>
-      Cañón de Majalca · Chihuahua · 2,141 msnm
-      <span class="kicker-line"></span>
-    </div>
+    <div class="hero-kicker"><span class="kicker-line"></span>Cañón de Majalca · Chihuahua · 2,141 msnm<span class="kicker-line"></span></div>
     <h1 class="hero-h">Piérdete<br>en el <em>bosque</em></h1>
     <p class="hero-tagline">Cabañas privadas entre pinos centenarios.<br>A una hora de Chihuahua, a otro mundo.</p>
     <div class="hero-actions">
@@ -724,14 +401,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
       <button class="btn-hero-s" onclick="scroll2('reservar')">Reservar ahora</button>
     </div>
   </div>
-  <div class="hero-scroll-hint">
-    <div class="scroll-bar"></div>
-    <span class="scroll-hint-txt">Explorar</span>
-  </div>
-  <div class="drone-badge">
-    <div class="rec"></div>
-    <span class="drone-txt">Video dron · reproduciendo</span>
-  </div>
+  <div class="hero-scroll-hint"><div class="scroll-bar"></div><span class="scroll-hint-txt">Explorar</span></div>
+  <div class="drone-badge"><div class="rec"></div><span class="drone-txt">Video dron · reproduciendo</span></div>
 </section>
 
 <div style="background:var(--pine);margin-top:-2px;line-height:0">
@@ -740,7 +411,6 @@ footer{background:var(--pine);padding:48px 56px 32px}
     <path d="M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z" fill="#152415"/>
   </svg>
 </div>
-<!-- BAND -->
 <div class="band">
   <div class="band-item"><div class="band-n">4</div><div class="band-l">Cabañas privadas</div></div>
   <div class="band-item"><div class="band-n">2,141</div><div class="band-l">Metros sobre el mar</div></div>
@@ -748,213 +418,72 @@ footer{background:var(--pine);padding:48px 56px 32px}
   <div class="band-item"><div class="band-n">365</div><div class="band-l">Días disponible</div></div>
 </div>
 
-<!-- CABAÑAS -->
 <section class="sec cabanas-bg" id="cabanas">
   <div class="sec-inner">
     <div class="cabanas-head">
-      <div>
-        <div class="eyebrow">Alojamiento</div>
-        <h2 class="sec-h">Elige tu cabaña</h2>
-      </div>
+      <div><div class="eyebrow">Alojamiento</div><h2 class="sec-h">Elige tu cabaña</h2></div>
       <p class="sec-sub">Cada cabaña es independiente, rodeada de pinos. Incluyen leña, ropa de cama y fogón.</p>
     </div>
     <div class="cabanas-grid">
 
-      <div class="cab" data-delay="0" id="cab-c1" style="height:380px">
-        <div class="cab-inner">
-
-          <!-- FRENTE -->
-          <div class="cab-front">
-            <div class="cab-img" style="background:#0d1a0d">
-              <img src="cabana1.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a3a1a,#0d2010)'"/>
-            </div>
-            <div class="cab-body">
-              <div class="cab-name">Cabaña 1</div>
-              <div class="cab-meta">2 personas · Vista al bosque · Cama king</div>
-              <div class="cab-footer">
-                <div class="cab-price">$1,200 <small>/ noche</small></div>
-                <div class="cab-avail avail-ok" id="avail-c1"><div class="avail-dot"></div>Disponible</div>
-              </div>
-            </div>
-            <button class="cab-btn" onclick="flipCard('c1')">Ver disponibilidad</button>
-          </div>
-
-          <!-- ATRÁS — mini calendario -->
-          <div class="cab-back">
-            <div class="cab-back-head">
-              <div class="cab-back-info">
-                <div class="cab-back-title">Cabaña 1</div>
-                <div class="cab-back-sub">Disponibilidad del mes</div>
-              </div>
-              <div class="cab-back-close" onclick="unflipCard('c1')">✕</div>
-            </div>
-            <div class="cct-head">
-              <button class="cct-nav" onclick="miniCalPrev('c1','Cabaña 1')">‹</button>
-              <span class="cct-month" id="cct-month-c1"></span>
-              <button class="cct-nav" onclick="miniCalNext('c1','Cabaña 1')">›</button>
-            </div>
-            <div class="cct-grid" id="cct-grid-c1"></div>
-            <div class="cct-footer">
-              <div class="cct-legend">
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(226,75,75,.3)"></div>Ocupado</div>
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(109,179,63,.2)"></div>Hoy</div>
-              </div>
-              <button class="cab-back-reservar" onclick="unflipCard('c1');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button>
-            </div>
-          </div>
-
+      <div class="cab" data-delay="0" id="cab-c1" style="height:380px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#0d1a0d"><img src="cabana1.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a3a1a,#0d2010)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 1</div><div class="cab-meta">2 personas · Vista al bosque · Cama king</div>
+          <div class="cab-footer"><div class="cab-price">$1,200 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c1"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c1')">Ver disponibilidad</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 1</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c1')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c1"></div>
+          <div class="gallery-dots" id="gallery-dots-c1"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c1');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
         </div>
-      </div>
+      </div></div>
 
-      <div class="cab" data-delay="120" id="cab-c2" style="height:380px">
-        <div class="cab-inner">
-
-          <!-- FRENTE -->
-          <div class="cab-front">
-            <div class="cab-img" style="background:#0d1520">
-              <img src="cabana2.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a2a3a,#0d1a2a)'"/>
-            </div>
-            <div class="cab-body">
-              <div class="cab-name">Cabaña 2</div>
-              <div class="cab-meta">4 personas · Chimenea interior · 2 recámaras</div>
-              <div class="cab-footer">
-                <div class="cab-price">$1,800 <small>/ noche</small></div>
-                <div class="cab-avail avail-ok" id="avail-c2"><div class="avail-dot"></div>Disponible</div>
-              </div>
-            </div>
-            <button class="cab-btn" onclick="flipCard('c2')">Ver disponibilidad</button>
-          </div>
-
-          <!-- ATRÁS — mini calendario -->
-          <div class="cab-back">
-            <div class="cab-back-head">
-              <div class="cab-back-info">
-                <div class="cab-back-title">Cabaña 2</div>
-                <div class="cab-back-sub">Disponibilidad del mes</div>
-              </div>
-              <div class="cab-back-close" onclick="unflipCard('c2')">✕</div>
-            </div>
-            <div class="cct-head">
-              <button class="cct-nav" onclick="miniCalPrev('c2','Cabaña 2')">‹</button>
-              <span class="cct-month" id="cct-month-c2"></span>
-              <button class="cct-nav" onclick="miniCalNext('c2','Cabaña 2')">›</button>
-            </div>
-            <div class="cct-grid" id="cct-grid-c2"></div>
-            <div class="cct-footer">
-              <div class="cct-legend">
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(226,75,75,.3)"></div>Ocupado</div>
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(109,179,63,.2)"></div>Hoy</div>
-              </div>
-              <button class="cab-back-reservar" onclick="unflipCard('c2');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button>
-            </div>
-          </div>
-
+      <div class="cab" data-delay="120" id="cab-c2" style="height:380px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#0d1520"><img src="cabana2.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a2a3a,#0d1a2a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 2</div><div class="cab-meta">4 personas · Chimenea interior · 2 recámaras</div>
+          <div class="cab-footer"><div class="cab-price">$1,800 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c2"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c2')">Ver disponibilidad</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 2</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c2')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c2"></div>
+          <div class="gallery-dots" id="gallery-dots-c2"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c2');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
         </div>
-      </div>
+      </div></div>
 
-      <div class="cab" data-delay="240" id="cab-c3" style="height:380px">
-        <div class="cab-inner">
-
-          <!-- FRENTE -->
-          <div class="cab-front">
-            <div class="cab-img" style="background:#150d15">
-              <img src="cabana3.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a1a2a,#1a0d1a)'"/>
-            </div>
-            <div class="cab-body">
-              <div class="cab-name">Cabaña 3</div>
-              <div class="cab-meta">4 personas · 9×6 m² · Terraza privada</div>
-              <div class="cab-footer">
-                <div class="cab-price">$2,000 <small>/ noche</small></div>
-                <div class="cab-avail avail-ok" id="avail-c3"><div class="avail-dot"></div>Disponible</div>
-              </div>
-            </div>
-            <button class="cab-btn" onclick="flipCard('c3')">Ver disponibilidad</button>
-          </div>
-
-          <!-- ATRÁS — mini calendario -->
-          <div class="cab-back">
-            <div class="cab-back-head">
-              <div class="cab-back-info">
-                <div class="cab-back-title">Cabaña 3</div>
-                <div class="cab-back-sub">Disponibilidad del mes</div>
-              </div>
-              <div class="cab-back-close" onclick="unflipCard('c3')">✕</div>
-            </div>
-            <div class="cct-head">
-              <button class="cct-nav" onclick="miniCalPrev('c3','Cabaña 3')">‹</button>
-              <span class="cct-month" id="cct-month-c3"></span>
-              <button class="cct-nav" onclick="miniCalNext('c3','Cabaña 3')">›</button>
-            </div>
-            <div class="cct-grid" id="cct-grid-c3"></div>
-            <div class="cct-footer">
-              <div class="cct-legend">
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(226,75,75,.3)"></div>Ocupado</div>
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(109,179,63,.2)"></div>Hoy</div>
-              </div>
-              <button class="cab-back-reservar" onclick="unflipCard('c3');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button>
-            </div>
-          </div>
-
+      <div class="cab" data-delay="240" id="cab-c3" style="height:380px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#150d15"><img src="cabana3.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a1a2a,#1a0d1a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 3</div><div class="cab-meta">4 personas · 9×6 m² · Terraza privada</div>
+          <div class="cab-footer"><div class="cab-price">$2,000 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c3"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c3')">Ver disponibilidad</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 3</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c3')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c3"></div>
+          <div class="gallery-dots" id="gallery-dots-c3"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c3');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
         </div>
-      </div>
+      </div></div>
 
-      <div class="cab" data-delay="360" id="cab-c4" style="height:380px">
-        <div class="cab-inner">
-
-          <!-- FRENTE -->
-          <div class="cab-front">
-            <div class="cab-img" style="background:#160f06">
-              <img src="cabana4.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a2010,#1a150a)'"/>
-            </div>
-            <div class="cab-body">
-              <div class="cab-name">Cabaña 4</div>
-              <div class="cab-meta">6 personas · Sala completa · La más grande</div>
-              <div class="cab-footer">
-                <div class="cab-price">$2,400 <small>/ noche</small></div>
-                <div class="cab-avail avail-ok" id="avail-c4"><div class="avail-dot"></div>Disponible</div>
-              </div>
-            </div>
-            <button class="cab-btn" onclick="flipCard('c4')">Ver disponibilidad</button>
-          </div>
-
-          <!-- ATRÁS — mini calendario -->
-          <div class="cab-back">
-            <div class="cab-back-head">
-              <div class="cab-back-info">
-                <div class="cab-back-title">Cabaña 4</div>
-                <div class="cab-back-sub">Disponibilidad del mes</div>
-              </div>
-              <div class="cab-back-close" onclick="unflipCard('c4')">✕</div>
-            </div>
-            <div class="cct-head">
-              <button class="cct-nav" onclick="miniCalPrev('c4','Cabaña 4')">‹</button>
-              <span class="cct-month" id="cct-month-c4"></span>
-              <button class="cct-nav" onclick="miniCalNext('c4','Cabaña 4')">›</button>
-            </div>
-            <div class="cct-grid" id="cct-grid-c4"></div>
-            <div class="cct-footer">
-              <div class="cct-legend">
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(226,75,75,.3)"></div>Ocupado</div>
-                <div class="cct-leg"><div class="cct-leg-dot" style="background:rgba(109,179,63,.2)"></div>Hoy</div>
-              </div>
-              <button class="cab-back-reservar" onclick="unflipCard('c4');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button>
-            </div>
-          </div>
-
+      <div class="cab" data-delay="360" id="cab-c4" style="height:380px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#160f06"><img src="cabana4.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a2010,#1a150a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 4</div><div class="cab-meta">6 personas · Sala completa · La más grande</div>
+          <div class="cab-footer"><div class="cab-price">$2,400 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c4"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c4')">Ver disponibilidad</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 4</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c4')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c4"></div>
+          <div class="gallery-dots" id="gallery-dots-c4"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c4');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
         </div>
-      </div>
+      </div></div>
 
     </div>
   </div>
 </section>
 
-<div style="background:#ffffff;line-height:0">
-  <svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block">
-    <path d="M0,0 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#152415"/>
-  </svg>
-</div>
+<div style="background:#ffffff;line-height:0"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block"><path d="M0,0 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#152415"/></svg></div>
 
-<!-- EXPERIENCIAS -->
 <section style="background:var(--cream);padding:80px 56px 60px">
   <div style="max-width:1160px;margin:0 auto">
     <div style="text-align:center;margin-bottom:56px">
@@ -963,54 +492,20 @@ footer{background:var(--pine);padding:48px 56px 32px}
       <p class="sec-sub" style="margin:0 auto;text-align:center">Cada estadía en Majalca es diferente. El bosque, la altitud y el silencio hacen el resto.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px" id="exp-grid">
-
-      <div class="exp-card" data-delay="0">
-        <div class="exp-icon">🔥</div>
-        <div class="exp-title">Noches de fogata</div>
-        <div class="exp-desc">El fogatero central y leña incluida. Las noches de Majalca a 2,141 msnm se sienten diferentes bajo el cielo despejado.</div>
-      </div>
-
-      <div class="exp-card" data-delay="80">
-        <div class="exp-icon">🌲</div>
-        <div class="exp-title">Bosque de pinos</div>
-        <div class="exp-desc">Caminatas entre pinos centenarios, aire limpio de sierra y el sonido del viento entre las copas de los árboles.</div>
-      </div>
-
-      <div class="exp-card" data-delay="160">
-        <div class="exp-icon">✨</div>
-        <div class="exp-title">Cielo sin luz</div>
-        <div class="exp-desc">Sin contaminación lumínica. La Vía Láctea se ve a simple vista en noches despejadas — una de las mejores de Chihuahua.</div>
-      </div>
-
-      <div class="exp-card" data-delay="240">
-        <div class="exp-icon">♨️</div>
-        <div class="exp-title">Jacuzzi privado</div>
-        <div class="exp-desc">La cabaña más grande cuenta con jacuzzi privado en terraza. Agua caliente, bosque alrededor y temperatura fresca de sierra a 2,141 msnm.</div>
-      </div>
-
-      <div class="exp-card" data-delay="320">
-        <div class="exp-icon">🦌</div>
-        <div class="exp-title">Vida silvestre</div>
-        <div class="exp-desc">Venado cola blanca, águila real y cotorra serrana occidental — especies únicas del Cañón de Majalca que puedes ver al amanecer.</div>
-      </div>
-
-      <div class="exp-card" data-delay="400">
-        <div class="exp-icon">🥾</div>
-        <div class="exp-title">Senderismo</div>
-        <div class="exp-desc">Rutas entre encinos y pinos centenarios del Cañón de Majalca. Ideal para amanecer entre el bosque y volver a descansar en la cabaña.</div>
-      </div>
-
+      <div class="exp-card" data-delay="0"><div class="exp-icon">🔥</div><div class="exp-title">Noches de fogata</div><div class="exp-desc">El fogatero central y leña incluida. Las noches de Majalca a 2,141 msnm se sienten diferentes bajo el cielo despejado.</div></div>
+      <div class="exp-card" data-delay="80"><div class="exp-icon">🌲</div><div class="exp-title">Bosque de pinos</div><div class="exp-desc">Caminatas entre pinos centenarios, aire limpio de sierra y el sonido del viento entre las copas de los árboles.</div></div>
+      <div class="exp-card" data-delay="160"><div class="exp-icon">✨</div><div class="exp-title">Cielo sin luz</div><div class="exp-desc">Sin contaminación lumínica. La Vía Láctea se ve a simple vista en noches despejadas — una de las mejores de Chihuahua.</div></div>
+      <div class="exp-card" data-delay="240"><div class="exp-icon">♨️</div><div class="exp-title">Jacuzzi privado</div><div class="exp-desc">La cabaña más grande cuenta con jacuzzi privado en terraza. Agua caliente, bosque alrededor y temperatura fresca de sierra a 2,141 msnm.</div></div>
+      <div class="exp-card" data-delay="320"><div class="exp-icon">🦌</div><div class="exp-title">Vida silvestre</div><div class="exp-desc">Venado cola blanca, águila real y cotorra serrana occidental — especies únicas del Cañón de Majalca que puedes ver al amanecer.</div></div>
+      <div class="exp-card" data-delay="400"><div class="exp-icon">🥾</div><div class="exp-title">Senderismo</div><div class="exp-desc">Rutas entre encinos y pinos centenarios del Cañón de Majalca. Ideal para amanecer entre el bosque y volver a descansar en la cabaña.</div></div>
     </div>
   </div>
 </section>
 
-<!-- PALAPA -->
 <section class="palapa-sec" id="palapa">
   <div class="palapa-grid">
-    <div class="palapa-vis" style="padding:0;overflow:hidden">
-      <img src="palapa.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;display:block;" loading="lazy"/>
-    </div>
-    <div class="palapa-body">
+    <div class="palapa-vis" style="padding:0;overflow:hidden"><img src="palapa.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;display:block;" loading="lazy"/></div>
+    <div class="palapa-body vis">
       <div class="eyebrow">Espacio de reunión</div>
       <h2 class="sec-h">El árbol<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic">de bienvenida</em></h2>
       <p class="sec-sub" style="color:rgba(255,255,255,.4);max-width:100%">El punto de encuentro del proyecto. Un espacio abierto entre los pinos donde las noches de Majalca cobran vida — con fogatero, leña incluida y el sonido del bosque de encinos a 2,141 msnm.</p>
@@ -1025,432 +520,243 @@ footer{background:var(--pine);padding:48px 56px 32px}
   </div>
 </section>
 
-<div style="background:var(--pine);line-height:0">
-  <svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block">
-    <path d="M0,30 C480,0 960,50 1440,10 L1440,50 L0,50 Z" fill="#f4f0e6"/>
-  </svg>
-</div>
-<!-- RESERVAR -->
-<section class="sec res-sec" id="reservar">
-  <div class="sec-inner">
-    <div class="eyebrow">Disponibilidad y reservación</div>
-    <h2 class="sec-h">Elige tus fechas</h2>
-    <p class="sec-sub">Calendario en tiempo real. Paga solo el 50% para confirmar — el resto al llegar.</p>
-    <div class="res-layout">
+<div style="background:var(--pine);line-height:0"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block"><path d="M0,30 C480,0 960,50 1440,10 L1440,50 L0,50 Z" fill="#f4f0e6"/></svg></div>
 
-      <div class="cal-wrap">
-        <div class="calendar">
-          <div class="cal-head">
-            <button class="cal-nav" id="prev">‹</button>
-            <h3 id="cal-title"></h3>
-            <button class="cal-nav" id="next">›</button>
-          </div>
-          <div class="cal-grid">
-            <div class="cal-days-header">
-              <div class="cal-day-name">Dom</div><div class="cal-day-name">Lun</div>
-              <div class="cal-day-name">Mar</div><div class="cal-day-name">Mié</div>
-              <div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div>
-              <div class="cal-day-name">Sáb</div>
-            </div>
-            <div class="cal-days" id="cal-days"></div>
-          </div>
-          <div class="cal-legend">
-            <div class="leg-item"><div class="leg-dot" style="background:var(--pine)"></div>Seleccionado</div>
-            <div class="leg-item"><div class="leg-dot" style="background:rgba(61,107,46,.2)"></div>Rango</div>
-            <div class="leg-item"><div class="leg-dot" style="background:rgba(226,75,75,.15);border:1px solid rgba(226,75,75,.3)"></div>Ocupado</div>
-          </div>
-        </div>
-        <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;letter-spacing:.3px">
-          Selecciona fecha de llegada y salida
-        </div>
-      </div>
-
-      <div class="res-form-wrap">
-        <div class="res-card">
-          <h3>Tu reservación</h3>
-          <div class="form-row">
-            <div class="field">
-              <label>Llegada</label>
-              <input type="text" id="f-in" placeholder="— / — / ——" readonly>
-            </div>
-            <div class="field">
-              <label>Salida</label>
-              <input type="text" id="f-out" placeholder="— / — / ——" readonly>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label>Personas</label>
-              <select id="f-pax">
-                <option>1 persona</option>
-                <option selected>2 personas</option>
-                <option>3 personas</option>
-                <option>4 personas</option>
-                <option>5 personas</option>
-                <option>6 personas</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Cabaña</label>
-              <select id="f-cab" onchange="calcAnticipo()">
-                <option value="0">Seleccionar</option>
-                <option value="1200">Cabaña 1 — $1,200</option>
-                <option value="1800">Cabaña 2 — $1,800</option>
-                <option value="2000">Cabaña 3 — $2,000</option>
-                <option value="2400">Cabaña 4 — $2,400</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row full">
-            <div class="field">
-              <label>Nombre completo</label>
-              <input type="text" id="f-name" placeholder="Tu nombre" maxlength="100" autocomplete="name">
-            </div>
-          </div>
-          <div class="form-row full">
-            <div class="field">
-              <label>WhatsApp</label>
-              <input type="tel" id="f-tel" placeholder="+52 614 000 0000" maxlength="20" autocomplete="tel">
-            </div>
-          </div>
-
-          <div class="anticipo-info">
-            <div>
-              <div class="anticipo-label">Anticipo (50%)</div>
-              <div class="anticipo-note">Resto se paga al llegar</div>
-            </div>
-            <div class="anticipo-amt" id="anticipo-amt">$—</div>
-          </div>
-
-          <!-- Código de descuento -->
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Código de descuento (opcional)</label>
-            <div style="display:flex;gap:8px">
-              <input type="text" id="f-codigo" placeholder="Ej. VERANO25" style="flex:1;padding:11px 13px;border:1px solid rgba(0,0,0,.1);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;background:var(--cream);text-transform:uppercase;letter-spacing:1px" oninput="this.value=this.value.toUpperCase()">
-              <button type="button" onclick="aplicarCodigo()" style="padding:11px 16px;background:var(--pine);color:#fff;border:none;border-radius:var(--r);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='var(--moss)'" onmouseout="this.style.background='var(--pine)'">Aplicar</button>
-            </div>
-            <div id="codigo-msg" style="font-size:11px;margin-top:6px;display:none"></div>
-          </div>
-
-          <!-- Desglose de precio -->
-          <div id="precio-desglose" style="display:none;background:var(--sand);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;font-size:12px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-              <span style="color:var(--muted)">Precio base</span>
-              <span id="desglose-base">—</span>
-            </div>
-            <div id="desglose-temp-row" style="display:none;justify-content:space-between;margin-bottom:4px">
-              <span style="color:var(--muted)" id="desglose-temp-label">Temporada</span>
-              <span id="desglose-temp" style="color:var(--bark)">—</span>
-            </div>
-            <div id="desglose-desc-row" style="display:none;justify-content:space-between;margin-bottom:4px">
-              <span style="color:var(--moss)">🏷️ Descuento</span>
-              <span id="desglose-desc" style="color:var(--moss)">—</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);font-weight:500">
-              <span>Total</span>
-              <span id="desglose-total" style="color:var(--pine)">—</span>
-            </div>
-          </div>
-
-          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Métodos de pago</div>
-          <div class="pagos-icons">
-            <div class="pago-pill">💳 Tarjeta</div>
-            <div class="pago-pill">🏪 OXXO</div>
-            <div class="pago-pill">🏦 SPEI</div>
-          </div>
-
-          <button class="btn-pagar" id="btn-pagar" onclick="handlePagar()" disabled>
-            Pagar anticipo y confirmar
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- TESTIMONIOS -->
 <section style="background:var(--sand);padding:72px 56px">
   <div style="max-width:1160px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="eyebrow" style="text-align:center">Lo que dicen</div>
-      <h2 class="sec-h" style="text-align:center">Experiencias reales</h2>
-    </div>
+    <div style="text-align:center;margin-bottom:48px"><div class="eyebrow" style="text-align:center">Lo que dicen</div><h2 class="sec-h" style="text-align:center">Experiencias reales</h2></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
-
-      <div class="test-card" data-delay="0">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"Llegamos un viernes en la noche y lo primero que hicimos fue prender el fogatero. El silencio del bosque y el cielo estrellado no tienen comparación. Ya queremos regresar."</p>
-        <div class="test-author">
-          <div class="test-avatar">MR</div>
-          <div>
-            <div class="test-name">Marco R.</div>
-            <div class="test-city">Chihuahua, Chih.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="test-card" data-delay="100">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"La cabaña es exactamente como en las fotos — el diseño A-frame es impresionante. El jacuzzi en la terraza con vista al bosque fue lo mejor del viaje. Muy recomendable."</p>
-        <div class="test-author">
-          <div class="test-avatar">AL</div>
-          <div>
-            <div class="test-name">Ana L.</div>
-            <div class="test-city">Ciudad de México</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="test-card" data-delay="200">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"Fuimos en familia, 6 personas. La cabaña más grande nos dio espacio de sobra. Los niños se volvieron locos con los venados que aparecieron por la mañana. Una experiencia única."</p>
-        <div class="test-author">
-          <div class="test-avatar">JV</div>
-          <div>
-            <div class="test-name">Jorge V.</div>
-            <div class="test-city">Hermosillo, Son.</div>
-          </div>
-        </div>
-      </div>
-
+      <div class="test-card" data-delay="0"><div class="test-stars">★★★★★</div><p class="test-text">"Llegamos un viernes en la noche y lo primero que hicimos fue prender el fogatero. El silencio del bosque y el cielo estrellado no tienen comparación. Ya queremos regresar."</p><div class="test-author"><div class="test-avatar">MR</div><div><div class="test-name">Marco R.</div><div class="test-city">Chihuahua, Chih.</div></div></div></div>
+      <div class="test-card" data-delay="100"><div class="test-stars">★★★★★</div><p class="test-text">"La cabaña es exactamente como en las fotos — el diseño A-frame es impresionante. El jacuzzi en la terraza con vista al bosque fue lo mejor del viaje. Muy recomendable."</p><div class="test-author"><div class="test-avatar">AL</div><div><div class="test-name">Ana L.</div><div class="test-city">Ciudad de México</div></div></div></div>
+      <div class="test-card" data-delay="200"><div class="test-stars">★★★★★</div><p class="test-text">"Fuimos en familia, 6 personas. La cabaña más grande nos dio espacio de sobra. Los niños se volvieron locos con los venados que aparecieron por la mañana. Una experiencia única."</p><div class="test-author"><div class="test-avatar">JV</div><div><div class="test-name">Jorge V.</div><div class="test-city">Hermosillo, Son.</div></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- LLEGAR -->
 <section class="llegar-sec" id="llegar">
   <div class="llegar-inner">
     <div class="eyebrow">Cómo llegar</div>
     <h2 class="sec-h">El camino al bosque</h2>
     <p class="sec-sub">A una hora de la ciudad de Chihuahua, todo en carretera transitada.</p>
     <div class="route">
-      <div class="route-step" data-delay="0">
-        <div class="step-circle">1</div>
-        <div class="step-h">Sale de Chihuahua</div>
-        <p class="step-p">Toma la carretera federal hacia Cuauhtémoc (México 45) dirección oeste</p>
-      </div>
-      <div class="route-step" data-delay="160">
-        <div class="step-circle">2</div>
-        <div class="step-h">Desvío km 34</div>
-        <p class="step-p">Toma el desvío señalizado al Cañón de Majalca. Camino en buen estado</p>
-      </div>
-      <div class="route-step" data-delay="320">
-        <div class="step-circle">3</div>
-        <div class="step-h">8 km más</div>
-        <p class="step-p">Camino entre el bosque de pinos hasta la entrada del predio</p>
-      </div>
+      <div class="route-step" data-delay="0"><div class="step-circle">1</div><div class="step-h">Sale de Chihuahua</div><p class="step-p">Toma la carretera federal hacia Cuauhtémoc (México 45) dirección oeste</p></div>
+      <div class="route-step" data-delay="160"><div class="step-circle">2</div><div class="step-h">Desvío km 34</div><p class="step-p">Toma el desvío señalizado al Cañón de Majalca. Camino en buen estado</p></div>
+      <div class="route-step" data-delay="320"><div class="step-circle">3</div><div class="step-h">8 km más</div><p class="step-p">Camino entre el bosque de pinos hasta la entrada del predio</p></div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-
-<!-- POLÍTICAS -->
 <section style="background:var(--pine);padding:60px 56px 40px">
   <div style="max-width:1160px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:40px">
-      <div class="eyebrow" style="color:rgba(109,179,63,.7);text-align:center">Información importante</div>
-      <h2 class="sec-h" style="color:var(--white);text-align:center;font-size:clamp(24px,3vw,36px)">Políticas de estadía</h2>
-    </div>
+    <div style="text-align:center;margin-bottom:40px"><div class="eyebrow" style="color:rgba(109,179,63,.7);text-align:center">Información importante</div><h2 class="sec-h" style="color:var(--white);text-align:center;font-size:clamp(24px,3vw,36px)">Políticas de estadía</h2></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
-
-      <div class="pol-card">
-        <div class="pol-icon">🕐</div>
-        <div class="pol-title">Check-in y Check-out</div>
-        <div class="pol-items">
-          <div class="pol-item">Entrada: 3:00 PM</div>
-          <div class="pol-item">Salida: 12:00 PM</div>
-          <div class="pol-item">Check-in tardío: avisar con anticipación</div>
-        </div>
-      </div>
-
-      <div class="pol-card">
-        <div class="pol-icon">💳</div>
-        <div class="pol-title">Pago y cancelación</div>
-        <div class="pol-items">
-          <div class="pol-item">50% anticipo al reservar</div>
-          <div class="pol-item">50% restante al llegar</div>
-          <div class="pol-item">Cancelación: 72 hrs antes sin cargo</div>
-        </div>
-      </div>
-
-      <div class="pol-card">
-        <div class="pol-icon">🏡</div>
-        <div class="pol-title">Reglas de la cabaña</div>
-        <div class="pol-items">
-          <div class="pol-item">No se permiten mascotas</div>
-          <div class="pol-item">No fumar dentro de la cabaña</div>
-          <div class="pol-item">Silencio después de las 11 PM</div>
-        </div>
-      </div>
-
-      <div class="pol-card">
-        <div class="pol-icon">✅</div>
-        <div class="pol-title">Qué incluye</div>
-        <div class="pol-items">
-          <div class="pol-item">Leña para fogata incluida</div>
-          <div class="pol-item">Ropa de cama y toallas</div>
-          <div class="pol-item">Acceso al área común y fogatero</div>
-          <div class="pol-item">Jacuzzi privado (Cabaña 4)</div>
-        </div>
-      </div>
-
+      <div class="pol-card"><div class="pol-icon">🕐</div><div class="pol-title">Check-in y Check-out</div><div class="pol-items"><div class="pol-item">Entrada: 3:00 PM</div><div class="pol-item">Salida: 12:00 PM</div><div class="pol-item">Check-in tardío: avisar con anticipación</div></div></div>
+      <div class="pol-card"><div class="pol-icon">💳</div><div class="pol-title">Pago y cancelación</div><div class="pol-items"><div class="pol-item">50% anticipo al reservar</div><div class="pol-item">50% restante al llegar</div><div class="pol-item">Cancelación: 72 hrs antes sin cargo</div></div></div>
+      <div class="pol-card"><div class="pol-icon">🏡</div><div class="pol-title">Reglas de la cabaña</div><div class="pol-items"><div class="pol-item">No se permiten mascotas</div><div class="pol-item">No fumar dentro de la cabaña</div><div class="pol-item">Silencio después de las 11 PM</div></div></div>
+      <div class="pol-card"><div class="pol-icon">✅</div><div class="pol-title">Qué incluye</div><div class="pol-items"><div class="pol-item">Leña para fogata incluida</div><div class="pol-item">Ropa de cama y toallas</div><div class="pol-item">Acceso al área común y fogatero</div><div class="pol-item">Jacuzzi privado (Cabaña 4)</div></div></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="ft-top">
-    <div>
-      <div class="ft-logo"><img src="logo_dorado.png" style="height:120px;width:auto;" alt="Pico del Encino"></div>
-      <div class="ft-tagline">Cabañas de Montaña · Cañón de Majalca · Chihuahua</div>
-    </div>
-    <div class="ft-links">
-      <a href="#">Aviso de privacidad</a>
-      <a href="#">Términos</a>
-      <a href="#">WhatsApp</a>
-      <a href="#">Instagram</a>
-    </div>
+    <div><div class="ft-logo"><img src="logo_dorado.png" style="height:120px;width:auto;" alt="Pico del Encino"></div><div class="ft-tagline">Cabañas de Montaña · Cañón de Majalca · Chihuahua</div></div>
+    <div class="ft-links"><a href="#">Aviso de privacidad</a><a href="#">Términos</a><a href="#">WhatsApp</a><a href="#">Instagram</a></div>
   </div>
-  <div class="ft-bottom">
-    <div class="ft-copy">© 2026 Pico del Encino. Todos los derechos reservados.</div>
-    <div class="ft-credit">Desarrollado por <span>FlorByte Studio</span></div>
-  </div>
+  <div class="ft-bottom"><div class="ft-copy">© 2026 Pico del Encino. Todos los derechos reservados.</div><div class="ft-credit">Desarrollado por <span>FlorByte Studio</span></div></div>
 </footer>
+
+<div class="auth-overlay" id="authOverlay" onclick="if(event.target===this)cerrarAuthModal()">
+  <div class="auth-box">
+    <div class="auth-close" onclick="cerrarAuthModal()">✕</div>
+    <div id="auth-forms">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="cambiarAuthTab('login')">Iniciar sesión</div>
+        <div class="auth-tab" id="tab-register" onclick="cambiarAuthTab('register')">Crear cuenta</div>
+      </div>
+      <div class="auth-title">Tu cuenta</div>
+      <div class="auth-sub">Para identificar tu reservación y recibir tu confirmación</div>
+      <div id="form-login">
+        <div class="auth-field"><label>Correo</label><input type="email" id="login-email" placeholder="tu@correo.com"></div>
+        <div class="auth-field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+        <button class="auth-btn" onclick="clienteLogin()">Entrar</button>
+      </div>
+      <div id="form-register" style="display:none">
+        <div class="auth-field"><label>Nombre completo</label><input type="text" id="reg-nombre" placeholder="Tu nombre"></div>
+        <div class="auth-field"><label>Correo</label><input type="email" id="reg-email" placeholder="tu@correo.com"></div>
+        <div class="auth-field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
+        <button class="auth-btn" onclick="clienteRegister()">Crear cuenta</button>
+      </div>
+      <div class="auth-msg" id="auth-msg"></div>
+    </div>
+    <div class="auth-account-panel" id="auth-account-panel">
+      <div style="font-size:40px;margin-bottom:14px">👤</div>
+      <div class="auth-account-email" id="auth-account-email">—</div>
+      <div class="auth-account-sub">Sesión iniciada</div>
+      <button class="auth-logout-btn" onclick="clienteLogout()">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<div id="faq-btn" onclick="toggleFaq()">💬</div>
+<div class="faq-panel" id="faq-panel">
+  <div class="faq-head">
+    <div><div class="faq-head-title">¿Dudas?</div><div class="faq-head-sub">Preguntas frecuentes</div></div>
+    <div class="faq-close" onclick="toggleFaq()">✕</div>
+  </div>
+  <div class="faq-body" id="faq-body"></div>
+</div>
+
+<div id="res-strip" style="position:fixed;bottom:0;left:0;right:0;z-index:198;background:rgba(11,26,11,.97);backdrop-filter:blur(16px);border-top:1px solid rgba(109,179,63,.2);padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transform:translateY(100%);transition:transform .5s cubic-bezier(.4,0,.2,1)">
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 1.5s infinite"></div><span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45)">Disponibilidad en tiempo real</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="strip-cabanas">
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 1 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 2 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 3 · disponible</span>
+      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 4 · disponible</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="text-align:right"><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase">Desde</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#a8d98a;font-weight:300;line-height:1">$1,200 <span style="font-size:10px;font-family:'Inter',sans-serif;color:rgba(255,255,255,.3)">/ noche</span></div></div>
+    <button onclick="scroll2('reservar')" style="padding:10px 22px;background:#6db33f;color:#0b1a0b;border:none;border-radius:3px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s">Ver fechas →</button>
+  </div>
+</div>
+
+<a href="https://wa.me/526141234567?text=Hola%2C%20me%20interesa%20reservar%20una%20caba%C3%B1a%20en%20Sierra%20Alta%20Majalca" target="_blank" id="wa-btn"
+   style="position:fixed;bottom:28px;right:28px;z-index:999;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);text-decoration:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s" aria-label="Contactar por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+<div id="wa-tooltip" style="position:fixed;bottom:36px;right:96px;z-index:998;background:#0f172a;color:#fff;font-size:12px;padding:7px 13px;border-radius:8px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;border:1px solid rgba(255,255,255,.1)">¿Tienes dudas? Escríbenos</div>
 
 <script>
 function scroll2(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 
-// Strip flotante — aparece al pasar el hero
 const strip = document.getElementById('res-strip')
-window.addEventListener('scroll', ()=>{
-  if(window.scrollY > window.innerHeight * 0.6){
-    strip.style.transform = 'translateY(0)'
-  } else {
-    strip.style.transform = 'translateY(100%)'
-  }
-})
+window.addEventListener('scroll', ()=>{ strip.style.transform = window.scrollY > window.innerHeight * 0.6 ? 'translateY(0)' : 'translateY(100%)' })
+window.addEventListener('scroll',()=>{ document.getElementById('nav').classList.toggle('scrolled',scrollY>80) })
 
-// NAV scroll
-window.addEventListener('scroll',()=>{
-  document.getElementById('nav').classList.toggle('scrolled',scrollY>80)
-})
-
-// Parallax hero
 const heroBg = document.getElementById('heroBg')
 let ticking = false
 window.addEventListener('scroll', () => {
-  if(!ticking){
-    requestAnimationFrame(()=>{
-      const y = window.scrollY * 0.3
-      if(heroBg) heroBg.style.transform = `translateY(${y}px)`
-      ticking = false
-    })
-    ticking = true
-  }
+  if(!ticking){ requestAnimationFrame(()=>{ const y = window.scrollY * 0.3; if(heroBg) heroBg.style.transform = `translateY(${y}px)`; ticking = false }); ticking = true }
 })
+if(heroBg){ heroBg.style.animation = 'kenBurns 20s ease-in-out infinite alternate' }
 
-// Ken Burns effect — zoom lento en la imagen
-if(heroBg){
-  heroBg.style.animation = 'kenBurns 20s ease-in-out infinite alternate'
-}
-
-// CALENDAR
 const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 let cur=new Date()
 let selStart=null,selEnd=null
+let cabanaSeleccionada=null
+let occActual=new Set()
 
-// Supabase — reservaciones en tiempo real
-// ── Descuentos y temporadas ──────────────────────────────────
-let temporadas        = []
-let codigoAplicado    = null
-let precioConTempo    = 0
+let temporadas = []
+let codigoAplicado = null
+let precioConTempo = 0
 let descuentoAplicado = 0
-let temporadaActiva   = null
+let temporadaActiva = null
+
+const SB_URL = 'https://niwdmzgkgrmyivzlrcps.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pd2RtemdrZ3JteWl2emxyY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTU3OTgsImV4cCI6MjA5OTYzMTc5OH0.deBUKX5uad7WOzF-uq-eV5LivESt6IFJ5LR-YqhidgA'
+
+const sb = supabase.createClient(SB_URL, SB_KEY)
+let clienteActual = null
+
+async function initAuth(){
+  const { data: { session } } = await sb.auth.getSession()
+  actualizarUIAuth(session?.user || null)
+  sb.auth.onAuthStateChange((_event, session) => { actualizarUIAuth(session?.user || null) })
+}
+function actualizarUIAuth(user){
+  clienteActual = user ? { id: user.id, email: user.email } : null
+  const dot = document.getElementById('account-dot')
+  const label = document.getElementById('account-label')
+  const loginNote = document.getElementById('login-note')
+  if(clienteActual){ dot.style.display = 'block'; label.textContent = clienteActual.email.split('@')[0]; if(loginNote) loginNote.style.display = 'none' }
+  else { dot.style.display = 'none'; label.textContent = 'Iniciar sesión'; if(loginNote) loginNote.style.display = 'flex' }
+  calcAnticipo()
+}
+function abrirAuthModal(){
+  document.getElementById('authOverlay').classList.add('open')
+  const forms = document.getElementById('auth-forms')
+  const panel = document.getElementById('auth-account-panel')
+  if(clienteActual){ forms.style.display = 'none'; panel.classList.add('show'); document.getElementById('auth-account-email').textContent = clienteActual.email }
+  else { forms.style.display = 'block'; panel.classList.remove('show') }
+}
+function cerrarAuthModal(){ document.getElementById('authOverlay').classList.remove('open') }
+function cambiarAuthTab(tab){
+  document.getElementById('tab-login').classList.toggle('active', tab==='login')
+  document.getElementById('tab-register').classList.toggle('active', tab==='register')
+  document.getElementById('form-login').style.display = tab==='login' ? 'block' : 'none'
+  document.getElementById('form-register').style.display = tab==='register' ? 'block' : 'none'
+  document.getElementById('auth-msg').style.display = 'none'
+}
+function mostrarAuthMsg(msg, ok){ const el = document.getElementById('auth-msg'); el.textContent = msg; el.style.color = ok ? '#16a34a' : '#dc2626'; el.style.display = 'block' }
+async function clienteLogin(){
+  const email = document.getElementById('login-email').value.trim()
+  const pass = document.getElementById('login-pass').value
+  if(!email || !pass){ mostrarAuthMsg('Completa correo y contraseña', false); return }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass })
+  if(error){ mostrarAuthMsg('❌ ' + (error.message.includes('Invalid') ? 'Correo o contraseña incorrectos' : error.message), false); return }
+  mostrarAuthMsg('✅ Sesión iniciada', true)
+  actualizarUIAuth(data.user)
+  setTimeout(cerrarAuthModal, 700)
+}
+async function clienteRegister(){
+  const nombre = document.getElementById('reg-nombre').value.trim()
+  const email = document.getElementById('reg-email').value.trim()
+  const pass = document.getElementById('reg-pass').value
+  if(!nombre || !email || !pass){ mostrarAuthMsg('Completa todos los campos', false); return }
+  if(pass.length < 6){ mostrarAuthMsg('La contraseña debe tener al menos 6 caracteres', false); return }
+  const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { nombre } } })
+  if(error){ mostrarAuthMsg('❌ ' + error.message, false); return }
+  mostrarAuthMsg('✅ Cuenta creada — revisa tu correo si se pide confirmación', true)
+  if(data.user && !data.user.identities?.length){ mostrarAuthMsg('Este correo ya está registrado, inicia sesión', false); return }
+  actualizarUIAuth(data.user)
+  document.getElementById('f-name').value = document.getElementById('f-name').value || nombre
+  setTimeout(cerrarAuthModal, 900)
+}
+async function clienteLogout(){ await sb.auth.signOut(); actualizarUIAuth(null); cerrarAuthModal() }
+initAuth()
 
 async function cargarTemporadas(){
   try {
     const hoy = new Date().toISOString().split('T')[0]
-    const res = await fetch(
-      `${SB_URL}/rest/v1/temporadas?activa=eq.true&fecha_inicio=lte.${hoy}&fecha_fin=gte.${hoy}&select=*`,
-      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-    )
+    const res = await fetch(`${SB_URL}/rest/v1/temporadas?activa=eq.true&fecha_inicio=lte.${hoy}&fecha_fin=gte.${hoy}&select=*`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } })
     temporadas = await res.json()
-    // Aplicar temporada si hay una activa
-    if(temporadas.length > 0){
-      temporadaActiva = temporadas[0]
-    }
+    if(temporadas.length > 0) temporadaActiva = temporadas[0]
   } catch(e){ console.error('Error cargando temporadas:', e) }
 }
-
-function getPrecioBase(cabana){
-  const precios = { 'Cabaña 1': 1200, 'Cabaña 2': 1800, 'Cabaña 3': 2000, 'Cabaña 4': 2400 }
-  return precios[cabana] || 0
-}
-
-function calcPrecioConTemporada(precioBase){
-  if(!temporadaActiva) return precioBase
-  return Math.round(precioBase * temporadaActiva.multiplicador)
-}
+function calcPrecioConTemporada(precioBase){ if(!temporadaActiva) return precioBase; return Math.round(precioBase * temporadaActiva.multiplicador) }
 
 async function aplicarCodigo(){
   const codigo = document.getElementById('f-codigo').value.trim().toUpperCase()
-  const msg    = document.getElementById('codigo-msg')
+  const msg = document.getElementById('codigo-msg')
   if(!codigo){ msg.style.display='block'; msg.style.color='var(--muted)'; msg.textContent='Ingresa un código'; return }
-
   try {
     const cabana = document.getElementById('f-cab').options[document.getElementById('f-cab').selectedIndex].text.split(' — ')[0]
-    const res = await fetch(
-      `${SB_URL}/rest/v1/codigos_descuento?codigo=eq.${encodeURIComponent(codigo)}&activo=eq.true&select=*`,
-      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-    )
+    const res = await fetch(`${SB_URL}/rest/v1/codigos_descuento?codigo=eq.${encodeURIComponent(codigo)}&activo=eq.true&select=*`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } })
     const data = await res.json()
-
-    if(!data.length){
-      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Código no válido o expirado'; return
-    }
+    if(!data.length){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Código no válido o expirado'; return }
     const cod = data[0]
-
-    // Verificar usos
-    if(cod.usos_actual >= cod.usos_max){
-      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya alcanzó su límite de usos'; return
-    }
-
-    // Verificar fecha expiración
-    if(cod.fecha_expira && new Date(cod.fecha_expira) < new Date()){
-      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya expiró'; return
-    }
-
-    // Verificar si aplica a la cabaña seleccionada
-    if(cod.aplica_cabana !== 'todas' && cod.aplica_cabana !== cabana){
-      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent=`❌ Este código solo aplica para ${cod.aplica_cabana}`; return
-    }
-
+    if(cod.usos_actual >= cod.usos_max){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya alcanzó su límite de usos'; return }
+    if(cod.fecha_expira && new Date(cod.fecha_expira) < new Date()){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya expiró'; return }
+    if(cod.aplica_cabana !== 'todas' && cod.aplica_cabana !== cabana){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent=`❌ Este código solo aplica para ${cod.aplica_cabana}`; return }
     codigoAplicado = cod
-    msg.style.display  = 'block'
-    msg.style.color    = '#16a34a'
+    msg.style.display = 'block'; msg.style.color = '#16a34a'
     const descLabel = cod.tipo === 'porcentaje' ? `${cod.valor}% de descuento` : `$${cod.valor} de descuento`
     msg.textContent = `✅ Código aplicado — ${descLabel}`
     calcAnticipo()
-
   } catch(e){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='Error al verificar el código' }
 }
-
 function calcDescuento(precioTempTotal){
   if(!codigoAplicado) return 0
-  if(codigoAplicado.tipo === 'porcentaje'){
-    return Math.round(precioTempTotal * (codigoAplicado.valor / 100))
-  }
+  if(codigoAplicado.tipo === 'porcentaje') return Math.round(precioTempTotal * (codigoAplicado.valor / 100))
   return Math.min(codigoAplicado.valor, precioTempTotal)
 }
-
 function mostrarDesglose(precioBase, noches, pTempo, descuento, total){
   const box = document.getElementById('precio-desglose')
   box.style.display = 'block'
-  document.getElementById('desglose-base').textContent  = `$${(precioBase*noches).toLocaleString('es-MX')}`
-
+  document.getElementById('desglose-base').textContent = `$${(precioBase*noches).toLocaleString('es-MX')}`
   const tempRow = document.getElementById('desglose-temp-row')
   if(temporadaActiva && temporadaActiva.multiplicador !== 1){
     tempRow.style.display = 'flex'
@@ -1460,211 +766,105 @@ function mostrarDesglose(precioBase, noches, pTempo, descuento, total){
     document.getElementById('desglose-temp').textContent = `${signo}$${Math.abs(diff).toLocaleString('es-MX')}`
     document.getElementById('desglose-temp').style.color = diff >= 0 ? 'var(--bark)' : 'var(--moss)'
   } else { tempRow.style.display = 'none' }
-
   const descRow = document.getElementById('desglose-desc-row')
-  if(descuento > 0){
-    descRow.style.display = 'flex'
-    document.getElementById('desglose-desc').textContent = `-$${descuento.toLocaleString('es-MX')}`
-  } else { descRow.style.display = 'none' }
-
+  if(descuento > 0){ descRow.style.display = 'flex'; document.getElementById('desglose-desc').textContent = `-$${descuento.toLocaleString('es-MX')}` }
+  else { descRow.style.display = 'none' }
   document.getElementById('desglose-total').textContent = `$${total.toLocaleString('es-MX')}`
 }
-
-// Sobrescribir calcAnticipo para incluir temporadas y descuentos
-const _calcAnticipo = calcAnticipo
-// Redefino calcAnticipo más abajo
-
-// Sanitizar inputs contra XSS
-function sanitize(str){
-  if(!str) return ''
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;')
-}
-
-const SB_URL = 'https://niwdmzgkgrmyivzlrcps.supabase.co'
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pd2RtemdrZ3JteWl2emxyY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTU3OTgsImV4cCI6MjA5OTYzMTc5OH0.deBUKX5uad7WOzF-uq-eV5LivESt6IFJ5LR-YqhidgA'
+function sanitize(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
 
 let blocked = new Set()
-
-async function cargarFechasOcupadas(){
-  try {
-    const hoy = new Date().toISOString().split('T')[0]
-    const res = await fetch(
-      `${SB_URL}/rest/v1/reservaciones?select=fecha_entrada,fecha_salida&estado=neq.cancelada&fecha_salida=gte.${hoy}`,
-      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-    )
-    const data = await res.json()
-    const nuevo = new Set()
-    data.forEach(r => {
-      const d = new Date(r.fecha_entrada)
-      const fin = new Date(r.fecha_salida)
-      while(d < fin){ nuevo.add(d.toISOString().split('T')[0]); d.setDate(d.getDate()+1) }
-    })
-    blocked = nuevo
-    renderCal()
-  } catch(e){ console.error('Error fechas:', e) }
-}
-
-
-
-// ── Flip cards ──────────────────────────────────────────────
-function flipCard(id){
-  document.getElementById('cab-'+id).classList.add('flipped')
-  renderMiniCal(id, cabanaKey(id))
-}
-function unflipCard(id){
-  document.getElementById('cab-'+id).classList.remove('flipped')
-}
-function cabanaKey(id){
-  const map = {c1:'Cabaña 1',c2:'Cabaña 2',c3:'Cabaña 3',c4:'Cabaña 4'}
-  return map[id]
-}
-
-// ── Mini calendarios por cabaña ──────────────────────────
-const CABANAS_CONFIG = [
-  { id: 'c1', nombre: 'Cabaña 1', key: 'Cabaña 1' },
-  { id: 'c2', nombre: 'Cabaña 2', key: 'Cabaña 2' },
-  { id: 'c3', nombre: 'Cabaña 3', key: 'Cabaña 3' },
-  { id: 'c4', nombre: 'Cabaña 4', key: 'Cabaña 4' },
-]
-
-// Fechas ocupadas por cabaña
 let blockedPorCabana = { 'Cabaña 1': new Set(), 'Cabaña 2': new Set(), 'Cabaña 3': new Set(), 'Cabaña 4': new Set() }
+const CABANAS_CONFIG = [ { id: 'c1', key: 'Cabaña 1' }, { id: 'c2', key: 'Cabaña 2' }, { id: 'c3', key: 'Cabaña 3' }, { id: 'c4', key: 'Cabaña 4' } ]
 
 async function cargarFechasPorCabana(){
   try {
     const hoy = new Date().toISOString().split('T')[0]
-    const res = await fetch(
-      `${SB_URL}/rest/v1/reservaciones?select=fecha_entrada,fecha_salida,cabana&estado=neq.cancelada&fecha_salida=gte.${hoy}`,
-      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
-    )
+    const res = await fetch(`${SB_URL}/rest/v1/reservaciones?select=fecha_entrada,fecha_salida,cabana&estado=neq.cancelada&fecha_salida=gte.${hoy}`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } })
     const data = await res.json()
-
-    // Reset
     Object.keys(blockedPorCabana).forEach(k => blockedPorCabana[k] = new Set())
-    // Global blocked también
     const globalBlocked = new Set()
-
     data.forEach(r => {
-      const d = new Date(r.fecha_entrada)
-      const fin = new Date(r.fecha_salida)
-      while(d < fin){
-        const key = d.toISOString().split('T')[0]
-        if(blockedPorCabana[r.cabana]) blockedPorCabana[r.cabana].add(key)
-        globalBlocked.add(key)
-        d.setDate(d.getDate()+1)
-      }
+      const d = new Date(r.fecha_entrada); const fin = new Date(r.fecha_salida)
+      while(d < fin){ const key = d.toISOString().split('T')[0]; if(blockedPorCabana[r.cabana]) blockedPorCabana[r.cabana].add(key); globalBlocked.add(key); d.setDate(d.getDate()+1) }
     })
     blocked = globalBlocked
-
-    // Renderizar mini calendarios y actualizar disponibilidad
-    CABANAS_CONFIG.forEach(c => {
-      renderMiniCal(c.id, c.key)
-      actualizarDisponibilidadCard(c.id, c.key)
-    })
+    CABANAS_CONFIG.forEach(c => actualizarDisponibilidadCard(c.id, c.key))
     renderCal()
   } catch(e){ console.error('Error:', e) }
 }
-
 function actualizarDisponibilidadCard(id, cabana){
-  const avail = document.getElementById('avail-' + id)
-  if(!avail) return
+  const avail = document.getElementById('avail-' + id); if(!avail) return
   const hoy = new Date()
-  const manana = new Date(hoy); manana.setDate(manana.getDate()+1)
-  const mañanaKey = manana.toISOString().split('T')[0]
   const ocupadaHoy = blockedPorCabana[cabana]?.has(hoy.toISOString().split('T')[0])
-  if(ocupadaHoy){
-    avail.className = 'cab-avail avail-no'
-    avail.innerHTML = '<div class="avail-dot"></div>Ocupada'
-  } else {
-    avail.className = 'cab-avail avail-ok'
-    avail.innerHTML = '<div class="avail-dot"></div>Disponible'
-  }
+  if(ocupadaHoy){ avail.className = 'cab-avail avail-no'; avail.innerHTML = '<div class="avail-dot"></div>Ocupada' }
+  else { avail.className = 'cab-avail avail-ok'; avail.innerHTML = '<div class="avail-dot"></div>Disponible' }
 }
 
-const MESES_CORTO = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
-const miniCalMes = {}
-
-function renderMiniCal(id, cabana){
-  const grid  = document.getElementById('cct-grid-' + id)
-  const month = document.getElementById('cct-month-' + id)
-  if(!grid || !month) return
-
-  if(!miniCalMes[id]) miniCalMes[id] = new Date()
-  const cur   = miniCalMes[id]
-  const first = new Date(cur.getFullYear(), cur.getMonth(), 1)
-  const last  = new Date(cur.getFullYear(), cur.getMonth()+1, 0)
-  const today = new Date(); today.setHours(0,0,0,0)
-  const occ   = blockedPorCabana[cabana] || new Set()
-
-  month.textContent = MESES_CORTO[cur.getMonth()] + ' ' + cur.getFullYear()
-
-  let html = '<div class="cct-dn">D</div><div class="cct-dn">L</div><div class="cct-dn">M</div><div class="cct-dn">M</div><div class="cct-dn">J</div><div class="cct-dn">V</div><div class="cct-dn">S</div>'
-  for(let i=0; i<first.getDay(); i++) html += '<div class="cct-d empty"></div>'
-  for(let d=1; d<=last.getDate(); d++){
-    const date = new Date(cur.getFullYear(), cur.getMonth(), d)
-    const key  = date.toISOString().split('T')[0]
-    let cls = 'cct-d'
-    if(date < today)                    cls += ' past'
-    else if(occ.has(key))               cls += ' occupied'
-    else if(date.getTime()===today.getTime()) cls += ' today'
-    html += `<div class="${cls}">${d}</div>`
-  }
-  grid.innerHTML = html
+// Placeholders genéricos — reemplaza este objeto por rutas de fotos reales cuando las tengas,
+// ej: CABANAS_GALERIA.c1 = ['cabana1-int-1.jpg','cabana1-int-2.jpg','cabana1-int-3.jpg']
+const CABANAS_GALERIA = {
+  c1: [
+    { icon:'🛏️', label:'Recámara', bg:'linear-gradient(160deg,#1a3a1a,#0d2010)' },
+    { icon:'🔥', label:'Sala y chimenea', bg:'linear-gradient(160deg,#2a2010,#1a150a)' },
+    { icon:'🚿', label:'Baño', bg:'linear-gradient(160deg,#0d2a2a,#0a1a1a)' },
+  ],
+  c2: [
+    { icon:'🛏️', label:'Recámara principal', bg:'linear-gradient(160deg,#1a2a3a,#0d1a2a)' },
+    { icon:'🔥', label:'Sala con chimenea', bg:'linear-gradient(160deg,#2a2010,#1a150a)' },
+    { icon:'🛋️', label:'Segunda recámara', bg:'linear-gradient(160deg,#1a3a1a,#0d2010)' },
+  ],
+  c3: [
+    { icon:'🛏️', label:'Recámara', bg:'linear-gradient(160deg,#2a1a2a,#1a0d1a)' },
+    { icon:'🌲', label:'Terraza privada', bg:'linear-gradient(160deg,#1a3a1a,#0d2010)' },
+    { icon:'🛁', label:'Baño', bg:'linear-gradient(160deg,#0d2a2a,#0a1a1a)' },
+  ],
+  c4: [
+    { icon:'🛏️', label:'Recámara principal', bg:'linear-gradient(160deg,#2a2010,#1a150a)' },
+    { icon:'♨️', label:'Jacuzzi privado', bg:'linear-gradient(160deg,#0d2a2a,#0a1a1a)' },
+    { icon:'🛋️', label:'Sala completa', bg:'linear-gradient(160deg,#1a2a3a,#0d1a2a)' },
+  ],
 }
-
-function miniCalPrev(id, cabana){
-  if(!miniCalMes[id]) miniCalMes[id] = new Date()
-  miniCalMes[id].setMonth(miniCalMes[id].getMonth()-1)
-  renderMiniCal(id, cabana)
+const galeriaIndex = { c1:0, c2:0, c3:0, c4:0 }
+function renderGaleria(id){
+  const slides = CABANAS_GALERIA[id]
+  const wrap = document.getElementById('gallery-'+id)
+  wrap.innerHTML = slides.map((s,i) => `
+    <div class="gallery-slide ${i===galeriaIndex[id]?'active':''}" style="background:${s.bg}">
+      <div class="gallery-slide-icon">${s.icon}</div>
+      <div class="gallery-slide-label">${s.label}</div>
+      <div class="gallery-slide-note">Foto próximamente</div>
+    </div>`).join('') + `
+    <button class="gallery-arrow left" onclick="galeriaPrev('${id}')">‹</button>
+    <button class="gallery-arrow right" onclick="galeriaNext('${id}')">›</button>`
+  document.getElementById('gallery-dots-'+id).innerHTML = slides.map((_,i)=>`<div class="gallery-dot ${i===galeriaIndex[id]?'active':''}"></div>`).join('')
 }
-function miniCalNext(id, cabana){
-  if(!miniCalMes[id]) miniCalMes[id] = new Date()
-  miniCalMes[id].setMonth(miniCalMes[id].getMonth()+1)
-  renderMiniCal(id, cabana)
-}
+function galeriaPrev(id){ const n=CABANAS_GALERIA[id].length; galeriaIndex[id]=(galeriaIndex[id]-1+n)%n; renderGaleria(id) }
+function galeriaNext(id){ const n=CABANAS_GALERIA[id].length; galeriaIndex[id]=(galeriaIndex[id]+1)%n; renderGaleria(id) }
+function flipCard(id){ document.getElementById('cab-'+id).classList.add('flipped'); renderGaleria(id) }
+function unflipCard(id){ document.getElementById('cab-'+id).classList.remove('flipped') }
+function cabanaKey(id){ const map = {c1:'Cabaña 1',c2:'Cabaña 2',c3:'Cabaña 3',c4:'Cabaña 4'}; return map[id] }
 
-// Inicializar
 cargarTemporadas().then(()=>cargarFechasPorCabana())
 setInterval(cargarFechasPorCabana, 30000)
 
-
-function fmtDate(d){
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-}
-function fmtDisplay(d){
-  return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
-}
+function fmtDate(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` }
+function fmtDisplay(d){ return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}` }
 
 function renderCal(){
-  const title=document.getElementById('cal-title')
-  title.textContent=`${months[cur.getMonth()]} ${cur.getFullYear()}`
-  const grid=document.getElementById('cal-days')
-  grid.innerHTML=''
-  const first=new Date(cur.getFullYear(),cur.getMonth(),1)
-  const last=new Date(cur.getFullYear(),cur.getMonth()+1,0)
+  const title=document.getElementById('cal-title'); title.textContent=`${months[cur.getMonth()]} ${cur.getFullYear()}`
+  const grid=document.getElementById('cal-days'); grid.innerHTML=''
+  if(!cabanaSeleccionada){ grid.innerHTML = '<div class="cal-cabana-hint">👆 Elige una cabaña en el formulario para ver sus fechas disponibles</div>'; return }
+  occActual = blockedPorCabana[cabanaSeleccionada] || new Set()
+  const first=new Date(cur.getFullYear(),cur.getMonth(),1); const last=new Date(cur.getFullYear(),cur.getMonth()+1,0)
   const today=new Date(); today.setHours(0,0,0,0)
-
-  for(let i=0;i<first.getDay();i++){
-    const e=document.createElement('div')
-    e.className='cal-day empty'
-    grid.appendChild(e)
-  }
+  for(let i=0;i<first.getDay();i++){ const e=document.createElement('div'); e.className='cal-day empty'; grid.appendChild(e) }
   for(let d=1;d<=last.getDate();d++){
-    const date=new Date(cur.getFullYear(),cur.getMonth(),d)
-    const key=fmtDate(date)
-    const e=document.createElement('div')
-    e.className='cal-day'
-    e.textContent=d
+    const date=new Date(cur.getFullYear(),cur.getMonth(),d); const key=fmtDate(date)
+    const e=document.createElement('div'); e.className='cal-day'; e.textContent=d
     if(date<today) e.classList.add('past')
-    else if(blocked.has(key)){
-      e.classList.add('blocked')
-      e.style.cssText='background:rgba(226,75,75,.08);color:rgba(226,75,75,.4)'
-    } else {
+    else if(occActual.has(key)){ e.classList.add('blocked'); e.style.cssText='background:rgba(226,75,75,.08);color:rgba(226,75,75,.4)' }
+    else {
       if(selStart&&fmtDate(selStart)===key) e.classList.add('selected')
       if(selEnd&&fmtDate(selEnd)===key) e.classList.add('selected')
       if(selStart&&selEnd&&date>selStart&&date<selEnd) e.classList.add('in-range')
@@ -1674,162 +874,111 @@ function renderCal(){
     grid.appendChild(e)
   }
 }
-
-function rangoTieneConflicto(start, end){
-  // Verifica que ningún día entre start y end esté bloqueado
-  const d = new Date(start)
-  while(d < end){
-    if(blocked.has(fmtDate(d))) return true
-    d.setDate(d.getDate()+1)
-  }
-  return false
-}
-
+function rangoTieneConflicto(start, end){ const d = new Date(start); while(d < end){ if(occActual.has(fmtDate(d))) return true; d.setDate(d.getDate()+1) } return false }
 function pickDate(date){
-  if(!selStart || selEnd || date < selStart){
-    // Primer click — solo setear inicio
-    selStart = date
-    selEnd = null
-  } else if(date.getTime() === selStart.getTime()){
-    // Click en el mismo día — resetear
-    selStart = null
-    selEnd = null
-  } else {
-    // Segundo click — verificar que el rango no cruce días bloqueados
-    if(rangoTieneConflicto(selStart, date)){
-      // Rango inválido — mostrar error visual y resetear
-      selStart = date
-      selEnd = null
-      showCalError('Ese rango incluye fechas ocupadas. Elige otras fechas.')
-    } else {
-      selEnd = date
-      hideCalError()
-    }
+  if(!selStart || selEnd || date < selStart){ selStart = date; selEnd = null }
+  else if(date.getTime() === selStart.getTime()){ selStart = null; selEnd = null }
+  else {
+    if(rangoTieneConflicto(selStart, date)){ selStart = date; selEnd = null; showCalError('Ese rango incluye fechas ocupadas. Elige otras fechas.') }
+    else { selEnd = date; hideCalError() }
   }
-  document.getElementById('f-in').value  = selStart ? fmtDisplay(selStart) : ''
-  document.getElementById('f-out').value = selEnd   ? fmtDisplay(selEnd)   : ''
-  renderCal()
-  calcAnticipo()
+  document.getElementById('f-in').value = selStart ? fmtDisplay(selStart) : ''
+  document.getElementById('f-out').value = selEnd ? fmtDisplay(selEnd) : ''
+  renderCal(); calcAnticipo()
 }
-
 function showCalError(msg){
   let el = document.getElementById('cal-error')
-  if(!el){
-    el = document.createElement('div')
-    el.id = 'cal-error'
-    el.style.cssText = 'padding:8px 16px;font-size:11px;color:#e24b4b;background:rgba(226,75,75,.08);border-top:1px solid rgba(226,75,75,.2);text-align:center'
-    document.querySelector('.calendar').appendChild(el)
-  }
-  el.textContent = msg
-  el.style.display = 'block'
+  if(!el){ el = document.createElement('div'); el.id = 'cal-error'; el.style.cssText = 'padding:8px 16px;font-size:11px;color:#e24b4b;background:rgba(226,75,75,.08);border-top:1px solid rgba(226,75,75,.2);text-align:center'; document.querySelector('.calendar').appendChild(el) }
+  el.textContent = msg; el.style.display = 'block'
 }
-
-function hideCalError(){
-  const el = document.getElementById('cal-error')
-  if(el) el.style.display = 'none'
-}
-
+function hideCalError(){ const el = document.getElementById('cal-error'); if(el) el.style.display = 'none' }
 document.getElementById('prev').onclick=()=>{cur.setMonth(cur.getMonth()-1);renderCal()}
 document.getElementById('next').onclick=()=>{cur.setMonth(cur.getMonth()+1);renderCal()}
 renderCal()
 
-// ANTICIPO
+const PRECIO_A_CABANA = {1200:'Cabaña 1',1800:'Cabaña 2',2000:'Cabaña 3',2400:'Cabaña 4'}
 function calcAnticipo(){
-  const precioBase = parseInt(document.getElementById('f-cab').value) || 0
-  const cabana     = document.getElementById('f-cab').options[document.getElementById('f-cab').selectedIndex].text.split(' — ')[0]
-  const noches     = (selStart&&selEnd) ? Math.round((selEnd-selStart)/(1000*60*60*24)) : 0
-  const n          = Math.max(noches, 1)
-
-  // Precio con temporada
-  const precioTempo     = calcPrecioConTemporada(precioBase)
-  const totalConTempo   = precioTempo * n
-
-  // Descuento
-  const descuento       = calcDescuento(totalConTempo)
-  const totalFinal      = totalConTempo - descuento
-  const anticipo        = Math.round(totalFinal / 2)
-
-  // Guardar para usar en pago
-  precioConTempo    = precioTempo
-  descuentoAplicado = descuento
-
-  document.getElementById('anticipo-amt').textContent = anticipo > 0 ? `$${anticipo.toLocaleString('es-MX')}` : '$—'
-
-  if(precioBase > 0 && noches > 0){
-    mostrarDesglose(precioBase, n, totalConTempo, descuento, totalFinal)
+  const cabVal = document.getElementById('f-cab').value
+  const nuevaCabana = PRECIO_A_CABANA[cabVal] || null
+  if(nuevaCabana !== cabanaSeleccionada){
+    cabanaSeleccionada = nuevaCabana
+    selStart = null; selEnd = null
+    document.getElementById('f-in').value = ''
+    document.getElementById('f-out').value = ''
+    renderCal()
   }
-
+  const precioBase = parseInt(cabVal) || 0
+  const noches = (selStart&&selEnd) ? Math.round((selEnd-selStart)/(1000*60*60*24)) : 0
+  const n = Math.max(noches, 1)
+  const precioTempo = calcPrecioConTemporada(precioBase)
+  const totalConTempo = precioTempo * n
+  const descuento = calcDescuento(totalConTempo)
+  const totalFinal = totalConTempo - descuento
+  const anticipo = Math.round(totalFinal / 2)
+  precioConTempo = precioTempo; descuentoAplicado = descuento
+  document.getElementById('anticipo-amt').textContent = anticipo > 0 ? `$${anticipo.toLocaleString('es-MX')}` : '$—'
+  if(precioBase > 0 && noches > 0) mostrarDesglose(precioBase, n, totalConTempo, descuento, totalFinal)
   const btn = document.getElementById('btn-pagar')
-  btn.disabled = !(selStart && selEnd && precioBase && document.getElementById('f-name').value && document.getElementById('f-tel').value)
+  btn.disabled = !(selStart && selEnd && precioBase && document.getElementById('f-name').value && document.getElementById('f-tel').value && clienteActual)
 }
 ['f-name','f-tel'].forEach(id=>document.getElementById(id).addEventListener('input',calcAnticipo))
-document.getElementById('f-cab').addEventListener('change',calcAnticipo)
+
+const EMAILJS_PUBLIC_KEY = 'TU_PUBLIC_KEY_AQUI'
+const EMAILJS_SERVICE_ID = 'TU_SERVICE_ID_AQUI'
+const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID_AQUI'
+if(typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'TU_PUBLIC_KEY_AQUI'){ emailjs.init(EMAILJS_PUBLIC_KEY) }
+async function enviarCorreoConfirmacion(d){
+  if(EMAILJS_PUBLIC_KEY === 'TU_PUBLIC_KEY_AQUI') return
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: d.email, nombre: d.nombre, cabana: d.cabana, entrada: d.entrada, salida: d.salida,
+      noches: d.noches, anticipo: d.anticipo.toLocaleString('es-MX'), total: d.total.toLocaleString('es-MX'), folio: d.id || '—'
+    })
+  } catch(e){ console.error('Error enviando correo:', e) }
+}
 
 async function handlePagar(){
-  const btn      = document.getElementById('btn-pagar')
-  const nombre   = document.getElementById('f-name').value.trim()
+  const btn = document.getElementById('btn-pagar')
+  if(!clienteActual){ abrirAuthModal(); return }
+  const nombre = document.getElementById('f-name').value.trim()
   const telefono = document.getElementById('f-tel').value.trim()
-  const cabSel   = document.getElementById('f-cab')
-  const cabana   = cabSel.options[cabSel.selectedIndex].text.split(' — ')[0]
+  const cabSel = document.getElementById('f-cab')
+  const cabana = cabSel.options[cabSel.selectedIndex].text.split(' — ')[0]
   const personas = parseInt(document.getElementById('f-pax').value)
-  const precio   = parseInt(cabSel.value) || 0
-  const noches   = (selStart&&selEnd) ? Math.round((selEnd-selStart)/(1000*60*60*24)) : 1
-  const total    = precio * Math.max(noches,1)
+  const precio = parseInt(cabSel.value) || 0
+  const noches = (selStart&&selEnd) ? Math.round((selEnd-selStart)/(1000*60*60*24)) : 1
+  const total = precio * Math.max(noches,1)
   const anticipo = Math.round(total/2)
-
   if(!nombre||!telefono||!precio||!selStart||!selEnd) return
-  // Validar formato
   if(nombre.length < 3){ showCalError('Ingresa tu nombre completo'); return }
   if(!/^[0-9+\s\-]{7,20}$/.test(telefono)){ showCalError('Número de WhatsApp inválido'); return }
-  // Sanitizar
-  const nombreClean   = sanitize(nombre.replace(/[<>"']/g,'').trim().slice(0,100))
+  const nombreClean = sanitize(nombre.replace(/[<>"']/g,'').trim().slice(0,100))
   const telefonoClean = telefono.replace(/[^0-9+\s\-]/g,'').trim().slice(0,20)
-
-  btn.textContent = 'Procesando reservación...'
-  btn.disabled    = true
-  btn.style.background = 'var(--moss)'
-
+  btn.textContent = 'Procesando reservación...'; btn.disabled = true; btn.style.background = 'var(--moss)'
   try {
     const res = await fetch(`${SB_URL}/rest/v1/reservaciones`, {
       method: 'POST',
-      headers: {
-        'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json', 'Prefer': 'return=representation'
-      },
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify({
-        cabana, nombre, telefono,
-        fecha_entrada: fmtDate(selStart),
-        fecha_salida:  fmtDate(selEnd),
-        personas, monto_total: total, anticipo, estado: 'confirmada'
+        cabana, nombre, telefono, cliente_email: clienteActual.email, user_id: clienteActual.id,
+        fecha_entrada: fmtDate(selStart), fecha_salida: fmtDate(selEnd), personas, monto_total: total, anticipo, estado: 'confirmada'
       })
     })
     if(!res.ok) throw new Error('Error')
     const [r] = await res.json()
-
-    // Actualizar calendario inmediatamente
-    await cargarFechasOcupadas()
-
-    btn.textContent = '✅ ¡Reservación confirmada!'
-    btn.style.background = '#16a34a'
-
-    // Modal de confirmación
-    mostrarConfirmacion({ nombre: nombreClean, cabana, telefono: telefonoClean,
-      entrada: fmtDisplay(selStart), salida: fmtDisplay(selEnd),
-      noches, total, anticipo, id: r?.id })
-
-    // Limpiar form
+    await cargarFechasPorCabana()
+    btn.textContent = '✅ ¡Reservación confirmada!'; btn.style.background = '#16a34a'
+    mostrarConfirmacion({ nombre: nombreClean, cabana, telefono: telefonoClean, entrada: fmtDisplay(selStart), salida: fmtDisplay(selEnd), noches, total, anticipo, id: r?.id })
+    enviarCorreoConfirmacion({ email: clienteActual.email, nombre: nombreClean, cabana, entrada: fmtDisplay(selStart), salida: fmtDisplay(selEnd), noches, total, anticipo, id: r?.id })
     setTimeout(()=>{
       selStart=null; selEnd=null
       ;['f-name','f-tel','f-in','f-out'].forEach(id=>document.getElementById(id).value='')
       document.getElementById('anticipo-amt').textContent='$—'
-      btn.textContent='Pagar anticipo y confirmar'
-      btn.disabled=false; btn.style.background=''
+      btn.textContent='Pagar anticipo y confirmar'; btn.disabled=false; btn.style.background=''
       renderCal()
     }, 4000)
-
   } catch(err){
-    btn.textContent='❌ Error — intenta de nuevo'
-    btn.style.background='#dc2626'; btn.disabled=false
+    btn.textContent='❌ Error — intenta de nuevo'; btn.style.background='#dc2626'; btn.disabled=false
     setTimeout(()=>{ btn.textContent='Pagar anticipo y confirmar'; btn.style.background='' },3000)
   }
 }
@@ -1856,84 +1005,43 @@ function mostrarConfirmacion(d){
           <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Salida</div><strong style="color:#0b1a0b">${d.salida}</strong></div>
         </div>
         <div style="border-top:1px solid #d4c9a8;margin-top:14px;padding-top:14px;display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Anticipo pagado ✅</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:#16a34a">$${d.anticipo.toLocaleString('es-MX')}</div>
-          </div>
-          <div style="text-align:right">
-            <div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Resto al llegar</div>
-            <div style="font-size:20px;font-weight:500;color:#0b1a0b">$${d.anticipo.toLocaleString('es-MX')}</div>
-          </div>
+          <div><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Anticipo pagado ✅</div><div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:#16a34a">$${d.anticipo.toLocaleString('es-MX')}</div></div>
+          <div style="text-align:right"><div style="color:#8a7a5a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Resto al llegar</div><div style="font-size:20px;font-weight:500;color:#0b1a0b">$${d.anticipo.toLocaleString('es-MX')}</div></div>
         </div>
       </div>
-      <p style="font-size:12px;color:#8a7a5a;text-align:center;margin-bottom:20px;line-height:1.7">
-        Te contactaremos al <strong>${sanitize(d.telefono)}</strong> para confirmar los detalles.<br>
-        Las fechas ya están bloqueadas en el calendario en tiempo real.
-      </p>
-      <button onclick="document.getElementById('modal-reserva').remove()" style="width:100%;padding:14px;background:#0b1a0b;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px">
-        Cerrar
-      </button>
+      <p style="font-size:12px;color:#8a7a5a;text-align:center;margin-bottom:20px;line-height:1.7">Te contactaremos al <strong>${sanitize(d.telefono)}</strong> para confirmar los detalles. Las fechas ya están bloqueadas en el calendario en tiempo real. Te enviamos también un correo de confirmación.</p>
+      <button onclick="document.getElementById('modal-reserva').remove()" style="width:100%;padding:14px;background:#0b1a0b;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.5px">Cerrar</button>
     </div>`
   document.body.appendChild(m)
   m.addEventListener('click', e=>{ if(e.target===m) m.remove() })
 }
 
-// INTERSECTION OBSERVER
+const FAQS = [
+  { q: '¿Cuáles son los horarios de check-in y check-out?', a: 'Entrada: 3:00 PM · Salida: 12:00 PM. Si necesitas check-in más tarde, avísanos con anticipación por WhatsApp.' },
+  { q: '¿Cómo funciona el pago?', a: 'Pagas el 50% de anticipo para confirmar tu reservación (tarjeta, OXXO o SPEI). El 50% restante se paga al llegar a la cabaña.' },
+  { q: '¿Cuál es la política de cancelación?', a: 'Puedes cancelar sin cargo hasta 72 horas antes de tu llegada. Después de eso, el anticipo no es reembolsable.' },
+  { q: '¿Se permiten mascotas?', a: 'Por el momento no se permiten mascotas dentro de las cabañas, para cuidar el mobiliario y respetar la fauna silvestre del área.' },
+  { q: '¿Qué incluye la reservación?', a: 'Incluye leña para fogata, ropa de cama, toallas, acceso al área común con fogatero, y jacuzzi privado en la Cabaña 4.' },
+  { q: '¿Cómo llego a Pico del Encino?', a: 'Desde Chihuahua toma la carretera federal 45 hacia Cuauhtémoc, sal en el desvío señalizado al Cañón de Majalca en el km 34, y sigue 8 km más por el bosque hasta la entrada.' },
+  { q: '¿Cuántas personas caben por cabaña?', a: 'Cabaña 1: 2 personas · Cabaña 2: 4 personas · Cabaña 3: 4 personas · Cabaña 4: 6 personas (la más grande, con jacuzzi).' },
+  { q: '¿Hay señal de teléfono o WiFi?', a: 'La señal celular es limitada por estar en la sierra — parte de la experiencia es desconectarte. Si necesitas algo urgente, hay un punto de reunión con mejor señal cerca del área común.' },
+]
+function toggleFaq(){ document.getElementById('faq-panel').classList.toggle('open'); if(document.getElementById('faq-panel').classList.contains('open')) renderFaqList() }
+function renderFaqList(){ document.getElementById('faq-body').innerHTML = FAQS.map((f,i) => `<button class="faq-q-btn" onclick="mostrarFaqRespuesta(${i})">${sanitize(f.q)}</button>`).join('') }
+function mostrarFaqRespuesta(i){
+  const f = FAQS[i]
+  document.getElementById('faq-body').innerHTML = `
+    <div class="faq-back" onclick="renderFaqList()">← Volver a preguntas</div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px">${sanitize(f.q)}</div>
+    <div class="faq-answer">${sanitize(f.a)}</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">¿No encontraste tu respuesta? <a href="https://wa.me/526141234567" target="_blank" style="color:var(--moss)">Escríbenos por WhatsApp</a></div>
+  `
+}
+
 const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const d=+e.target.dataset.delay||0
-      setTimeout(()=>e.target.classList.add('vis'),d)
-      io.unobserve(e.target)
-    }
-  })
+  entries.forEach(e=>{ if(e.isIntersecting){ const d=+e.target.dataset.delay||0; setTimeout(()=>e.target.classList.add('vis'),d); io.unobserve(e.target) } })
 },{threshold:.12})
-
-document.querySelectorAll('.cab,.cal-wrap,.res-form-wrap,.palapa-vis-inner,.palapa-body,.route-step,.exp-card,.test-card').forEach(el=>io.observe(el))
+document.querySelectorAll('.cab,.route-step,.exp-card,.test-card').forEach(el=>io.observe(el))
 </script>
-
-<!-- Strip flotante de reservación -->
-<div id="res-strip" style="position:fixed;bottom:0;left:0;right:0;z-index:198;background:rgba(11,26,11,.97);backdrop-filter:blur(16px);border-top:1px solid rgba(109,179,63,.2);padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transform:translateY(100%);transition:transform .5s cubic-bezier(.4,0,.2,1)">
-  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:8px">
-      <div style="width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 1.5s infinite"></div>
-      <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45)">Disponibilidad en tiempo real</span>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap" id="strip-cabanas">
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 1 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 2 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 3 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 4 · disponible</span>
-    </div>
-  </div>
-  <div style="display:flex;align-items:center;gap:14px">
-    <div style="text-align:right">
-      <div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase">Desde</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#a8d98a;font-weight:300;line-height:1">$1,200 <span style="font-size:10px;font-family:'Inter',sans-serif;color:rgba(255,255,255,.3)">/ noche</span></div>
-    </div>
-    <button onclick="scroll2('reservar')" style="padding:10px 22px;background:#6db33f;color:#0b1a0b;border:none;border-radius:3px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s">Ver fechas →</button>
-  </div>
-</div>
-
-<!-- WhatsApp flotante -->
-<a href="https://wa.me/526141234567?text=Hola%2C%20me%20interesa%20reservar%20una%20caba%C3%B1a%20en%20Sierra%20Alta%20Majalca" 
-   target="_blank" id="wa-btn"
-   style="position:fixed;bottom:28px;right:28px;z-index:999;
-          width:58px;height:58px;border-radius:50%;
-          background:#25d366;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 4px 20px rgba(37,211,102,.4);
-          text-decoration:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s"
-   aria-label="Contactar por WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-  </svg>
-</a>
-<div id="wa-tooltip" style="position:fixed;bottom:36px;right:96px;z-index:998;
-     background:#0f172a;color:#fff;font-size:12px;padding:7px 13px;
-     border-radius:8px;opacity:0;transition:opacity .3s;pointer-events:none;
-     white-space:nowrap;border:1px solid rgba(255,255,255,.1)">
-  ¿Tienes dudas? Escríbenos
-</div>
-
 </body>
 </html>
