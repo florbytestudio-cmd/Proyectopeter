@@ -759,17 +759,25 @@ async function api(method, path, body){
 // ── DATOS ─────────────────────────────────────────────────
 async function cargarTodo(){
   try {
-    reservaciones = await api('GET', 'reservaciones?select=*&order=fecha_entrada.asc')
+    const cols = 'id,cabana,nombre,telefono,fecha_entrada,fecha_salida,personas,monto_total,anticipo,saldo_cobrado,descuento_aplicado,estado,created_at'
+    const r = await fetch(
+      `${SB_URL}/rest/v1/reservaciones?select=${cols}&order=fecha_entrada.asc`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Accept': 'application/json' } }
+    )
+    if(!r.ok){ const e = await r.json(); throw new Error(e.message || r.statusText) }
+    reservaciones = await r.json()
     renderDashboard()
     renderTablaRes()
     renderCabanas()
     renderFinanzas()
-    // Cargar promociones si la sección está visible
     const secProm = document.getElementById('sec-promociones')
     const secTemp = document.getElementById('sec-temporadas')
     if(secProm && secProm.style.display !== 'none') cargarCodigos()
     if(secTemp && secTemp.style.display !== 'none') cargarTemporadasAdmin()
-  } catch(e){ toast('❌ Error cargando datos') }
+  } catch(e){
+    console.error('cargarTodo error:', e)
+    toast('❌ Error: ' + e.message)
+  }
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────
