@@ -94,11 +94,11 @@ nav.scrolled{background:rgba(11,26,11,.95);backdrop-filter:blur(20px);padding:14
 .cab-back{transform:rotateY(180deg);background:linear-gradient(160deg,#0d1a0d 0%,#152415 100%);border:1px solid rgba(109,179,63,.18);box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;padding:20px;gap:0}
 .cab-img{height:180px;position:relative;overflow:hidden}
 .cab-body{position:absolute;bottom:0;left:0;right:0;padding:28px 28px;z-index:2}
-.cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--text);margin-bottom:4px}
-.cab-meta{font-size:11px;color:var(--muted);letter-spacing:.5px;margin-bottom:16px}
+.cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#000;margin-bottom:4px}
+.cab-meta{font-size:11px;color:#000;letter-spacing:.5px;margin-bottom:16px;opacity:.6}
 .cab-footer{display:flex;align-items:center;justify-content:space-between}
-.cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--pine)}
-.cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:var(--muted)}
+.cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#000}
+.cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:#000;opacity:.55}
 .cab-avail{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
 .avail-dot{width:5px;height:5px;border-radius:50%}
 .avail-ok .avail-dot{background:var(--leaf)} .avail-ok{color:var(--moss)}
@@ -179,7 +179,9 @@ nav.scrolled{background:rgba(11,26,11,.95);backdrop-filter:blur(20px);padding:14
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-row.full{grid-template-columns:1fr}
 .field label{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,240,230,.55);margin-bottom:7px}
-.field input,.field select{width:100%;padding:13px 14px;border:1px solid rgba(255,255,255,.18);border-radius:3px;font-family:'Inter',sans-serif;font-size:13px;color:#f4f0e6;background:rgba(255,255,255,.08);transition:border-color .2s,box-shadow .2s;appearance:none}
+.field input,.field select{width:100%;padding:13px 14px;border:1px solid rgba(255,255,255,.18);border-radius:3px;font-family:'Inter',sans-serif;font-size:13px;color:#f4f0e6;background:rgba(255,255,255,.08);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+.field select{background-color:rgba(8,18,8,.85);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23f4f0e6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
+.field select option{background:#0f1a0f;color:#f4f0e6}
 .field input::placeholder{color:rgba(244,240,230,.35)}
 .field input:focus,.field select:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(109,179,63,.18)}
 .anticipo-info{background:rgba(109,179,63,.12);border:1px solid rgba(109,179,63,.28);border-radius:3px;padding:14px 16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
