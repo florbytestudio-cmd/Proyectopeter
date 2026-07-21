@@ -182,6 +182,8 @@ nav.scrolled{background:rgba(11,26,11,.95);backdrop-filter:blur(20px);padding:14
 .field input,.field select{width:100%;padding:13px 14px;border:1px solid rgba(255,255,255,.18);border-radius:3px;font-family:'Inter',sans-serif;font-size:13px;color:#f4f0e6;background:rgba(255,255,255,.08);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;-moz-appearance:none;appearance:none}
 .field select{background-color:rgba(8,18,8,.85);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23f4f0e6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
 .field select option{background:#0f1a0f;color:#f4f0e6}
+.field select.needs-select{border-color:var(--leaf);animation:pulseCab 1.8s ease-in-out infinite}
+@keyframes pulseCab{0%,100%{box-shadow:0 0 0 0 rgba(109,179,63,.55)}50%{box-shadow:0 0 0 7px rgba(109,179,63,0)}}
 .field input::placeholder{color:rgba(244,240,230,.35)}
 .field input:focus,.field select:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(109,179,63,.18)}
 .anticipo-info{background:rgba(109,179,63,.12);border:1px solid rgba(109,179,63,.28);border-radius:3px;padding:14px 16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
@@ -333,7 +335,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
     <div class="sec-inner">
       <div class="eyebrow">Disponibilidad y reservación</div>
       <h2 class="sec-h">Elige tus fechas</h2>
-      <p class="sec-sub">Calendario en tiempo real. Paga solo el 50% para confirmar — el resto al llegar.</p>
+      <p class="sec-sub">Paso 1: elige tu cabaña en el formulario. Paso 2: el calendario se activa con sus fechas disponibles en tiempo real. Paga solo el 50% para confirmar — el resto al llegar.</p>
       <div class="res-layout">
         <div class="cal-wrap vis">
           <div class="calendar">
@@ -365,22 +367,25 @@ footer{background:var(--pine);padding:48px 56px 32px}
               🔒 Inicia sesión para poder identificar tu reservación —
               <span style="text-decoration:underline;cursor:pointer;margin-left:4px" onclick="abrirAuthModal()">crear cuenta / entrar</span>
             </div>
-            <div class="form-row">
-              <div class="field"><label>Llegada</label><input type="text" id="f-in" placeholder="— / — / ——" readonly></div>
-              <div class="field"><label>Salida</label><input type="text" id="f-out" placeholder="— / — / ——" readonly></div>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>Personas</label>
-                <select id="f-pax"><option>1 persona</option><option selected>2 personas</option><option>3 personas</option><option>4 personas</option><option>5 personas</option><option>6 personas</option></select>
-              </div>
-              <div class="field"><label>Cabaña</label>
-                <select id="f-cab" onchange="calcAnticipo()">
-                  <option value="0">Seleccionar</option>
+            <div class="form-row full">
+              <div class="field">
+                <label style="color:var(--mint)">① Elige tu cabaña — así se activa el calendario</label>
+                <select id="f-cab" class="needs-select" onchange="calcAnticipo()">
+                  <option value="0">Seleccionar cabaña</option>
                   <option value="1200">Cabaña 1 — $1,200</option>
                   <option value="1800">Cabaña 2 — $1,800</option>
                   <option value="2000">Cabaña 3 — $2,000</option>
                   <option value="2400">Cabaña 4 — $2,400</option>
                 </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Llegada</label><input type="text" id="f-in" placeholder="— / — / ——" readonly></div>
+              <div class="field"><label>Salida</label><input type="text" id="f-out" placeholder="— / — / ——" readonly></div>
+            </div>
+            <div class="form-row full">
+              <div class="field"><label>Personas</label>
+                <select id="f-pax"><option>1 persona</option><option selected>2 personas</option><option>3 personas</option><option>4 personas</option><option>5 personas</option><option>6 personas</option></select>
               </div>
             </div>
             <div class="form-row full"><div class="field"><label>Nombre completo</label><input type="text" id="f-name" placeholder="Tu nombre" maxlength="100" autocomplete="name"></div></div>
@@ -623,12 +628,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <div id="res-strip" style="position:fixed;bottom:0;left:0;right:0;z-index:198;background:rgba(11,26,11,.97);backdrop-filter:blur(16px);border-top:1px solid rgba(109,179,63,.2);padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transform:translateY(100%);transition:transform .5s cubic-bezier(.4,0,.2,1)">
   <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:8px"><div style="width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 1.5s infinite"></div><span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45)">Disponibilidad en tiempo real</span></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap" id="strip-cabanas">
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 1 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 2 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 3 · disponible</span>
-      <span style="font-size:10px;padding:3px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)">Cabaña 4 · disponible</span>
-    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="strip-cabanas"></div>
   </div>
   <div style="display:flex;align-items:center;gap:14px">
     <div style="text-align:right"><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase">Desde</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#a8d98a;font-weight:300;line-height:1">$1,200 <span style="font-size:10px;font-family:'Inter',sans-serif;color:rgba(255,255,255,.3)">/ noche</span></div></div>
@@ -803,6 +803,7 @@ async function cargarFechasPorCabana(){
     })
     blocked = globalBlocked
     CABANAS_CONFIG.forEach(c => actualizarDisponibilidadCard(c.id, c.key))
+    actualizarStripCabanas()
     renderCal()
   } catch(e){ console.error('Error:', e) }
 }
@@ -812,6 +813,17 @@ function actualizarDisponibilidadCard(id, cabana){
   const ocupadaHoy = blockedPorCabana[cabana]?.has(hoy.toISOString().split('T')[0])
   if(ocupadaHoy){ avail.className = 'cab-avail avail-no'; avail.innerHTML = '<div class="avail-dot"></div>Ocupada' }
   else { avail.className = 'cab-avail avail-ok'; avail.innerHTML = '<div class="avail-dot"></div>Disponible' }
+}
+function actualizarStripCabanas(){
+  const cont = document.getElementById('strip-cabanas'); if(!cont) return
+  const hoyStr = new Date().toISOString().split('T')[0]
+  cont.innerHTML = CABANAS_CONFIG.map(c => {
+    const ocupada = blockedPorCabana[c.key]?.has(hoyStr)
+    const estilo = ocupada
+      ? 'background:rgba(226,75,75,.14);color:#f4a3a3;border:1px solid rgba(226,75,75,.3)'
+      : 'background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)'
+    return `<span style="font-size:10px;padding:3px 10px;border-radius:99px;${estilo}">${c.key} · ${ocupada ? 'ocupada' : 'disponible'}</span>`
+  }).join('')
 }
 
 // Placeholders genéricos — reemplaza este objeto por rutas de fotos reales cuando las tengas,
@@ -867,7 +879,7 @@ function fmtDisplay(d){ return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear
 function renderCal(){
   const title=document.getElementById('cal-title'); title.textContent=`${months[cur.getMonth()]} ${cur.getFullYear()}`
   const grid=document.getElementById('cal-days'); grid.innerHTML=''
-  if(!cabanaSeleccionada){ grid.innerHTML = '<div class="cal-cabana-hint">👆 Elige una cabaña en el formulario para ver sus fechas disponibles</div>'; return }
+  if(!cabanaSeleccionada){ grid.innerHTML = '<div class="cal-cabana-hint">👈 Primero elige una cabaña en el formulario (paso ①)<br>para que aquí aparezcan sus fechas disponibles</div>'; return }
   occActual = blockedPorCabana[cabanaSeleccionada] || new Set()
   const first=new Date(cur.getFullYear(),cur.getMonth(),1); const last=new Date(cur.getFullYear(),cur.getMonth()+1,0)
   const today=new Date(); today.setHours(0,0,0,0)
@@ -913,6 +925,7 @@ const PRECIO_A_CABANA = {1200:'Cabaña 1',1800:'Cabaña 2',2000:'Cabaña 3',2400
 function calcAnticipo(){
   const cabVal = document.getElementById('f-cab').value
   const nuevaCabana = PRECIO_A_CABANA[cabVal] || null
+  document.getElementById('f-cab').classList.toggle('needs-select', !nuevaCabana)
   if(nuevaCabana !== cabanaSeleccionada){
     cabanaSeleccionada = nuevaCabana
     selStart = null; selEnd = null
