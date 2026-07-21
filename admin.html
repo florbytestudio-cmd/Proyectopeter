@@ -481,12 +481,7 @@ tbody tr:hover td{background:var(--surface2)}
           <option value="Cabaña 4">Cabaña 4 — $2,400</option>
         </select>
       </div>
-      <div class="form-field"><label>Personas</label>
-        <select id="r-personas">
-          <option>1</option><option selected>2</option><option>3</option>
-          <option>4</option><option>5</option><option>6</option>
-        </select>
-      </div>
+
     </div>
     <div class="form-row">
       <div class="form-field"><label>Llegada</label><input type="date" id="r-entrada" onchange="calcModalAnticipo()"></div>
@@ -500,7 +495,16 @@ tbody tr:hover td{background:var(--surface2)}
           <option value="cancelada">Cancelada</option>
         </select>
       </div>
-      <div class="form-field"><label>Anticipo</label><input type="number" id="r-anticipo" placeholder="0"></div>
+      <div class="form-field"><label>Personas</label>
+        <select id="r-personas">
+          <option>1</option><option>2</option><option>3</option>
+          <option>4</option><option>5</option><option>6</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Anticipo cobrado ($)</label><input type="number" id="r-anticipo" placeholder="0"></div>
+      <div class="form-field"><label>Total de la reservación ($)</label><input type="number" id="r-total" placeholder="0" readonly style="opacity:.6;cursor:not-allowed"></div>
     </div>
     <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:4px" id="modal-resumen">
       Selecciona fechas y cabaña para calcular
@@ -752,8 +756,9 @@ function renderTablaRes(){
       <td>${badgeEstado(r.estado)}</td>
       <td>
         <div style="display:flex;gap:5px">
-          <button class="btn btn-ghost btn-sm" onclick="editarReservacion(${r.id})">✏️</button>
-          ${r.estado !== 'cancelada' ? `<button class="btn btn-danger btn-sm" onclick="confirmarCancelacion(${r.id},'${nombreSafe}')">✕</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="editarReservacion(${r.id})" title="Editar">✏️</button>
+          ${r.estado !== 'cancelada' ? `<button class="btn btn-danger btn-sm" onclick="confirmarAccion('cancelar',${r.id},'${nombreSafe}')" title="Cancelar reservación">🚫</button>` : ''}
+          <button class="btn btn-sm" style="background:rgba(226,75,75,.08);border:1px solid rgba(226,75,75,.15);color:#f09595" onclick="confirmarAccion('eliminar',${r.id},'${nombreSafe}')" title="Eliminar permanentemente">🗑️</button>
         </div>
       </td>
     </tr>`
@@ -842,6 +847,7 @@ function abrirModalNuevaReservacion(){
   document.getElementById('modal-res-title').textContent = 'Nueva reservación'
   document.getElementById('modal-res-id').value = ''
   ;['r-nombre','r-tel','r-anticipo'].forEach(id => document.getElementById(id).value = '')
+  document.getElementById('r-anticipo').dataset.manual = ''
   document.getElementById('r-cabana').value  = 'Cabaña 1'
   document.getElementById('r-estado').value  = 'confirmada'
   document.getElementById('r-personas').value= '2'
@@ -849,6 +855,8 @@ function abrirModalNuevaReservacion(){
   document.getElementById('r-entrada').value = hoy
   document.getElementById('r-salida').value  = hoy
   calcModalAnticipo()
+  const totalEl = document.getElementById('r-total')
+  if(totalEl) totalEl.value = r.monto_total
   document.getElementById('modalRes').classList.add('open')
 }
 
@@ -864,7 +872,9 @@ function editarReservacion(id){
   document.getElementById('r-entrada').value      = r.fecha_entrada
   document.getElementById('r-salida').value       = r.fecha_salida
   document.getElementById('r-estado').value       = r.estado
-  document.getElementById('r-anticipo').value     = r.anticipo
+  const antiEl = document.getElementById('r-anticipo')
+  antiEl.value = r.anticipo
+  antiEl.dataset.manual = '1'  // no sobrescribir el anticipo al calcular
   calcModalAnticipo()
   document.getElementById('modalRes').classList.add('open')
 }
@@ -878,9 +888,13 @@ function calcModalAnticipo(){
   const noches = Math.max(1, Math.round((new Date(salida)-new Date(entrada))/(1000*60*60*24)))
   const total  = precio * noches
   const anti   = Math.round(total/2)
-  document.getElementById('r-anticipo').value = anti
+  // Solo auto-calcular si no es edición con valor ya establecido
+  const antiInput = document.getElementById('r-anticipo')
+  if(!antiInput.dataset.manual) antiInput.value = anti
+  const totalInput = document.getElementById('r-total')
+  if(totalInput) totalInput.value = total
   document.getElementById('modal-resumen').textContent =
-    `${noches} noche${noches>1?'s':''} · Total: ${fmt(total)} · Anticipo 50%: ${fmt(anti)}`
+    `${noches} noche${noches>1?'s':''} · Precio: ${fmt(precio)}/noche · Total: ${fmt(total)}`
 }
 
 async function guardarReservacion(){
@@ -903,7 +917,8 @@ async function guardarReservacion(){
   const telClean    = tel.replace(/[^0-9+\s\-]/g,'').trim().slice(0,20)
   const noches    = Math.max(1,Math.round((new Date(salida)-new Date(entrada))/(1000*60*60*24)))
   const total     = (PRECIOS[cabana]||0) * noches
-  const payload   = { cabana, nombre:nombreClean, telefono:telClean, fecha_entrada:entrada, fecha_salida:salida, personas, monto_total:total, anticipo, estado }
+  const anticipoFinal = parseFloat(document.getElementById('r-anticipo').value) || anticipo
+  const payload   = { cabana, nombre:nombreClean, telefono:telClean, fecha_entrada:entrada, fecha_salida:salida, personas, monto_total:total, anticipo:anticipoFinal, estado }
   try {
     if(id){
       await api('PATCH', `reservaciones?id=eq.${id}`, payload)
@@ -917,18 +932,34 @@ async function guardarReservacion(){
   } catch(e){ toast('❌ Error: '+e.message) }
 }
 
-function confirmarCancelacion(id, nombre){
-  document.getElementById('confirm-msg').textContent = `¿Cancelar la reservación de ${nombre}? Esta acción no se puede deshacer.`
-  document.getElementById('confirm-btn').onclick = () => cancelarReservacion(id)
+function confirmarAccion(tipo, id, nombre){
+  const esCancelar = tipo === 'cancelar'
+  document.getElementById('confirm-icon').textContent  = esCancelar ? '🚫' : '🗑️'
+  document.getElementById('confirm-title').textContent = esCancelar ? '¿Cancelar reservación?' : '¿Eliminar permanentemente?'
+  document.getElementById('confirm-msg').textContent   = esCancelar
+    ? `La reservación de "${nombre}" quedará como cancelada pero seguirá en el historial.`
+    : `Se eliminará permanentemente la reservación de "${nombre}". Esta acción NO se puede deshacer.`
+  document.getElementById('confirm-btn').textContent   = esCancelar ? 'Sí, cancelar' : 'Sí, eliminar'
+  document.getElementById('confirm-btn').onclick       = () => esCancelar ? cancelarReservacion(id) : eliminarReservacion(id)
   document.getElementById('modalConfirm').classList.add('open')
 }
+
 async function cancelarReservacion(id){
   try {
     await api('PATCH', `reservaciones?id=eq.${id}`, { estado:'cancelada' })
-    toast('🗑️ Reservación cancelada')
+    toast('🚫 Reservación cancelada')
     cerrarConfirm()
     await cargarTodo()
-  } catch(e){ toast('❌ Error') }
+  } catch(e){ toast('❌ Error al cancelar') }
+}
+
+async function eliminarReservacion(id){
+  try {
+    await api('DELETE', `reservaciones?id=eq.${id}`)
+    toast('🗑️ Reservación eliminada permanentemente')
+    cerrarConfirm()
+    await cargarTodo()
+  } catch(e){ toast('❌ Error al eliminar — verifica permisos en Supabase') }
 }
 
 function cerrarModal()  { document.getElementById('modalRes').classList.remove('open') }
