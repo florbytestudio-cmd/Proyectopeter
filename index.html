@@ -94,21 +94,23 @@ nav.scrolled{background:rgba(11,26,11,.95);backdrop-filter:blur(20px);padding:14
 .cab-back{transform:rotateY(180deg);background:linear-gradient(160deg,#0d1a0d 0%,#152415 100%);border:1px solid rgba(109,179,63,.18);box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;padding:20px;gap:0}
 .cab-img{height:180px;position:relative;overflow:hidden}
 .cab-body{position:absolute;bottom:0;left:0;right:0;padding:28px 28px;z-index:2}
-.cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--white);margin-bottom:4px}
-.cab-meta{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.5px;margin-bottom:16px}
+.cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--text);margin-bottom:4px}
+.cab-meta{font-size:11px;color:var(--muted);letter-spacing:.5px;margin-bottom:16px}
 .cab-footer{display:flex;align-items:center;justify-content:space-between}
-.cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--mint)}
-.cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:rgba(255,255,255,.4)}
+.cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--pine)}
+.cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:var(--muted)}
 .cab-avail{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
 .avail-dot{width:5px;height:5px;border-radius:50%}
-.avail-ok .avail-dot{background:var(--leaf)} .avail-ok{color:var(--mint)}
-.avail-no .avail-dot{background:#e24b4b} .avail-no{color:#f09595}
+.avail-ok .avail-dot{background:var(--leaf)} .avail-ok{color:var(--moss)}
+.avail-no .avail-dot{background:#e24b4b} .avail-no{color:#c0392b}
 .cab-btn{position:absolute;top:20px;right:20px;z-index:3;padding:8px 16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:2px;color:var(--white);font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;opacity:0;transition:opacity .3s,background .3s;backdrop-filter:blur(4px)}
 .cab:hover .cab-btn{opacity:1}
 .cab-btn:hover{background:var(--leaf);border-color:var(--leaf);color:var(--pine)}
 .cab-back-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(109,179,63,.12);margin-bottom:14px}
 .cab-back-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0f0f8;letter-spacing:-.3px;margin-bottom:2px}
 .cab-back-sub{font-size:10px;color:rgba(109,179,63,.6);letter-spacing:1.5px;text-transform:uppercase}
+.cab-back-reservar{padding:10px 22px;background:var(--leaf);color:var(--pine);border:none;border-radius:2px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all .3s}
+.cab-back-reservar:hover{background:#7ecb48;transform:translateY(-2px)}
 .cab-back-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.5);font-size:16px;transition:all .2s;flex-shrink:0}
 .cab-back-close:hover{background:rgba(226,75,75,.15);border-color:rgba(226,75,75,.3);color:#f09595}
 .cab-gallery{position:relative;flex:1;border-radius:10px;overflow:hidden;min-height:180px;display:flex}
