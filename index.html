@@ -1122,6 +1122,36 @@ footer{background:var(--pine);padding:48px 56px 32px}
             <div class="anticipo-amt" id="anticipo-amt">$—</div>
           </div>
 
+          <!-- Código de descuento -->
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Código de descuento (opcional)</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="f-codigo" placeholder="Ej. VERANO25" style="flex:1;padding:11px 13px;border:1px solid rgba(0,0,0,.1);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;background:var(--cream);text-transform:uppercase;letter-spacing:1px" oninput="this.value=this.value.toUpperCase()">
+              <button type="button" onclick="aplicarCodigo()" style="padding:11px 16px;background:var(--pine);color:#fff;border:none;border-radius:var(--r);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='var(--moss)'" onmouseout="this.style.background='var(--pine)'">Aplicar</button>
+            </div>
+            <div id="codigo-msg" style="font-size:11px;margin-top:6px;display:none"></div>
+          </div>
+
+          <!-- Desglose de precio -->
+          <div id="precio-desglose" style="display:none;background:var(--sand);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="color:var(--muted)">Precio base</span>
+              <span id="desglose-base">—</span>
+            </div>
+            <div id="desglose-temp-row" style="display:none;justify-content:space-between;margin-bottom:4px">
+              <span style="color:var(--muted)" id="desglose-temp-label">Temporada</span>
+              <span id="desglose-temp" style="color:var(--bark)">—</span>
+            </div>
+            <div id="desglose-desc-row" style="display:none;justify-content:space-between;margin-bottom:4px">
+              <span style="color:var(--moss)">🏷️ Descuento</span>
+              <span id="desglose-desc" style="color:var(--moss)">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);font-weight:500">
+              <span>Total</span>
+              <span id="desglose-total" style="color:var(--pine)">—</span>
+            </div>
+          </div>
+
           <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Métodos de pago</div>
           <div class="pagos-icons">
             <div class="pago-pill">💳 Tarjeta</div>
@@ -1333,6 +1363,117 @@ let cur=new Date()
 let selStart=null,selEnd=null
 
 // Supabase — reservaciones en tiempo real
+// ── Descuentos y temporadas ──────────────────────────────────
+let temporadas        = []
+let codigoAplicado    = null
+let precioConTempo    = 0
+let descuentoAplicado = 0
+let temporadaActiva   = null
+
+async function cargarTemporadas(){
+  try {
+    const hoy = new Date().toISOString().split('T')[0]
+    const res = await fetch(
+      `${SB_URL}/rest/v1/temporadas?activa=eq.true&fecha_inicio=lte.${hoy}&fecha_fin=gte.${hoy}&select=*`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
+    )
+    temporadas = await res.json()
+    // Aplicar temporada si hay una activa
+    if(temporadas.length > 0){
+      temporadaActiva = temporadas[0]
+    }
+  } catch(e){ console.error('Error cargando temporadas:', e) }
+}
+
+function getPrecioBase(cabana){
+  const precios = { 'Cabaña 1': 1200, 'Cabaña 2': 1800, 'Cabaña 3': 2000, 'Cabaña 4': 2400 }
+  return precios[cabana] || 0
+}
+
+function calcPrecioConTemporada(precioBase){
+  if(!temporadaActiva) return precioBase
+  return Math.round(precioBase * temporadaActiva.multiplicador)
+}
+
+async function aplicarCodigo(){
+  const codigo = document.getElementById('f-codigo').value.trim().toUpperCase()
+  const msg    = document.getElementById('codigo-msg')
+  if(!codigo){ msg.style.display='block'; msg.style.color='var(--muted)'; msg.textContent='Ingresa un código'; return }
+
+  try {
+    const cabana = document.getElementById('f-cab').options[document.getElementById('f-cab').selectedIndex].text.split(' — ')[0]
+    const res = await fetch(
+      `${SB_URL}/rest/v1/codigos_descuento?codigo=eq.${encodeURIComponent(codigo)}&activo=eq.true&select=*`,
+      { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }
+    )
+    const data = await res.json()
+
+    if(!data.length){
+      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Código no válido o expirado'; return
+    }
+    const cod = data[0]
+
+    // Verificar usos
+    if(cod.usos_actual >= cod.usos_max){
+      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya alcanzó su límite de usos'; return
+    }
+
+    // Verificar fecha expiración
+    if(cod.fecha_expira && new Date(cod.fecha_expira) < new Date()){
+      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='❌ Este código ya expiró'; return
+    }
+
+    // Verificar si aplica a la cabaña seleccionada
+    if(cod.aplica_cabana !== 'todas' && cod.aplica_cabana !== cabana){
+      msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent=`❌ Este código solo aplica para ${cod.aplica_cabana}`; return
+    }
+
+    codigoAplicado = cod
+    msg.style.display  = 'block'
+    msg.style.color    = '#16a34a'
+    const descLabel = cod.tipo === 'porcentaje' ? `${cod.valor}% de descuento` : `$${cod.valor} de descuento`
+    msg.textContent = `✅ Código aplicado — ${descLabel}`
+    calcAnticipo()
+
+  } catch(e){ msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='Error al verificar el código' }
+}
+
+function calcDescuento(precioTempTotal){
+  if(!codigoAplicado) return 0
+  if(codigoAplicado.tipo === 'porcentaje'){
+    return Math.round(precioTempTotal * (codigoAplicado.valor / 100))
+  }
+  return Math.min(codigoAplicado.valor, precioTempTotal)
+}
+
+function mostrarDesglose(precioBase, noches, pTempo, descuento, total){
+  const box = document.getElementById('precio-desglose')
+  box.style.display = 'block'
+  document.getElementById('desglose-base').textContent  = `$${(precioBase*noches).toLocaleString('es-MX')}`
+
+  const tempRow = document.getElementById('desglose-temp-row')
+  if(temporadaActiva && temporadaActiva.multiplicador !== 1){
+    tempRow.style.display = 'flex'
+    const diff = pTempo - precioBase*noches
+    const signo = diff >= 0 ? '+' : ''
+    document.getElementById('desglose-temp-label').textContent = temporadaActiva.nombre
+    document.getElementById('desglose-temp').textContent = `${signo}$${Math.abs(diff).toLocaleString('es-MX')}`
+    document.getElementById('desglose-temp').style.color = diff >= 0 ? 'var(--bark)' : 'var(--moss)'
+  } else { tempRow.style.display = 'none' }
+
+  const descRow = document.getElementById('desglose-desc-row')
+  if(descuento > 0){
+    descRow.style.display = 'flex'
+    document.getElementById('desglose-desc').textContent = `-$${descuento.toLocaleString('es-MX')}`
+  } else { descRow.style.display = 'none' }
+
+  document.getElementById('desglose-total').textContent = `$${total.toLocaleString('es-MX')}`
+}
+
+// Sobrescribir calcAnticipo para incluir temporadas y descuentos
+const _calcAnticipo = calcAnticipo
+// Redefino calcAnticipo más abajo
+
 // Sanitizar inputs contra XSS
 function sanitize(str){
   if(!str) return ''
@@ -1488,7 +1629,7 @@ function miniCalNext(id, cabana){
 }
 
 // Inicializar
-cargarFechasPorCabana()
+cargarTemporadas().then(()=>cargarFechasPorCabana())
 setInterval(cargarFechasPorCabana, 30000)
 
 
@@ -1594,13 +1735,32 @@ renderCal()
 
 // ANTICIPO
 function calcAnticipo(){
-  const price=parseInt(document.getElementById('f-cab').value)||0
-  const nights=(selStart&&selEnd)?Math.round((selEnd-selStart)/(1000*60*60*24)):0
-  const total=price*Math.max(nights,1)
-  const anti=Math.round(total/2)
-  document.getElementById('anticipo-amt').textContent=anti>0?`$${anti.toLocaleString('es-MX')}`:' $—'
-  const btn=document.getElementById('btn-pagar')
-  btn.disabled=!(selStart&&selEnd&&price&&document.getElementById('f-name').value&&document.getElementById('f-tel').value)
+  const precioBase = parseInt(document.getElementById('f-cab').value) || 0
+  const cabana     = document.getElementById('f-cab').options[document.getElementById('f-cab').selectedIndex].text.split(' — ')[0]
+  const noches     = (selStart&&selEnd) ? Math.round((selEnd-selStart)/(1000*60*60*24)) : 0
+  const n          = Math.max(noches, 1)
+
+  // Precio con temporada
+  const precioTempo     = calcPrecioConTemporada(precioBase)
+  const totalConTempo   = precioTempo * n
+
+  // Descuento
+  const descuento       = calcDescuento(totalConTempo)
+  const totalFinal      = totalConTempo - descuento
+  const anticipo        = Math.round(totalFinal / 2)
+
+  // Guardar para usar en pago
+  precioConTempo    = precioTempo
+  descuentoAplicado = descuento
+
+  document.getElementById('anticipo-amt').textContent = anticipo > 0 ? `$${anticipo.toLocaleString('es-MX')}` : '$—'
+
+  if(precioBase > 0 && noches > 0){
+    mostrarDesglose(precioBase, n, totalConTempo, descuento, totalFinal)
+  }
+
+  const btn = document.getElementById('btn-pagar')
+  btn.disabled = !(selStart && selEnd && precioBase && document.getElementById('f-name').value && document.getElementById('f-tel').value)
 }
 ['f-name','f-tel'].forEach(id=>document.getElementById(id).addEventListener('input',calcAnticipo))
 document.getElementById('f-cab').addEventListener('change',calcAnticipo)
