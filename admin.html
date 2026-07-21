@@ -976,12 +976,18 @@ function renderFinanzas(){
   const perdido    = cancel.reduce((s,r) => s+parseFloat(r.monto_total||0), 0)
   const totalCobrado = anticipos + saldos
 
-  document.getElementById('fi-anticipos')?.setAttribute('data-v', anticipos)
-  ;['fi-anticipos','fi-porcobrar','fi-total','fi-perdido'].forEach((id,i) => {
-    const el = document.getElementById(id); if(!el) return
-    const vals = [anticipos, porCobrar, anticipos+porCobrar, perdido]
-    el.textContent = fmt(vals[i])
-  })
+  const elAnticipo = document.getElementById('fi-anticipos')
+  const elPorCobrar= document.getElementById('fi-porcobrar')
+  const elTotal    = document.getElementById('fi-total')
+  const elPerdido  = document.getElementById('fi-perdido')
+
+  if(elAnticipo) elAnticipo.textContent = fmt(anticipos + saldos)
+  if(elPorCobrar) elPorCobrar.textContent = fmt(porCobrar)
+  if(elTotal) elTotal.textContent = fmt(anticipos + saldos + porCobrar)
+  if(elPerdido) elPerdido.textContent = fmt(perdido)
+
+  // Actualizar subtítulos
+  if(elAnticipo) elAnticipo.nextElementSibling && (elAnticipo.nextElementSibling.textContent = `Anticipos: ${fmt(anticipos)} + Saldos: ${fmt(saldos)}`)
 
   // Gráfica ingresos por cabaña
   const cabanas = ['Cabaña 1','Cabaña 2','Cabaña 3','Cabaña 4']
