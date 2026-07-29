@@ -35,7 +35,11 @@ body{
 .login-error{color:var(--danger);font-size:12px;margin-top:8px;display:none}
 #appScreen{display:none;min-height:100vh}
 .layout{display:flex;min-height:100vh}
-.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;box-shadow:4px 0 24px rgba(0,0,0,.35)}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;box-shadow:4px 0 24px rgba(0,0,0,.35);transition:transform .25s ease}
+.menu-toggle{display:none;width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:16px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0}
+.menu-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:290}
+.sidebar-backdrop.open{display:block}
 .sidebar-logo{padding:22px 20px 18px;border-bottom:1px solid var(--border);text-align:center;background:linear-gradient(180deg, rgba(109,179,63,.06), transparent)}
 .sidebar-logo-img{width:72px;height:auto;margin:0 auto 8px;display:block}
 .sidebar-role{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
@@ -147,7 +151,12 @@ tbody tr:hover td{background:var(--surface2)}
 .occ-bar{height:6px;border-radius:99px;background:var(--border);overflow:hidden;margin-top:6px}
 .occ-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .8s ease}
 .empty{padding:48px;text-align:center;color:var(--muted);font-size:13px}
-@media(max-width:768px){.sidebar{display:none}.metrics{grid-template-columns:1fr 1fr}.cabanas-status{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;z-index:300;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .menu-toggle{display:flex}
+  .metrics{grid-template-columns:1fr 1fr}.cabanas-status{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -186,10 +195,14 @@ tbody tr:hover td{background:var(--surface2)}
       </nav>
       <div class="sidebar-footer"><button class="logout-btn" onclick="logout()">Cerrar sesión</button></div>
     </div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
     <div class="main">
       <div class="topbar">
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">☰</button>
+          <div class="topbar-title" id="topbar-title">Dashboard</div>
+        </div>
         <div class="topbar-right">
           <div class="live-dot-wrap"><div class="live-dot"></div>Tiempo real</div>
           <button class="refresh-btn" onclick="cargarTodo()">↻ Actualizar</button>
@@ -580,7 +593,7 @@ function renderTablaRes(){
       <td>${badgeSaldo(r)}</td>
       <td>${badgeEstado(r.estado)}</td>
       <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="btn btn-edit btn-sm" onclick="editarReservacion(${r.id})" title="Editar">✏️</button>
+        ${r.estado !== 'cancelada' ? `<button class="btn btn-edit btn-sm" onclick="editarReservacion(${r.id})" title="Editar">✏️</button>` : `<button class="btn btn-edit btn-sm" disabled style="opacity:.35;cursor:not-allowed" title="No se puede editar una reservación cancelada">✏️</button>`}
         ${r.estado === 'confirmada' && !r.saldo_cobrado ? `<button class="btn btn-cobrar btn-sm" onclick="cobrarSaldoRapido(${r.id}, ${r.monto_total - r.anticipo})" title="Cobrar saldo pendiente">💵</button>` : ''}
         ${r.estado !== 'cancelada' ? `<button class="btn btn-cancelar btn-sm" onclick="confirmarAccion('cancelar',${r.id},'${nombreSafe}')" title="Cancelar">🚫</button>` : ''}
         <button class="btn btn-eliminar btn-sm" onclick="confirmarAccion('eliminar',${r.id},'${nombreSafe}')" title="Eliminar">🗑️</button>
@@ -651,6 +664,7 @@ function abrirModalNuevaReservacion(){
 function editarReservacion(id){
   const r = reservaciones.find(x => x.id === id)
   if(!r) return
+  if(r.estado === 'cancelada'){ toast('⚠️ No se puede editar una reservación cancelada'); return }
   document.getElementById('modal-res-title').textContent = `Editar reservación #${id}`
   document.getElementById('modal-res-id').value = id
   document.getElementById('r-nombre').value = r.nombre
@@ -709,8 +723,13 @@ async function guardarReservacion(){
   const saldoCobrado = parseFloat(document.getElementById('r-saldo')?.value) || 0
   const payload = { cabana, nombre:nombreClean, telefono:telClean, fecha_entrada:entrada, fecha_salida:salida, personas, monto_total:total, anticipo:anticipoFinal, saldo_cobrado:saldoCobrado, estado }
   try {
-    if(id){ await api('PATCH', `reservaciones?id=eq.${id}`, payload); toast('✅ Reservación actualizada') }
-    else { await api('POST', 'reservaciones', payload); toast('✅ Reservación creada') }
+    if(id){
+      const result = await api('PATCH', `reservaciones?id=eq.${id}`, payload)
+      if(!Array.isArray(result) || !result.length) throw new Error('No se guardó — revisa los permisos (RLS) en Supabase')
+      toast('✅ Reservación actualizada')
+    } else {
+      await api('POST', 'reservaciones', payload); toast('✅ Reservación creada')
+    }
     cerrarModal(); await cargarTodo()
   } catch(e){ toast('❌ Error: '+e.message) }
 }
@@ -726,8 +745,12 @@ function confirmarAccion(tipo, id, nombre){
 }
 
 async function cancelarReservacion(id){
-  try { await api('PATCH', `reservaciones?id=eq.${id}`, { estado:'cancelada' }); toast('🚫 Reservación cancelada'); cerrarConfirm(); await cargarTodo() }
-  catch(e){ toast('❌ Error al cancelar') }
+  try {
+    const result = await api('PATCH', `reservaciones?id=eq.${id}`, { estado:'cancelada' })
+    if(!Array.isArray(result) || !result.length) throw new Error('No se guardó — revisa los permisos (RLS) en Supabase')
+    toast('🚫 Reservación cancelada')
+    cerrarConfirm(); await cargarTodo()
+  } catch(e){ toast('❌ Error al cancelar: ' + e.message) }
 }
 async function eliminarReservacion(id){
   try { await api('DELETE', `reservaciones?id=eq.${id}`); toast('🗑️ Reservación eliminada permanentemente'); cerrarConfirm(); await cargarTodo() }
@@ -756,7 +779,11 @@ function showSection(id, el){
   document.getElementById('topbar-title').textContent = titulos[id] || id
   if(id === 'promociones') cargarCodigos()
   if(id === 'temporadas') cargarTemporadasAdmin()
+  closeSidebar()
 }
+
+function toggleSidebar(){ document.querySelector('.sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open') }
+function closeSidebar(){ document.querySelector('.sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open') }
 
 function sanitize(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
 function fmt(n){ return parseFloat(n||0).toLocaleString('es-MX',{style:'currency',currency:'MXN'}) }

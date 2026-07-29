@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tus reservaciones — Pico del Encino</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo_dorado.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --pine:#0b1a0b;--pine2:#152415;--pine3:#1f361f;--moss:#3d6b2e;--leaf:#6db33f;--mint:#a8d98a;
+  --cream:#f4f0e6;--sand:#e8ddc8;--bark:#7a5c1e;--text:#1a1a12;--muted:#7a7a60;--white:#ffffff;--r:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--pine);color:var(--cream);font-family:'Inter',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--pine)}
+::-webkit-scrollbar-thumb{background:var(--leaf)}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 56px;border-bottom:1px solid rgba(109,179,63,.15)}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.topbar-logo img{height:40px;width:auto}
+.topbar-back{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s}
+.topbar-back:hover{color:var(--mint)}
+.topbar-account{font-size:11px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:14px}
+.topbar-logout{background:rgba(226,75,75,.1);border:1px solid rgba(226,75,75,.25);color:#f09595;padding:7px 14px;border-radius:3px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif}
+.topbar-logout:hover{background:rgba(226,75,75,.18)}
+
+.page{max-width:900px;margin:0 auto;padding:56px 24px 100px}
+.page-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--leaf);margin-bottom:10px;font-weight:500}
+.page-h{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,44px);font-weight:300;letter-spacing:-.5px;margin-bottom:36px}
+.page-h em{font-style:italic;color:var(--mint)}
+
+.state-box{text-align:center;padding:64px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px}
+.state-icon{font-size:40px;margin-bottom:16px}
+.state-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:8px}
+.state-sub{font-size:13px;color:rgba(244,240,230,.5);margin-bottom:24px;line-height:1.7}
+.state-btn{display:inline-block;padding:13px 30px;background:var(--leaf);color:var(--pine);border:none;border-radius:2px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:500;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif}
+.state-btn:hover{background:#7ecb48}
+
+.mis-reservas-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.mis-res-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:20px 22px}
+.mis-res-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.mis-res-cab{font-family:'Cormorant Garamond',serif;font-size:19px;color:#fff;font-weight:400}
+.mis-res-badge{font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
+.mis-res-dates{font-size:14px;color:var(--mint);margin-bottom:12px;letter-spacing:.2px}
+.mis-res-foot{display:flex;flex-direction:column;gap:4px;font-size:12px;color:rgba(244,240,230,.6);border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+.mis-res-foot span strong{color:rgba(244,240,230,.9);font-weight:500}
+
+@media(max-width:600px){
+  .topbar{padding:16px 24px}
+  .topbar-account{display:none}
+  .page{padding:40px 20px 80px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-logo"><img src="logo_dorado.png" alt="Pico del Encino"></a>
+  <div class="topbar-account">
+    <a href="index.html#reservar" class="topbar-back">← Volver al sitio</a>
+    <span id="topbar-email" style="display:none"></span>
+    <button class="topbar-logout" id="topbar-logout-btn" style="display:none" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-eyebrow">Tu cuenta</div>
+  <h1 class="page-h">Tus <em>reservaciones</em></h1>
+
+  <div id="estadoCarga" class="state-box">
+    <div class="state-icon">⏳</div>
+    <div class="state-title">Cargando…</div>
+  </div>
+
+  <div id="estadoSinSesion" class="state-box" style="display:none">
+    <div class="state-icon">🔒</div>
+    <div class="state-title">Inicia sesión para ver tus reservaciones</div>
+    <div class="state-sub">Usa la misma cuenta con la que reservaste tu cabaña.</div>
+    <a href="index.html#reservar" class="state-btn">Iniciar sesión</a>
+  </div>
+
+  <div id="estadoVacio" class="state-box" style="display:none">
+    <div class="state-icon">🌲</div>
+    <div class="state-title">Aún no tienes reservaciones</div>
+    <div class="state-sub">Cuando confirmes una estadía en Pico del Encino, aparecerá aquí con todos sus detalles.</div>
+    <a href="index.html#reservar" class="state-btn">Reservar ahora</a>
+  </div>
+
+  <div id="listaWrap" style="display:none">
+    <div class="mis-reservas-list" id="misReservasList"></div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://niwdmzgkgrmyivzlrcps.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pd2RtemdrZ3JteWl2emxyY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNTU3OTgsImV4cCI6MjA5OTYzMTc5OH0.deBUKX5uad7WOzF-uq-eV5LivESt6IFJ5LR-YqhidgA'
+const sb = supabase.createClient(SB_URL, SB_KEY)
+
+function sanitize(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
+function fmtDisplay(d){ return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}` }
+
+function mostrarEstado(id){
+  ['estadoCarga','estadoSinSesion','estadoVacio','listaWrap'].forEach(x=>{
+    document.getElementById(x).style.display = (x===id) ? 'block' : 'none'
+  })
+}
+
+async function init(){
+  const { data: { session } } = await sb.auth.getSession()
+  const user = session?.user
+  if(!user){ mostrarEstado('estadoSinSesion'); return }
+  document.getElementById('topbar-email').textContent = user.email
+  document.getElementById('topbar-email').style.display = 'inline'
+  document.getElementById('topbar-logout-btn').style.display = 'inline-block'
+  await cargarReservaciones(user.email)
+}
+async function cerrarSesion(){ await sb.auth.signOut(); location.href = 'index.html' }
+
+async function cargarReservaciones(email){
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/reservaciones?select=*&cliente_email=eq.${encodeURIComponent(email)}&order=fecha_entrada.desc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } })
+    const data = await res.json()
+    if(!Array.isArray(data) || !data.length){ mostrarEstado('estadoVacio'); return }
+    const list = document.getElementById('misReservasList')
+    list.innerHTML = data.map(r=>{
+      const cancelada = r.estado === 'cancelada'
+      const badgeColor = cancelada ? '#e24b4b' : '#6db33f'
+      const badgeText = cancelada ? 'Cancelada' : (r.estado === 'confirmada' ? 'Confirmada' : sanitize(r.estado||'Confirmada'))
+      const entrada = fmtDisplay(new Date(r.fecha_entrada + 'T00:00:00'))
+      const salida = fmtDisplay(new Date(r.fecha_salida + 'T00:00:00'))
+      const anticipo = Number(r.anticipo)||0
+      const resto = Math.max((Number(r.monto_total)||0) - anticipo, 0)
+      return `<div class="mis-res-card">
+        <div class="mis-res-top">
+          <div class="mis-res-cab">${sanitize(r.cabana)}</div>
+          <div class="mis-res-badge" style="color:${badgeColor};border-color:${badgeColor}66;background:${badgeColor}1a">${badgeText}</div>
+        </div>
+        <div class="mis-res-dates">📅 ${entrada} → ${salida}</div>
+        <div class="mis-res-foot">
+          <span>Folio <strong>#${r.id}</strong></span>
+          <span>Anticipo pagado: <strong>$${anticipo.toLocaleString('es-MX')}</strong></span>
+          <span>Resto al llegar: <strong>$${resto.toLocaleString('es-MX')}</strong></span>
+        </div>
+      </div>`
+    }).join('')
+    mostrarEstado('listaWrap')
+  } catch(e){ console.error('Error cargando reservaciones:', e); mostrarEstado('estadoVacio') }
+}
+
+init()
+</script>
+</body>
+</html>
