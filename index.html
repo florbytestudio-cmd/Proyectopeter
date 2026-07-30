@@ -47,7 +47,7 @@ nav.scrolled{top:12px;padding:12px 28px;background:rgba(11,26,11,.92);box-shadow
 #heroBg{position:absolute;inset:-20%;background-image:url('portada.jpg');background-size:cover;background-position:center;filter:brightness(.7) saturate(1.1);will-change:transform;transition:transform .1s linear}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,26,11,.2) 0%,rgba(11,26,11,.05) 40%,rgba(11,26,11,.6) 85%,rgba(11,26,11,.95) 100%)}
 .hero-content{position:relative;z-index:10;padding:0 24px;max-width:700px}
-.hero-logo{height:150px;width:auto;margin:0 auto 22px;display:block;opacity:0;animation:up .9s .05s forwards;filter:drop-shadow(0 4px 20px rgba(0,0,0,.35))}
+.hero-logo{height:220px;width:auto;margin:0 auto 22px;display:block;opacity:0;animation:up .9s .05s forwards;filter:drop-shadow(0 4px 20px rgba(0,0,0,.35))}
 .hero-kicker{display:inline-flex;align-items:center;gap:10px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:28px;opacity:0;animation:up .9s .2s forwards}
 .kicker-line{width:32px;height:1px;background:var(--leaf)}
 .hero-h{font-family:'Cormorant Garamond',serif;font-size:clamp(56px,8vw,104px);font-weight:300;line-height:.95;letter-spacing:-1px;color:var(--white);margin-bottom:6px;opacity:0;animation:up .9s .35s forwards}
@@ -65,6 +65,7 @@ nav.scrolled{top:12px;padding:12px 28px;background:rgba(11,26,11,.92);box-shadow
 .scroll-bar::after{content:'';position:absolute;top:-100%;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent,var(--leaf));animation:drip 2.2s ease-in-out infinite}
 @keyframes drip{0%{top:-100%}100%{top:100%}}
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.12) translate(-1.5%,-1.5%)}}
+@keyframes kenBurnsMobile{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.04) translate(-.5%,-.5%)}}
 #reservar,#cabanas,#palapa,#llegar{scroll-margin-top:110px}
 .scroll-hint-txt{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.25)}
 .drone-badge{position:absolute;bottom:40px;right:48px;z-index:10;display:flex;align-items:center;gap:8px;border:1px solid rgba(109,179,63,.25);padding:8px 16px;border-radius:2px;background:rgba(11,26,11,.6);backdrop-filter:blur(10px);opacity:0;animation:fadeIn .9s 1.1s forwards}
@@ -103,6 +104,8 @@ nav.scrolled{top:12px;padding:12px 28px;background:rgba(11,26,11,.92);box-shadow
 .cab-body{position:absolute;bottom:0;left:0;right:0;padding:28px 28px;z-index:2}
 .cab-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#000;margin-bottom:4px}
 .cab-meta{font-size:11px;color:#000;letter-spacing:.5px;margin-bottom:16px;opacity:.6}
+.cab-reservar-btn{display:block;width:100%;padding:10px 0;margin-bottom:14px;background:var(--leaf);color:var(--pine);border:none;border-radius:4px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all .2s;text-align:center}
+.cab-reservar-btn:hover{background:#7ecb48;transform:translateY(-1px)}
 .cab-footer{display:flex;align-items:center;justify-content:space-between}
 .cab-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#000}
 .cab-price small{font-size:11px;font-family:'Inter',sans-serif;font-weight:300;color:#000;opacity:.55}
@@ -151,7 +154,7 @@ nav.scrolled{top:12px;padding:12px 28px;background:rgba(11,26,11,.92);box-shadow
 
 .hero-intro{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;z-index:10;padding:0 24px;transition:transform 1.1s cubic-bezier(.65,0,.35,1)}
 .hero-intro.splash-out{transform:translateY(-100%);pointer-events:none}
-.res-glass-sec{position:relative;z-index:10;padding:48px 56px 120px;background:linear-gradient(to bottom,rgba(11,26,11,.25),rgba(11,26,11,.7) 70%,rgba(11,26,11,.88))}
+.res-glass-sec{position:relative;z-index:10;padding:48px 56px 120px;background:linear-gradient(to bottom,var(--pine2),var(--pine) 85%)}
 .res-glass-sec .eyebrow{color:var(--mint)}
 .res-glass-sec .sec-h{color:var(--white)}
 .res-glass-sec .sec-sub{color:rgba(255,255,255,.55)}
@@ -191,6 +194,7 @@ nav.scrolled{top:12px;padding:12px 28px;background:rgba(11,26,11,.92);box-shadow
 .field select{background-color:rgba(8,18,8,.85);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23f4f0e6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
 .field select option{background:#0f1a0f;color:#f4f0e6}
 .field select.needs-select{border-color:var(--leaf);animation:pulseCab 1.8s ease-in-out infinite}
+.field select:disabled{opacity:.4;cursor:not-allowed;animation:none}
 @keyframes pulseCab{0%,100%{box-shadow:0 0 0 0 rgba(109,179,63,.55)}50%{box-shadow:0 0 0 7px rgba(109,179,63,0)}}
 .field input::placeholder{color:rgba(244,240,230,.35)}
 .field input:focus,.field select:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(109,179,63,.18)}
@@ -248,6 +252,17 @@ footer{background:var(--pine);padding:48px 56px 32px}
 .test-avatar{width:38px;height:38px;border-radius:50%;background:var(--pine);color:var(--leaf);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .test-name{font-size:13px;font-weight:500}
 .test-city{font-size:11px;color:var(--muted);letter-spacing:.3px}
+.test-carousel-wrap{display:flex;align-items:center;gap:16px;max-width:1160px;margin:0 auto}
+.test-carousel{flex:1;overflow:hidden}
+.test-track{display:flex;gap:20px;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.test-track .test-card{flex:0 0 calc((100% - 40px)/3);box-sizing:border-box;opacity:1;transform:none}
+.test-nav{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--white);border:1px solid rgba(0,0,0,.1);cursor:pointer;font-size:16px;color:var(--pine);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.test-nav:hover{background:var(--leaf);border-color:var(--leaf)}
+.test-dots{display:flex;justify-content:center;gap:8px;margin-top:22px}
+.test-dot{width:7px;height:7px;border-radius:50%;background:rgba(0,0,0,.15);cursor:pointer;transition:background .2s,transform .2s;border:none;padding:0}
+.test-dot.active{background:var(--moss);transform:scale(1.3)}
+.test-google-attr{display:none;align-items:center;justify-content:center;gap:8px;margin-top:22px;font-size:11px;color:var(--muted)}
+.test-google-attr a{color:var(--moss);text-decoration:underline}
 .pol-card{background:rgba(255,255,255,.05);border:1px solid rgba(109,179,63,.15);border-radius:12px;padding:22px 20px;transition:background .3s}
 .pol-card:hover{background:rgba(109,179,63,.06)}
 .pol-icon{font-size:24px;margin-bottom:12px}
@@ -304,7 +319,9 @@ footer{background:var(--pine);padding:48px 56px 32px}
   .res-layout{grid-template-columns:1fr;gap:32px} .cabanas-grid{grid-template-columns:1fr}
   .route{flex-direction:column;gap:24px} .route::before{display:none}
   .llegar-watermark{display:none}
-  footer{padding:40px 24px 24px} .ft-top{flex-direction:column;gap:20px} .llegar-sec{padding:64px 24px} .hero-h{font-size:52px} .hero-logo{height:100px}
+  .test-track .test-card{flex:0 0 100%}
+  #heroBg{inset:-6%}
+  footer{padding:40px 24px 24px} .ft-top{flex-direction:column;gap:20px} .llegar-sec{padding:64px 24px} .hero-h{font-size:52px} .hero-logo{height:140px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -312,10 +329,10 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <body>
 
 <nav id="nav">
-  <div class="nav-logo"><img src="logo_dorado.png" style="height:44px;width:auto;" alt="Pico del Encino"></div>
+  <div class="nav-logo"><img src="logo_dorado.png" style="height:50px;width:auto;" alt="Pico del Encino"></div>
   <ul class="nav-links">
-    <li><a href="#reservar">Disponibilidad</a></li>
     <li><a href="#cabanas">Cabañas</a></li>
+    <li><a href="#reservar">Disponibilidad</a></li>
     <li><a href="#palapa">Área común</a></li>
     <li><a href="#llegar">Cómo llegar</a></li>
   </ul>
@@ -344,26 +361,112 @@ footer{background:var(--pine);padding:48px 56px 32px}
     <div class="drone-badge"><div class="rec"></div><span class="drone-txt">Video dron · reproduciendo</span></div>
   </div>
 
-  <div class="hero-divider"><span class="hero-divider-icon">🌲 Reserva tu estadía</span></div>
+  <div class="hero-divider"><span class="hero-divider-icon">🌲 Elige tu cabaña</span></div>
+
+
+</section>
+
+<div style="background:var(--pine);margin-top:-2px;line-height:0">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="width:100%;height:60px;display:block">
+    <path d="M0,0 C360,60 1080,0 1440,40 L1440,0 Z" fill="#0b1a0b"/>
+    <path d="M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z" fill="#152415"/>
+  </svg>
+</div>
+<div class="band">
+  <div class="band-item"><div class="band-n">4</div><div class="band-l">Cabañas privadas</div></div>
+  <div class="band-item"><div class="band-n">2,141</div><div class="band-l">Metros sobre el mar</div></div>
+  <div class="band-item"><div class="band-n">1 hr</div><div class="band-l">Desde Chihuahua</div></div>
+  <div class="band-item"><div class="band-n">365</div><div class="band-l">Días disponible</div></div>
+</div>
+
+<section class="sec cabanas-bg" id="cabanas">
+  <div class="sec-inner">
+    <div class="cabanas-head">
+      <div><div class="eyebrow">Alojamiento</div><h2 class="sec-h">Elige tu cabaña</h2></div>
+      <p class="sec-sub">Cada cabaña es independiente, rodeada de encinos. Incluyen leña, ropa de cama y fogón.</p>
+    </div>
+    <div class="cabanas-grid">
+
+      <div class="cab" data-delay="0" id="cab-c1" style="height:420px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#0d1a0d"><img src="cabana1.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a3a1a,#0d2010)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 1</div><div class="cab-meta">2 personas · Vista al bosque · Cama matrimonial</div>
+          <button class="cab-reservar-btn" onclick="irAReservarCon(1200)">Reservar →</button>
+          <div class="cab-footer"><div class="cab-price">$1,200 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c1"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c1')">Ver interior</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 1</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c1')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c1"></div>
+          <div class="gallery-dots" id="gallery-dots-c1"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c1');setTimeout(()=>irAReservarCon(1200),400)">Reservar →</button></div>
+        </div>
+      </div></div>
+
+      <div class="cab" data-delay="120" id="cab-c2" style="height:420px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#0d1520"><img src="cabana2.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a2a3a,#0d1a2a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 2</div><div class="cab-meta">4 personas · Chimenea interior · 1 recamara</div>
+          <button class="cab-reservar-btn" onclick="irAReservarCon(1800)">Reservar →</button>
+          <div class="cab-footer"><div class="cab-price">$1,800 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c2"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c2')">Ver interior</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 2</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c2')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c2"></div>
+          <div class="gallery-dots" id="gallery-dots-c2"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c2');setTimeout(()=>irAReservarCon(1800),400)">Reservar →</button></div>
+        </div>
+      </div></div>
+
+      <div class="cab" data-delay="240" id="cab-c3" style="height:420px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#150d15"><img src="cabana3.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a1a2a,#1a0d1a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 3</div><div class="cab-meta">4 personas · 9×6 m² · Terraza privada</div>
+          <button class="cab-reservar-btn" onclick="irAReservarCon(2000)">Reservar →</button>
+          <div class="cab-footer"><div class="cab-price">$2,000 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c3"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c3')">Ver interior</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 3</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c3')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c3"></div>
+          <div class="gallery-dots" id="gallery-dots-c3"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c3');setTimeout(()=>irAReservarCon(2000),400)">Reservar →</button></div>
+        </div>
+      </div></div>
+
+      <div class="cab" data-delay="360" id="cab-c4" style="height:420px"><div class="cab-inner">
+        <div class="cab-front"><div class="cab-img" style="background:#160f06"><img src="cabana4.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a2010,#1a150a)'"/></div>
+          <div class="cab-body"><div class="cab-name">Cabaña 4</div><div class="cab-meta">6 personas · Sala completa · La más grande</div>
+          <button class="cab-reservar-btn" onclick="irAReservarCon(2400)">Reservar →</button>
+          <div class="cab-footer"><div class="cab-price">$2,400 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c4"><div class="avail-dot"></div>Disponible</div></div></div>
+          <button class="cab-btn" onclick="flipCard('c4')">Ver interior</button></div>
+        <div class="cab-back">
+          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 4</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c4')">✕</div></div>
+          <div class="cab-gallery" id="gallery-c4"></div>
+          <div class="gallery-dots" id="gallery-dots-c4"></div>
+          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c4');setTimeout(()=>irAReservarCon(2400),400)">Reservar →</button></div>
+        </div>
+      </div></div>
+
+    </div>
+  </div>
+</section>
+
+<div style="background:#ffffff;line-height:0"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block"><path d="M0,0 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#152415"/></svg></div>
 
   <div class="sec res-glass-sec" id="reservar">
     <div class="sec-inner">
       <div class="eyebrow">Disponibilidad y reservación</div>
       <h2 class="sec-h">Elige tus fechas</h2>
-      <p class="sec-sub">Reservar toma 3 pasos — <strong style="color:var(--mint);font-weight:500">① elige tu cabaña</strong> en el formulario y el calendario se activa con sus fechas disponibles en tiempo real; <strong style="color:var(--mint);font-weight:500">② elige llegada y salida</strong> en el calendario; <strong style="color:var(--mint);font-weight:500">③ inicia sesión</strong> (o crea una cuenta gratis) para confirmar y pagar el 50% de anticipo — el resto se paga al llegar a la cabaña.</p>
+      <p class="sec-sub">Reservar toma 4 pasos — <strong style="color:var(--mint);font-weight:500;text-decoration:underline;cursor:pointer" onclick="abrirAuthModal()">① inicia sesión</strong> o crea tu cuenta gratis; <strong style="color:var(--mint);font-weight:500">② elige tu cabaña</strong> en el formulario y el calendario se activa con sus fechas disponibles en tiempo real; <strong style="color:var(--mint);font-weight:500">③ elige llegada y salida</strong> en el calendario; <strong style="color:var(--mint);font-weight:500">④ paga el 50%</strong> de anticipo para confirmar — el resto se paga al llegar a la cabaña.</p>
 
       <div class="res-layout">
         <div class="res-form-wrap vis">
           <div class="res-card">
             <h3>Tu reservación</h3>
             <div class="login-required-note" id="login-note">
-              🔒 Para reservar necesitas iniciar sesión — así identificamos que la reservación es tuya, la puedes consultar después en "Mis reservaciones" y te enviamos la confirmación por correo.
+              🔒 <strong>① Primero inicia sesión</strong> — así identificamos que la reservación es tuya, la puedes consultar después en "Mis reservaciones" y te enviamos la confirmación por correo.
               <span style="text-decoration:underline;cursor:pointer;margin-left:4px;white-space:nowrap" onclick="abrirAuthModal()">crear cuenta / entrar →</span>
             </div>
             <div class="form-row full">
               <div class="field">
-                <label style="color:var(--mint)">① Elige tu cabaña — así se activa el calendario</label>
-                <select id="f-cab" class="needs-select" onchange="calcAnticipo()">
+                <label style="color:var(--mint)">② Elige tu cabaña — así se activa el calendario</label>
+                <select id="f-cab" class="needs-select" onchange="calcAnticipo()" disabled>
                   <option value="0">Seleccionar cabaña</option>
                   <option value="1200">Cabaña 1 — $1,200</option>
                   <option value="1800">Cabaña 2 — $1,800</option>
@@ -371,6 +474,9 @@ footer{background:var(--pine);padding:48px 56px 32px}
                   <option value="2400">Cabaña 4 — $2,400</option>
                 </select>
               </div>
+            </div>
+            <div class="form-row full">
+              <div class="field"><label style="color:var(--mint)">③ Elige llegada y salida en el calendario →</label></div>
             </div>
             <div class="form-row">
               <div class="field"><label>Llegada</label><input type="text" id="f-in" placeholder="— / — / ——" readonly></div>
@@ -394,6 +500,7 @@ footer{background:var(--pine);padding:48px 56px 32px}
               </div>
             </div>
 
+            <label style="color:var(--mint);display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px">④ Paga tu anticipo para confirmar</label>
             <div class="anticipo-info">
               <div><div class="anticipo-label">Anticipo (50%)</div><div class="anticipo-note">Resto se paga al llegar</div></div>
               <div class="anticipo-amt" id="anticipo-amt">$—</div>
@@ -438,86 +545,8 @@ footer{background:var(--pine);padding:48px 56px 32px}
       </div>
     </div>
   </div>
-</section>
 
-<div style="background:var(--pine);margin-top:-2px;line-height:0">
-  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="width:100%;height:60px;display:block">
-    <path d="M0,0 C360,60 1080,0 1440,40 L1440,0 Z" fill="#0b1a0b"/>
-    <path d="M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z" fill="#152415"/>
-  </svg>
-</div>
-<div class="band">
-  <div class="band-item"><div class="band-n">4</div><div class="band-l">Cabañas privadas</div></div>
-  <div class="band-item"><div class="band-n">2,141</div><div class="band-l">Metros sobre el mar</div></div>
-  <div class="band-item"><div class="band-n">1 hr</div><div class="band-l">Desde Chihuahua</div></div>
-  <div class="band-item"><div class="band-n">365</div><div class="band-l">Días disponible</div></div>
-</div>
-
-<section class="sec cabanas-bg" id="cabanas">
-  <div class="sec-inner">
-    <div class="cabanas-head">
-      <div><div class="eyebrow">Alojamiento</div><h2 class="sec-h">Elige tu cabaña</h2></div>
-      <p class="sec-sub">Cada cabaña es independiente, rodeada de encinos. Incluyen leña, ropa de cama y fogón.</p>
-    </div>
-    <div class="cabanas-grid">
-
-      <div class="cab" data-delay="0" id="cab-c1" style="height:380px"><div class="cab-inner">
-        <div class="cab-front"><div class="cab-img" style="background:#0d1a0d"><img src="cabana1.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a3a1a,#0d2010)'"/></div>
-          <div class="cab-body"><div class="cab-name">Cabaña 1</div><div class="cab-meta">2 personas · Vista al bosque · Cama matrimonial</div>
-          <div class="cab-footer"><div class="cab-price">$1,200 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c1"><div class="avail-dot"></div>Disponible</div></div></div>
-          <button class="cab-btn" onclick="flipCard('c1')">Ver interior</button></div>
-        <div class="cab-back">
-          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 1</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c1')">✕</div></div>
-          <div class="cab-gallery" id="gallery-c1"></div>
-          <div class="gallery-dots" id="gallery-dots-c1"></div>
-          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c1');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
-        </div>
-      </div></div>
-
-      <div class="cab" data-delay="120" id="cab-c2" style="height:380px"><div class="cab-inner">
-        <div class="cab-front"><div class="cab-img" style="background:#0d1520"><img src="cabana2.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#1a2a3a,#0d1a2a)'"/></div>
-          <div class="cab-body"><div class="cab-name">Cabaña 2</div><div class="cab-meta">4 personas · Chimenea interior · 1 recamara</div>
-          <div class="cab-footer"><div class="cab-price">$1,800 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c2"><div class="avail-dot"></div>Disponible</div></div></div>
-          <button class="cab-btn" onclick="flipCard('c2')">Ver interior</button></div>
-        <div class="cab-back">
-          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 2</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c2')">✕</div></div>
-          <div class="cab-gallery" id="gallery-c2"></div>
-          <div class="gallery-dots" id="gallery-dots-c2"></div>
-          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c2');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
-        </div>
-      </div></div>
-
-      <div class="cab" data-delay="240" id="cab-c3" style="height:380px"><div class="cab-inner">
-        <div class="cab-front"><div class="cab-img" style="background:#150d15"><img src="cabana3.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a1a2a,#1a0d1a)'"/></div>
-          <div class="cab-body"><div class="cab-name">Cabaña 3</div><div class="cab-meta">4 personas · 9×6 m² · Terraza privada</div>
-          <div class="cab-footer"><div class="cab-price">$2,000 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c3"><div class="avail-dot"></div>Disponible</div></div></div>
-          <button class="cab-btn" onclick="flipCard('c3')">Ver interior</button></div>
-        <div class="cab-back">
-          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 3</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c3')">✕</div></div>
-          <div class="cab-gallery" id="gallery-c3"></div>
-          <div class="gallery-dots" id="gallery-dots-c3"></div>
-          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c3');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
-        </div>
-      </div></div>
-
-      <div class="cab" data-delay="360" id="cab-c4" style="height:380px"><div class="cab-inner">
-        <div class="cab-front"><div class="cab-img" style="background:#160f06"><img src="cabana4.jpg" style="width:100%;height:180px;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(160deg,#2a2010,#1a150a)'"/></div>
-          <div class="cab-body"><div class="cab-name">Cabaña 4</div><div class="cab-meta">6 personas · Sala completa · La más grande</div>
-          <div class="cab-footer"><div class="cab-price">$2,400 <small>/ noche</small></div><div class="cab-avail avail-ok" id="avail-c4"><div class="avail-dot"></div>Disponible</div></div></div>
-          <button class="cab-btn" onclick="flipCard('c4')">Ver interior</button></div>
-        <div class="cab-back">
-          <div class="cab-back-head"><div class="cab-back-info"><div class="cab-back-title">Cabaña 4</div><div class="cab-back-sub">Interior de la cabaña</div></div><div class="cab-back-close" onclick="unflipCard('c4')">✕</div></div>
-          <div class="cab-gallery" id="gallery-c4"></div>
-          <div class="gallery-dots" id="gallery-dots-c4"></div>
-          <div class="cab-back-footer-single"><button class="cab-back-reservar" onclick="unflipCard('c4');setTimeout(()=>scroll2('reservar'),400)">Reservar →</button></div>
-        </div>
-      </div></div>
-
-    </div>
-  </div>
-</section>
-
-<div style="background:#ffffff;line-height:0"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block"><path d="M0,0 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#152415"/></svg></div>
+<div style="background:var(--pine);line-height:0"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" style="width:100%;height:50px;display:block"><path d="M0,30 C480,0 960,50 1440,10 L1440,50 L0,50 Z" fill="#f4f0e6"/></svg></div>
 
 <section style="background:var(--cream);padding:80px 56px 60px">
   <div style="max-width:1160px;margin:0 auto">
@@ -560,11 +589,13 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <section style="background:var(--sand);padding:72px 56px">
   <div style="max-width:1160px;margin:0 auto">
     <div style="text-align:center;margin-bottom:48px"><div class="eyebrow" style="text-align:center">Lo que dicen</div><h2 class="sec-h" style="text-align:center">Experiencias reales</h2></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
-      <div class="test-card" data-delay="0"><div class="test-stars">★★★★★</div><p class="test-text">"Llegamos un viernes en la noche y lo primero que hicimos fue prender el fogatero. El silencio del bosque y el cielo estrellado no tienen comparación. Ya queremos regresar."</p><div class="test-author"><div class="test-avatar">MR</div><div><div class="test-name">Marco R.</div><div class="test-city">Chihuahua, Chih.</div></div></div></div>
-      <div class="test-card" data-delay="100"><div class="test-stars">★★★★★</div><p class="test-text">"La cabaña es exactamente como en las fotos — el diseño A-frame es impresionante. El jacuzzi en la terraza con vista al bosque fue lo mejor del viaje. Muy recomendable."</p><div class="test-author"><div class="test-avatar">AL</div><div><div class="test-name">Ana L.</div><div class="test-city">Ciudad de México</div></div></div></div>
-      <div class="test-card" data-delay="200"><div class="test-stars">★★★★★</div><p class="test-text">"Fuimos en familia, 6 personas. La cabaña más grande nos dio espacio de sobra. Los niños se volvieron locos con los venados que aparecieron por la mañana. Una experiencia única."</p><div class="test-author"><div class="test-avatar">JV</div><div><div class="test-name">Jorge V.</div><div class="test-city">Hermosillo, Son.</div></div></div></div>
+    <div class="test-carousel-wrap">
+      <button class="test-nav" onclick="testCarouselMove(-1)" aria-label="Reseña anterior">‹</button>
+      <div class="test-carousel"><div class="test-track" id="test-track"></div></div>
+      <button class="test-nav" onclick="testCarouselMove(1)" aria-label="Siguiente reseña">›</button>
     </div>
+    <div class="test-dots" id="test-dots"></div>
+    <div class="test-google-attr" id="test-google-attr">Reseñas de <a href="#" id="test-google-link" target="_blank" rel="noopener">Google Maps →</a></div>
   </div>
 </section>
 
@@ -664,19 +695,6 @@ footer{background:var(--pine);padding:48px 56px 32px}
 <script>
 function scroll2(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 
-const heroSplash = document.getElementById('heroSplash')
-if(heroSplash){
-  let splashHidden = false
-  function hideSplash(){
-    if(splashHidden) return
-    splashHidden = true
-    heroSplash.classList.add('splash-out')
-    heroSplash.addEventListener('transitionend', ()=>{ heroSplash.style.display = 'none' }, { once:true })
-  }
-  setTimeout(hideSplash, 2800)
-  window.addEventListener('scroll', hideSplash, { once:true, passive:true })
-}
-
 const strip = document.getElementById('res-strip')
 window.addEventListener('scroll', ()=>{ strip.style.transform = window.scrollY > window.innerHeight * 0.6 ? 'translateY(0)' : 'translateY(100%)' })
 window.addEventListener('scroll',()=>{ document.getElementById('nav').classList.toggle('scrolled',scrollY>80) })
@@ -686,7 +704,7 @@ let ticking = false
 window.addEventListener('scroll', () => {
   if(!ticking){ requestAnimationFrame(()=>{ const y = window.scrollY * 0.3; if(heroBg) heroBg.style.transform = `translateY(${y}px)`; ticking = false }); ticking = true }
 })
-if(heroBg){ heroBg.style.animation = 'kenBurns 20s ease-in-out infinite alternate' }
+if(heroBg){ heroBg.style.animation = (window.matchMedia('(max-width:900px)').matches ? 'kenBurnsMobile' : 'kenBurns') + ' 20s ease-in-out infinite alternate' }
 
 const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 let cur=new Date()
@@ -716,8 +734,9 @@ function actualizarUIAuth(user){
   const dot = document.getElementById('account-dot')
   const label = document.getElementById('account-label')
   const loginNote = document.getElementById('login-note')
-  if(clienteActual){ dot.style.display = 'block'; label.textContent = clienteActual.email.split('@')[0]; if(loginNote) loginNote.style.display = 'none' }
-  else { dot.style.display = 'none'; label.textContent = 'Iniciar sesión'; if(loginNote) loginNote.style.display = 'flex' }
+  const cabSel = document.getElementById('f-cab')
+  if(clienteActual){ dot.style.display = 'block'; label.textContent = clienteActual.email.split('@')[0]; if(loginNote) loginNote.style.display = 'none'; if(cabSel) cabSel.disabled = false }
+  else { dot.style.display = 'none'; label.textContent = 'Iniciar sesión'; if(loginNote) loginNote.style.display = 'flex'; if(cabSel){ cabSel.disabled = true; cabSel.value = '0' } }
   calcAnticipo()
 }
 function abrirAuthModal(){
@@ -909,7 +928,12 @@ function fmtDisplay(d){ return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear
 function renderCal(){
   const title=document.getElementById('cal-title'); title.textContent=`${months[cur.getMonth()]} ${cur.getFullYear()}`
   const grid=document.getElementById('cal-days'); grid.innerHTML=''
-  if(!cabanaSeleccionada){ grid.innerHTML = '<div class="cal-cabana-hint">👈 Primero elige una cabaña en el formulario (paso ①)<br>para que aquí aparezcan sus fechas disponibles</div>'; return }
+  if(!cabanaSeleccionada){
+    grid.innerHTML = clienteActual
+      ? '<div class="cal-cabana-hint">👈 Elige tu cabaña en el formulario (paso ②)<br>para que aquí aparezcan sus fechas disponibles</div>'
+      : '<div class="cal-cabana-hint">🔒 Primero inicia sesión (paso ①)<br>para poder elegir tu cabaña y fechas</div>'
+    return
+  }
   occActual = blockedPorCabana[cabanaSeleccionada] || new Set()
   const first=new Date(cur.getFullYear(),cur.getMonth(),1); const last=new Date(cur.getFullYear(),cur.getMonth()+1,0)
   const today=new Date(); today.setHours(0,0,0,0)
@@ -978,6 +1002,91 @@ function calcAnticipo(){
   btn.disabled = !(selStart && selEnd && precioBase && document.getElementById('f-name').value && document.getElementById('f-tel').value && clienteActual)
 }
 ['f-name','f-tel'].forEach(id=>document.getElementById(id).addEventListener('input',calcAnticipo))
+function irAReservarCon(precio){
+  document.getElementById('f-cab').value = precio
+  calcAnticipo()
+  scroll2('reservar')
+}
+
+const GOOGLE_MAPS_API_KEY = 'TU_API_KEY_AQUI'
+const GOOGLE_PLACE_ID = 'TU_PLACE_ID_AQUI'
+const RESENAS_FALLBACK = [
+  { author_name:'Marco R.', rating:5, text:'Llegamos un viernes en la noche y lo primero que hicimos fue prender el fogatero. El silencio del bosque y el cielo estrellado no tienen comparación. Ya queremos regresar.', relative_time_description:'Chihuahua, Chih.' },
+  { author_name:'Ana L.', rating:5, text:'La cabaña es exactamente como en las fotos — el diseño A-frame es impresionante. El jacuzzi en la terraza con vista al bosque fue lo mejor del viaje. Muy recomendable.', relative_time_description:'Ciudad de México' },
+  { author_name:'Jorge V.', rating:5, text:'Fuimos en familia, 6 personas. La cabaña más grande nos dio espacio de sobra. Los niños se volvieron locos con los venados que aparecieron por la mañana. Una experiencia única.', relative_time_description:'Hermosillo, Son.' },
+]
+let testIndex = 0
+let testTimer = null
+
+function testIniciales(nombre){
+  return (nombre||'').split(' ').map(p=>p[0]).filter(Boolean).slice(0,2).join('').toUpperCase()
+}
+function testEscapar(s){ const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML }
+
+function testVisibleCount(){ return window.matchMedia('(max-width:900px)').matches ? 1 : 3 }
+function testMaxIndex(){
+  const total = document.getElementById('test-track').children.length
+  return Math.max(0, total - testVisibleCount())
+}
+function testUpdateTrack(){
+  const track = document.getElementById('test-track')
+  const card = track.children[0]
+  if(!card) return
+  const gap = parseFloat(getComputedStyle(track).columnGap) || 0
+  const step = card.getBoundingClientRect().width + gap
+  track.style.transform = `translateX(-${testIndex * step}px)`
+  document.querySelectorAll('.test-dot').forEach((d,i)=>d.classList.toggle('active', i === testIndex))
+}
+function testCarouselMove(delta){
+  const maxIndex = testMaxIndex()
+  if(maxIndex <= 0) return
+  testIndex = (testIndex + delta + maxIndex + 1) % (maxIndex + 1)
+  testUpdateTrack()
+}
+function testGoTo(i){ testIndex = i; testUpdateTrack() }
+window.addEventListener('resize', ()=>{ testIndex = Math.min(testIndex, testMaxIndex()); testUpdateTrack() })
+
+function renderResenas(resenas, googleUrl){
+  const track = document.getElementById('test-track')
+  const dots = document.getElementById('test-dots')
+  track.innerHTML = resenas.map(r => `
+    <div class="test-card"><div class="test-stars">${'★'.repeat(Math.round(r.rating))}${'☆'.repeat(5-Math.round(r.rating))}</div><p class="test-text">"${testEscapar(r.text)}"</p><div class="test-author"><div class="test-avatar">${testIniciales(r.author_name)}</div><div><div class="test-name">${testEscapar(r.author_name)}</div><div class="test-city">${testEscapar(r.relative_time_description||'')}</div></div></div></div>`
+  ).join('')
+  const maxIndex = testMaxIndex()
+  dots.innerHTML = Array.from({length: maxIndex + 1}, (_,i)=>`<button class="test-dot${i===0?' active':''}" onclick="testGoTo(${i})" aria-label="Posición ${i+1}"></button>`).join('')
+  dots.style.display = maxIndex > 0 ? 'flex' : 'none'
+  if(googleUrl){
+    document.getElementById('test-google-link').href = googleUrl
+    document.getElementById('test-google-attr').style.display = 'flex'
+  }
+  testIndex = 0
+  testUpdateTrack()
+  clearInterval(testTimer)
+  if(maxIndex > 0) testTimer = setInterval(()=>testCarouselMove(1), 6000)
+}
+
+function cargarResenasGoogle(){
+  if(GOOGLE_MAPS_API_KEY === 'TU_API_KEY_AQUI' || GOOGLE_PLACE_ID === 'TU_PLACE_ID_AQUI'){
+    renderResenas(RESENAS_FALLBACK, null)
+    return
+  }
+  window.initGoogleResenas = () => {
+    const service = new google.maps.places.PlacesService(document.createElement('div'))
+    service.getDetails({ placeId: GOOGLE_PLACE_ID, fields: ['reviews','url'] }, (place, status) => {
+      if(status === google.maps.places.PlacesServiceStatus.OK && place.reviews && place.reviews.length){
+        renderResenas(place.reviews, place.url)
+      } else {
+        renderResenas(RESENAS_FALLBACK, null)
+      }
+    })
+  }
+  const script = document.createElement('script')
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleResenas`
+  script.async = true
+  script.onerror = () => renderResenas(RESENAS_FALLBACK, null)
+  document.head.appendChild(script)
+}
+cargarResenasGoogle()
 
 const EMAILJS_PUBLIC_KEY = 'TU_PUBLIC_KEY_AQUI'
 const EMAILJS_SERVICE_ID = 'TU_SERVICE_ID_AQUI'

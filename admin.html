@@ -737,10 +737,10 @@ async function guardarReservacion(){
 function confirmarAccion(tipo, id, nombre){
   const esCancelar = tipo === 'cancelar'
   document.getElementById('confirm-icon').textContent = esCancelar ? '🚫' : '🗑️'
-  document.getElementById('confirm-title').textContent = esCancelar ? '¿Cancelar reservación?' : '¿Eliminar permanentemente?'
-  document.getElementById('confirm-msg').textContent = esCancelar ? `La reservación de "${nombre}" quedará como cancelada pero seguirá en el historial.` : `Se eliminará permanentemente la reservación de "${nombre}". Esta acción NO se puede deshacer.`
-  document.getElementById('confirm-btn').textContent = esCancelar ? 'Sí, cancelar' : 'Sí, eliminar'
-  document.getElementById('confirm-btn').onclick = () => esCancelar ? cancelarReservacion(id) : eliminarReservacion(id)
+  document.getElementById('confirm-title').textContent = '¿Cancelar reservación?'
+  document.getElementById('confirm-msg').textContent = `La reservación de "${nombre}" se moverá a la sección de Canceladas.`
+  document.getElementById('confirm-btn').textContent = 'Sí, cancelar'
+  document.getElementById('confirm-btn').onclick = () => cancelarReservacion(id)
   document.getElementById('modalConfirm').classList.add('open')
 }
 
@@ -751,10 +751,6 @@ async function cancelarReservacion(id){
     toast('🚫 Reservación cancelada')
     cerrarConfirm(); await cargarTodo()
   } catch(e){ toast('❌ Error al cancelar: ' + e.message) }
-}
-async function eliminarReservacion(id){
-  try { await api('DELETE', `reservaciones?id=eq.${id}`); toast('🗑️ Reservación eliminada permanentemente'); cerrarConfirm(); await cargarTodo() }
-  catch(e){ toast('❌ Error al eliminar — verifica permisos en Supabase') }
 }
 function cerrarModal(){ document.getElementById('modalRes').classList.remove('open') }
 function cobrarSaldoCompleto(){
